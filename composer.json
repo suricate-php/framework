@@ -1,6 +1,7 @@
 {
-    "name": "suricate-php/suricate",
-    "description": "Suricate base app layout",
+    "name": "suricate-php/framework",
+    "description": "Suricate PHP framework",
+    "keywords": ["framework", "suricate"],
     "authors": [
         {
             "name": "Mathieu LESNIAK",
@@ -9,6 +10,6 @@
     ],
     "minimum-stability": "stable",
     "require": {
-	suricate-php/framwork
+	"php": ">= "5.4.0"
     }
 }
