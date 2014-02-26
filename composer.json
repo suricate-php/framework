@@ -1,0 +1,14 @@
+{
+    "name": "suricate-php/suricate",
+    "description": "Suricate base app layout",
+    "authors": [
+        {
+            "name": "Mathieu LESNIAK",
+            "email": "mathieu@lesniak.fr"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+	suricate-php/framwork
+    }
+}
