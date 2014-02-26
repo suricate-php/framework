@@ -1,5 +1,5 @@
 <?php
-namespace Fwk;
+namespace Suricate;
 
 class Container implements \ArrayAccess
 {

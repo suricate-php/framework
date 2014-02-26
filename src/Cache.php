@@ -1,10 +1,10 @@
 <?php
-namespace Fwk;
+namespace Suricate;
 
 /**
  * Cache
  * 
- * @package Fwk
+ * @package Suricate
  * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
  */
 

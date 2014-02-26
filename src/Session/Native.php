@@ -1,7 +1,7 @@
 <?php
-namespace Fwk\Session;
+namespace Suricate\Session;
 
-class Native extends \Fwk\Session
+class Native extends \Suricate\Session
 {
     public function __construct()
     {

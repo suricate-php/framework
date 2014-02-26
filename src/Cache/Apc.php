@@ -1,9 +1,9 @@
 <?php
-namespace Fwk\Cache;
+namespace Suricate\Cache;
 
-use Fwk;
+use Suricate;
 
-class Apc extends Fkw\Cache
+class Apc extends Suricate\Cache
 {
     public function __construct()
     {

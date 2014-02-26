@@ -1,13 +1,13 @@
 <?php
-namespace Fwk;
+namespace Suricate;
 
 /**
  * Validator
  * Inspired from Kieron Wilson PHP Validator
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
- * @copyright   2013 Mathieu LESNIAK
- * @package     Fwk
+ * @copyright   2013-2014 Mathieu LESNIAK
+ * @package     Suricate
  */
 class Validator
 {

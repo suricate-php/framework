@@ -1,5 +1,5 @@
 <?php
-namespace Fwk;
+namespace Suricate;
 
 /**
  * DBObject, Pseudo ORM Class
@@ -9,7 +9,7 @@ namespace Fwk;
  * - $protectedVariables, an array of variables not stored in SQL
  *     that can be triggered on access
  *
- * @package Fwk
+ * @package Suricate
  * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
  */
 

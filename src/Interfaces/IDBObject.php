@@ -1,5 +1,5 @@
 <?php
-namespace Fwk\Interfaces;
+namespace Suricate\Interfaces;
 
 interface IDBObject
 {

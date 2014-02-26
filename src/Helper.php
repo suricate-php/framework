@@ -1,5 +1,5 @@
 <?php
-use Fwk\Fwk;
+use Suricate\Suricate;
 
 // Debug
 // 

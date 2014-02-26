@@ -1,9 +1,9 @@
 <?php
-namespace Fwk\Cache;
+namespace Suricate\Cache;
 
-use Fwk;
+use Suricate;
 
-class Memcache extends Fwk\Cache
+class Memcache extends Suricate\Cache
 {
     protected $parametersList = array(
                                     'host',

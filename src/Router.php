@@ -1,5 +1,5 @@
 <?php
-namespace Fwk;
+namespace Suricate;
 
 /**
 // TODO : handle closure

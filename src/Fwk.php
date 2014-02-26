@@ -3,16 +3,16 @@
  * Fwk - Another micro PHP 5 framework
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
- * @copyright   2013 Mathieu LESNIAK
- * @version     0.2
- * @package     Fwk
+ * @copyright   2013-2014 Mathieu LESNIAK
+ * @version     0.1
+ * @package     Suricate
  */
-namespace Fwk;
+namespace Suricate;
 
-class Fwk
+class Suricate
 {
 
-    const VERSION = '0.3';
+    const VERSION = '0.1';
 
     const CONF_DIR = '/conf/';
 
