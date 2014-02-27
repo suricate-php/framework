@@ -26,22 +26,22 @@ class Suricate
     private static $servicesRepository;
 
     private $servicesList = array(
-        'Logger'            => '\Fwk\Logger',
-        'App'               => '\Fwk\App',
-        'I18n'              => '\Fwk\I18n',
-        'Router'            => '\Fwk\Router',
-        'Request'           => '\Fwk\Request',
-        'Database'          => '\Fwk\Database',
-        'Cache'             => '\Fwk\Cache',
-        'CacheMemcache'     => '\Fwk\Cache\Memcache',
-        'CacheApc'          => '\Fwk\Cache\Apc',
-        'Curl'              => '\Fwk\Curl',
-        'Response'          => '\Fwk\Request',
-        'Error'             => '\Fwk\Error',
-        'Session'           => '\Fwk\Session',
-        'SessionNative'     => '\Fwk\Session\Native',
-        'SessionCookie'     => '\Fwk\Session\Cookie',
-        'SessionMemcache'   => '\Fwk\Session\Memcache',
+        'Logger'            => '\Suricate\Logger',
+        'App'               => '\Suricate\App',
+        'I18n'              => '\Suricate\I18n',
+        'Router'            => '\Suricate\Router',
+        'Request'           => '\Suricate\Request',
+        'Database'          => '\Suricate\Database',
+        'Cache'             => '\Suricate\Cache',
+        'CacheMemcache'     => '\Suricate\Cache\Memcache',
+        'CacheApc'          => '\Suricate\Cache\Apc',
+        'Curl'              => '\Suricate\Curl',
+        'Response'          => '\Suricate\Request',
+        'Error'             => '\Suricate\Error',
+        'Session'           => '\Suricate\Session',
+        'SessionNative'     => '\Suricate\Session\Native',
+        'SessionCookie'     => '\Suricate\Session\Cookie',
+        'SessionMemcache'   => '\Suricate\Session\Memcache',
     );
 
 
