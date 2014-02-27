@@ -41,7 +41,7 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
             $sqlParams['type'] = $collection->parentFilterType;
         }
 
-        $results = Fwk::Database()->query($sql, $sqlParams)->fetchAll();
+        $results = Suricate::Database()->query($sql, $sqlParams)->fetchAll();
 
         if ($results !== false) {
             foreach ($results as $currentResult) {
@@ -71,7 +71,7 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
 
     public function loadFromSql($sql, $sqlParams = array())
     {
-        $results = Fwk::Database()->query($sql, $sqlParams)->fetchAll();
+        $results = Suricate::Database()->query($sql, $sqlParams)->fetchAll();
 
         if ($results !== false) {
             foreach ($results as $currentResult) {
@@ -85,7 +85,7 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
 
     public function lazyLoadFromSql($sql, $sqlParams = array())
     {
-        $results = Fwk::Database()
+        $results = Suricate::Database()
             ->query($sql, $sqlParams)
             ->fetchAll();
 
@@ -105,7 +105,7 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
 
         if ($parentId != '') {
             $sqlParams     = array();
-            $dbHandler     = Fwk::Database(true);
+            $dbHandler     = Suricate::Database(true);
 
             $sql  = "SELECT *";
             $sql .= " FROM `" . $collection::TABLE_NAME . "`";
@@ -197,7 +197,7 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
             $sqlParams = array();
         }
 
-        Fwk::Database()->query($sql, $sqlParams);
+        Suricate::Database()->query($sql, $sqlParams);
 
         // 2nd step : save all current items
         foreach ($this->items as $currentItem) {

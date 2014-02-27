@@ -31,7 +31,7 @@ class CollectionMapping extends Collection
 
         $sqlParams['parent_id'] = $parent_id;
 
-        $results = Fwk::Database()->query($sql, $sqlParams)->fetchAll();
+        $results = Suricate::Database()->query($sql, $sqlParams)->fetchAll();
 
         if ($results !== false) {
             foreach ($results as $currentResult) {
@@ -51,7 +51,7 @@ class CollectionMapping extends Collection
 
     public function save()
     {
-        $db_handler     = Fwk::Database(true);
+        $db_handler     = Suricate::Database(true);
 
         if ($this->parent_id != '') {
             // 1st step : delete all records for current parent_id

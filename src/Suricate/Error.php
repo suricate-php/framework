@@ -18,7 +18,7 @@ class Error extends Service
         /**
         TODO : put error in logger
          */
-        $errorHandler = Fwk::Error();
+        $errorHandler = Suricate::Error();
 
         if ($errorHandler !== null && $errorHandler->report) {
             echo '<html>'."\n";

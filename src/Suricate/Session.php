@@ -14,13 +14,13 @@ class Session extends Service implements Interfaces\ISession
         if (static::$container === null) {
             switch ($this->type) {
                 case 'native':
-                    static::$container = Fwk::SessionNative(true);
+                    static::$container = Suricate::SessionNative(true);
                     break;
                 case 'cookie':
-                    static::$container = Fwk::SessionCookie(true);
+                    static::$container = Suricate::SessionCookie(true);
                     break;
                 case 'memcache':
-                    static::$container = Fwk::SessionMemcache(true);
+                    static::$container = Suricate::SessionMemcache(true);
                     break;
                 default:
                     throw new Exception("Unknown session type " . $this->type);

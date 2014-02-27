@@ -164,41 +164,41 @@ if (!function_exists('slug')) {
 if (!function_exists('app')) {
     function app()
     {
-        return Fwk::App();
+        return Suricate::App();
     }
 }
 
 if (!function_exists('app_path')) {
     function app_path($str = '')
     {
-        return Fwk::App()->getParameter('url') . '/'
-            . Fwk::App()->getParameter('root') . ($str ? '/' . $str : $str);
+        return Suricate::App()->getParameter('url') . '/'
+            . Suricate::App()->getParameter('root') . ($str ? '/' . $str : $str);
     }
 }
 
 if (!function_exists('url')) {
     function url($str = '/')
     {
-        return Fwk::App()->getParameter('url') . $str;
+        return Suricate::App()->getParameter('url') . $str;
     }
 }
 
 if (!function_exists('getPostParam')) {
     function getPostParam($param, $defaultValue = null)
     {
-        return Fwk::Request()->getPostParam($param, $defaultValue);
+        return Suricate::Request()->getPostParam($param, $defaultValue);
     }
 }
 
 if (!function_exists('getParam')) {
     function getParam($param, $defaultValue = null)
     {
-        return Fwk::Request()->getParam($param, $defaultValue);
+        return Suricate::Request()->getParam($param, $defaultValue);
     }
 }
 
 if (!function_exists('i18')) {
     function i18n() {
-        return call_user_func_array(array(Fwk::I18n(), 'get'), func_get_args());
+        return call_user_func_array(array(Suricate::I18n(), 'get'), func_get_args());
     }
 }

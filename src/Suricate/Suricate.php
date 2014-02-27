@@ -85,7 +85,7 @@ class Suricate
         if (isset($this->config['App']['locale'])) {
             $this->config['I18n'] = array('locale' => $this->config['App']['locale']);
         }
-        // first sync, && init, dependency to Fwk::request
+        // first sync, && init, dependency to Suricate::request
         static::$servicesContainer = clone static::$servicesRepository;
 
         foreach (array_keys($this->servicesList) as $serviceName) {

@@ -15,7 +15,7 @@ class Router extends Service
     public function __construct()
     {
         $this->routes   = array();
-        $this->response = Fwk::Response();
+        $this->response = Suricate::Response();
         $this->parseRequest();
     }
 
@@ -46,7 +46,7 @@ class Router extends Service
 
     private function parseRequest()
     {
-        $this->requestUri = Fwk::Request()->getRequestUri();
+        $this->requestUri = Suricate::Request()->getRequestUri();
     }
 
     public function addRoute($routeName, $routeTarget, $parametersDefinitions)

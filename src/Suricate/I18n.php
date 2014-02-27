@@ -11,7 +11,7 @@ class I18n extends Service
 
     public function i18nList()
     {
-        $langDir    =  Fwk::App()->getParameter('root') . DIRECTORY_SEPARATOR
+        $langDir    =  Suricate::App()->getParameter('root') . DIRECTORY_SEPARATOR
             . $this->baseLocaleDir;
 
         $langList   = array();
@@ -31,7 +31,7 @@ class I18n extends Service
 
     public function load()
     {
-        $filename    = Fwk::App()->getParameter('root') . DIRECTORY_SEPARATOR
+        $filename    = Suricate::App()->getParameter('root') . DIRECTORY_SEPARATOR
             . $this->baseLocaleDir . DIRECTORY_SEPARATOR
             . $this->locale . DIRECTORY_SEPARATOR
             . 'language.php';
@@ -39,7 +39,7 @@ class I18n extends Service
         if (is_readable($filename)) {
             $this->translations = include $filename;
         } else {
-            Fwk::Logger()->debug(sprintf('Missing translation file for %s', $this->locale));
+            Suricate::Logger()->debug(sprintf('Missing translation file for %s', $this->locale));
         }
     }
 

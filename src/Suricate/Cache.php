@@ -18,10 +18,10 @@ class Cache extends Service implements Interfaces\ICache
         if (static::$container === null) {
             switch ($this->type) {
                 case 'memcache':
-                    static::$container = Fwk::CacheMemcache(true);
+                    static::$container = Suricate::CacheMemcache(true);
                     break;
                 case 'apc':
-                    static::$container = Fwk::CacheApc(true);
+                    static::$container = Suricate::CacheApc(true);
                     break;
                 default:
                     throw new \Exception("Unknown cache type " . $this->type);
