@@ -20,7 +20,8 @@ class Suricate
 
     private $config;
     private $configFile;
-    private $baseDir;
+
+    private $useAutoloader = false;
 
     private static $servicesContainer;
     private static $servicesRepository;
@@ -47,8 +48,6 @@ class Suricate
 
     public function __construct($configFile = null)
     {
-        $this->baseDir = dirname(__DIR__);
-
         if ($configFile !== null) {
             $this->setConfigFile($configFile);
         }
@@ -58,9 +57,11 @@ class Suricate
         // Load helpers
         require_once __DIR__ . DIRECTORY_SEPARATOR . 'Helper.php';
 
-        // Configure autoloader
-        require_once __DIR__ . DIRECTORY_SEPARATOR . 'AutoLoader.php';
-        AutoLoader::register();
+        if ($this->useAutoloader) {
+            // Configure autoloader
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'AutoLoader.php';
+            AutoLoader::register();
+        }
 
         // Define error handler
         /*set_exception_handler(array('\Fwk\Error', 'handleException'));
@@ -114,7 +115,7 @@ class Suricate
 
     private function setConfigFile($configFile)
     {
-        if (is_file($this->baseDir . self::CONF_DIR . $configFile)) {
+        if (is_file($configFile)) {
             $this->configFile = $configFile;
         }
 
@@ -127,7 +128,7 @@ class Suricate
     private function loadConfig()
     {
         if ($this->configFile !== null) {
-            $userConfig = parse_ini_file($this->baseDir . self::CONF_DIR . $this->configFile, true);
+            $userConfig = parse_ini_file($this->configFile, true);
 
             // Advanced ini parsing, split key with '.' into subarrays
             foreach ($userConfig as $section => $configData) {
