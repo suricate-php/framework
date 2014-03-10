@@ -1,8 +1,6 @@
 <?php
 namespace Suricate\Interfaces;
 
-use Fwk;
-
 interface ICollection
 {
     const SORT_ASC              = 'ASC';
