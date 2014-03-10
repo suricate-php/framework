@@ -300,7 +300,7 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
         $this->itemOffset++;
     }
 
-    public function addItem(DBObject $item)
+    public function addItem(Interfaces\DBObject $item)
     {
         $key = $item::TABLE_INDEX;
         // Add item to items pool
