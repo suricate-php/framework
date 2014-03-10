@@ -34,7 +34,7 @@ interface ICollection
 
     public function addItemLink($link_id);
 
-    public function addItem(DBObject $item);
+    public function addItem($item);
 
     public function getItemsType();
 
