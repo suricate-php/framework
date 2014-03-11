@@ -5,6 +5,7 @@ namespace Suricate;
  * Curl extension for Suricate
  *
  * @package Suricate
+ * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
  *
  * @property string $userAgent
  * @property int $timeout

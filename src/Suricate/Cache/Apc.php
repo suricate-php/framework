@@ -3,8 +3,20 @@ namespace Suricate\Cache;
 
 use Suricate;
 
+/**
+ * APC Cache extension for Suricate
+ *
+ * @package Suricate\Cache
+ * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
+ */
+
 class Apc extends Suricate\Cache
 {
+    protected $host;
+    protected $port;
+    protected $defaultExpiry;
+    protected $useCompression;
+
     public function __construct()
     {
 
