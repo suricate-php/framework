@@ -89,7 +89,7 @@ class Suricate
             $this->config['I18n'] = array('locale' => $this->config['App']['locale']);
         }
         // first sync, && init, dependency to Suricate::request
-        self::$servicesContainer = clone static::$servicesRepository;
+        self::$servicesContainer = clone self::$servicesRepository;
 
         foreach (array_keys($this->servicesList) as $serviceName) {
             if (isset($this->config[$serviceName])) {
@@ -98,7 +98,7 @@ class Suricate
                 /**
                  TODO : remove sync in service creation
                 */
-                static::$servicesContainer = clone static::$servicesRepository;
+                self::$servicesContainer = clone self::$servicesRepository;
             }
         }
 
