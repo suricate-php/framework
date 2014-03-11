@@ -6,10 +6,11 @@ use ErrorException;
 class Error extends Service
 {
     protected $parametersList   = array(
-        'report'
+        'report',
+        'dumpContext'
         );
 
-    public static function handleException($e)
+    public static function handleException($e, $context = null)
     {
         while (ob_get_level() > 1) {
             ob_end_clean();
@@ -19,7 +20,6 @@ class Error extends Service
         TODO : put error in logger
          */
         $errorHandler = Suricate::Error();
-
         if ($errorHandler !== null && $errorHandler->report) {
             echo '<html>'."\n";
             echo '  <head>'."\n";
@@ -37,6 +37,9 @@ class Error extends Service
             echo '      <p><code>' . $e->getFile() . ' on line ' . $e->getLine() . '</code></p>'."\n";
             echo '      <h3>Call stack</h3>'."\n";
             echo '      <pre>' . $e->getTraceAsString() . '</pre>'."\n";
+            if ($errorHandler->dumpContext) {
+                _p($context);
+            }
             echo '  </body>'."\n";
             echo '</html>';
             
@@ -46,7 +49,7 @@ class Error extends Service
 
     public static function handleError($code, $message, $file, $line, $context)
     {
-        static::handleException(new ErrorException($message, $code, 0, $file, $line));
+        static::handleException(new ErrorException($message, $code, 0, $file, $line), $context);
     }
 
     public static function handleShutdownError()
