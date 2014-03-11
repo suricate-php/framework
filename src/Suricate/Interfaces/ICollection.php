@@ -8,10 +8,16 @@ interface ICollection
 
     public static function loadAll();
 
+    /**
+     * @return \Suricate\Collection
+     */
     public static function buildFromSql($sql, $sqlParams = array());
 
     public static function loadForParentId($parentId);
 
+    /**
+     * @return \Suricate\Collection
+     */
     public function loadFromSql($sql, $sqlParams = array());
 
     public function lazyLoadFromSql($sql, $sqlParams = array());
