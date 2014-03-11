@@ -6,6 +6,8 @@ namespace Suricate;
  * 
  * @package Suricate
  * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
+ *
+ * @property string $type
  */
 
 class Cache extends Service implements Interfaces\ICache
