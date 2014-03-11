@@ -66,10 +66,10 @@ class Suricate
         }
 
         // Define error handler
-        /*set_exception_handler(array('\Fwk\Error', 'handleException'));
-        set_error_handler(array('\Fwk\Error', 'handleError'));
-        register_shutdown_function(array('\Fwk\Error', 'handleShutdownError'));
-*/
+        set_exception_handler(array('\Suricate\Error', 'handleException'));
+        set_error_handler(array('\Suricate\Error', 'handleError'));
+        register_shutdown_function(array('\Suricate\Error', 'handleShutdownError'));
+
         self::$servicesRepository = new Container();
 
 
