@@ -121,16 +121,16 @@ if (!function_exists('endsWith')) {
 if (!function_exists('wordLimit')) {
     function wordLimit($str, $limit = 100, $end = '...')
     {
-        if (strlen($str) < 100) {
+        if (strlen($str) < $limit) {
             return $str;
         }
 
-        $substr = substr($str, 0, 100);
+        $substr = substr($str, 0, $limit);
         $spacePos = strrpos($substr, ' ');
         if ($spacePos !== false) {
-            return substr($substr, 0, $spacePos);
+            return substr($substr, 0, $spacePos) . $end;
         } else {
-            return $substr;
+            return $substr . $end;
         }
     }
 }
