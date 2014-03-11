@@ -6,6 +6,8 @@
  * @copyright   2013-2014 Mathieu LESNIAK
  * @version     0.1
  * @package     Suricate
+ *
+ * @method Suricate\Database Database() Database() Get instance of Database service
  */
 namespace Suricate;
 
