@@ -123,7 +123,7 @@ class FormItem
     {
         $htmlAttributes['src'] = $url;
 
-        return static::input('email', $name, $value, $label, $htmlAttributes);
+        return static::input('email', $name, null, null, $htmlAttributes);
     }
 
     public static function radio($name, $availableValues = array(), $value = null, $label = null, $htmlAttributes = array(), $errors = array())
@@ -162,7 +162,7 @@ class FormItem
 */
     public static function reset($value = null, $htmlAttributes)
     {
-        return static::input('reset', null, $value, $label, $htmlAttributes);
+        return static::input('reset', null, $value, null, $htmlAttributes);
     }
 
     public static function select($name, $availableValues = array(), $value = null, $label = null, $htmlAttributes = array())
