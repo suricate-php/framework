@@ -11,16 +11,16 @@ class Session extends Service implements Interfaces\ISession
     
     protected function init()
     {
-        if (static::$container === null) {
+        if (self::$container === null) {
             switch ($this->type) {
                 case 'native':
-                    static::$container = Suricate::SessionNative(true);
+                    self::$container = Suricate::SessionNative(true);
                     break;
                 case 'cookie':
-                    static::$container = Suricate::SessionCookie(true);
+                    self::$container = Suricate::SessionCookie(true);
                     break;
                 case 'memcache':
-                    static::$container = Suricate::SessionMemcache(true);
+                    self::$container = Suricate::SessionMemcache(true);
                     break;
                 default:
                     throw new Exception("Unknown session type " . $this->type);
@@ -36,31 +36,31 @@ class Session extends Service implements Interfaces\ISession
     public function getInstance()
     {
         $this->init();
-        return static::$container;
+        return self::$container;
     }
 
     public function read($key)
     {
         $this->init();
-        return static::$container->read($key);
+        return self::$container->read($key);
     }
 
     public function write($key, $data)
     {
         $this->init();
-        return static::$container->write($key, $data);
+        return self::$container->write($key, $data);
     }
 
     public function destroy($key)
     {
         $this->init();
-        return static::$container->destroy($key);
+        return self::$container->destroy($key);
     }
 
     public function close()
     {
         $this->init();
-        return static::$container->close();
+        return self::$container->close();
     }
 
 
