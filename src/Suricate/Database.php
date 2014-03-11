@@ -183,7 +183,7 @@ class Database extends Service
         }
     }
 
-    private function configurePDOSQLite($params, &$PDODsn, &$PDOUsername, &$PDOPassword, &$PDOAttributes)
+    private function configurePDOSQLite($params, &$PDODsn, &$PDOUsername, &$PDOPassword)
     {
         $defaultParams = array(
             'username'  => null,
