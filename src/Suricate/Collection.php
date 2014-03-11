@@ -239,7 +239,7 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
             foreach ($args['data'] as $arg) {
                 $itemValues[] = $item->$arg;
             }
-            $array_key = ( $withMapping ) ? $item->$mappingKey: $key;
+            $arrayKey = ( $withMapping ) ? $item->$mappingKey: $key;
             $values[$arrayKey] = vsprintf($args['format'], $itemValues);
         }
 
