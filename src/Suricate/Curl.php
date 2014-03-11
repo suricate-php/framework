@@ -1,6 +1,23 @@
 <?php
 namespace Suricate;
 
+/**
+ * Curl extension for Suricate
+ *
+ * @package Suricate
+ *
+ * @property string $userAgent
+ * @property int $timeout
+ * @property string $proxyHost
+ * @property int $proxyPort
+ * @property string $referer
+ * @property string @cookie
+ * @property string $userAgent
+ * @property mixed $postFields
+ * @property string $login
+ * @property string $password
+ */
+
 class Curl extends Service
 {
     protected $parametersList   = array(
@@ -118,7 +135,7 @@ class Curl extends Service
 
         // Set proxy port
         if ($this->getParameter('proxyPort') !== null) {
-            $curlOptions[CURLOPT_PROXYPORT] = $this->getParameter('proxyPost');
+            $curlOptions[CURLOPT_PROXYPORT] = $this->getParameter('proxyPort');
         }
 
         if ($this->getParameter('referer') !== null) {
@@ -141,7 +158,7 @@ class Curl extends Service
         } elseif ($this->request->getMethod() == Request::HTTP_METHOD_POST) {
             $curlOptions[CURLOPT_POST] = true;
             if ($this->getParameter('postFields') !== null) {
-                $curlOptions[CURLOPT_FIELDS] = $this->getParameters('postFields');
+                $curlOptions[CURLOPT_FIELDS] = $this->getParameter('postFields');
             }
         } elseif ($this->request->getMethod() == Request::HTTP_METHOD_PUT) {
             $curlOptions[CURLOPT_PUT] = true;
