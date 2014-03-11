@@ -30,7 +30,6 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
         $calledClass    = get_called_class();
         $collection     = new $calledClass;
 
-        $sql            = '';
         $sqlParams      = array();
 
         $sql  = "SELECT *";
