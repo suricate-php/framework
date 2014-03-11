@@ -1,6 +1,16 @@
 <?php
 namespace Suricate;
 
+/**
+ * Database extension for Suricate
+ *
+ * @package Suricate
+ * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
+ *
+ * @property array $configs array of predefined DB configurations
+ */
+
+
 class Database extends Service
 {
     protected $parametersList = array(
