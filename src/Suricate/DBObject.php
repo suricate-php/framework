@@ -24,6 +24,10 @@ class DBObject implements Interfaces\IDBObject
     * @const TABLE_INDEX : Unique Id of the SQL Table
     */
     const TABLE_INDEX   = '';
+
+    /**
+     * @const DB_CONFIG : Database configuration identifier
+     */
     const DB_CONFIG     = '';
 
     protected $dbVariables = array();
@@ -172,10 +176,10 @@ class DBObject implements Interfaces\IDBObject
      */
     public function __sleep()
     {
-        $this->dbLink = false;
-        $reflection = new \ReflectionClass($this);
-        $props   = $reflection->getProperties();
-        $result = array();
+        $this->dbLink   = false;
+        $reflection     = new \ReflectionClass($this);
+        $props          = $reflection->getProperties();
+        $result         = array();
         foreach ($props as $currentProperty) {
             $result[] = $currentProperty->name;
         }
@@ -189,6 +193,8 @@ class DBObject implements Interfaces\IDBObject
      */
     public function load($id)
     {
+        $this->connectDB();
+
         if ($id != '') {
             $query  = "SELECT *";
             $query .= " FROM `" . static::TABLE_NAME ."`";
@@ -206,9 +212,7 @@ class DBObject implements Interfaces\IDBObject
     
     public function loadFromSql($sql, $sql_params)
     {
-        if ($this->dbLink === false) {
-            $this->connectDB();
-        }
+        $this->connectDB();
         
         $results = $this->dbLink->query($sql, $sql_params)->fetch();
 
@@ -250,6 +254,8 @@ class DBObject implements Interfaces\IDBObject
      */
     public function delete()
     {
+        $this->connectDB();
+
         if (static::TABLE_INDEX != '') {
             $query  = "DELETE FROM `" . static::TABLE_NAME . "`";
             $query .= " WHERE `" . static::TABLE_INDEX . "` = :id";
@@ -275,9 +281,7 @@ class DBObject implements Interfaces\IDBObject
     public function save($forceInsert = false)
     {
         if (count($this->dbValues)) {
-            if ($this->dbLink === false) {
-                $this->connectDB();
-            }
+            $this->connectDB();
 
             if ($this->{static::TABLE_INDEX} != '' && !$forceInsert) {
                 $this->update();
@@ -310,6 +314,8 @@ class DBObject implements Interfaces\IDBObject
      */
     private function update()
     {
+        $this->connectDB();
+
         $sqlParams = array();
 
         $sql  = 'UPDATE `' . static::TABLE_NAME . '`';
@@ -334,6 +340,8 @@ class DBObject implements Interfaces\IDBObject
      */
     private function insert()
     {
+        $this->connectDB();
+        
         $sql  = 'INSERT INTO `' . static::TABLE_NAME . '`';
         $sql .= '(`';
         $sql .= implode('`, `', $this->dbVariables);
@@ -353,10 +361,12 @@ class DBObject implements Interfaces\IDBObject
     }
     
     protected function connectDB()
-    {
-        $this->dbLink = Suricate::Database();
-        if (static::DB_CONFIG != '') {
-            $this->dbLink->setConfig(static::DB_CONFIG);
+    {   
+        if ($this->dbLink === false) {
+            $this->dbLink = Suricate::Database();
+            if (static::DB_CONFIG != '') {
+                $this->dbLink->setConfig(static::DB_CONFIG);
+            }
         }
     }
     
