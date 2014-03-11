@@ -129,6 +129,7 @@ class Suricate
      */
     private function loadConfig()
     {
+        $userConfig = array();
         if ($this->configFile !== null) {
             $userConfig = parse_ini_file($this->configFile, true);
 
@@ -143,8 +144,6 @@ class Suricate
                     }
                 }
             }
-        } else {
-            $userConfig = array();
         }
 
         foreach ($this->getDefaultConfig() as $context => $directives) {
