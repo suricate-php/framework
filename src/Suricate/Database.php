@@ -109,8 +109,8 @@ class Database extends Service
             foreach ($PDOAttributes as $attributeKey => $attributeValue) {
                 $this->handler->setAttribute($attributeKey, $attributeValue);
             }
-        } catch ( Exception $e ) {
-            throw new Exception("Cannot connect to database");
+        } catch ( \Exception $e ) {
+            throw new \Exception("Cannot connect to database");
         }
     }
 
