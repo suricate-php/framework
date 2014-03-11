@@ -70,37 +70,26 @@ class Validator
             switch ($type) {
                 case 'array':
                     return is_array($value);
-                    break;
                 case 'bool':
                     return is_bool($value);
-                    break;
                 case 'callable':
                     return is_callable($value);
-                    break;
                 case 'float':
                     return is_float($value);
-                    break;
                 case 'int':
                     return is_int($value);
-                    break;
                 case 'numeric':
                     return is_numeric($value);
-                    break;
                 case 'object':
                     return is_object($value);
-                    break;
                 case 'resource':
                     return is_resource($value);
-                    break;
                 case 'scalar':
                     return is_scalar($value);
-                    break;
                 case 'string':
                     return is_string($value);
-                    break;
                 default:
                     throw new \InvalidArgumentException('Unknown type to check ' . $type);
-                    break;
             }
         };
 
