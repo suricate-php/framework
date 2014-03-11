@@ -1,6 +1,17 @@
 <?php
 namespace Suricate;
 
+/**
+ * Logger extension for Suricate
+ *
+ * @package Suricate\Cache
+ * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
+ *
+ * @property string $logfile
+ * @property boolean $enabled
+ * @property int $level
+ * @property boolean $timestamp
+ */
 class Logger extends Service
 {
     const LOGLEVEL_FATAL    = 0;
