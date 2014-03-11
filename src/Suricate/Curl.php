@@ -124,31 +124,19 @@ class Curl extends Service
                 CURLOPT_SSL_VERIFYHOST  => false
             );
         
-        // Set timeout
-        if ($this->getParameter('timeout') !== null) {
-            $curlOptions[CURLOPT_CONNECTTIMEOUT] = $this->getParameter('timeout');
-        }
+        $parametersMapping = array(
+            CURLOPT_CONNECTTIMEOUT  => 'timeout',
+            CURLOPT_PROXY           => 'proxyHost',
+            CURLOPT_PROXYPORT       => 'proxyPort',
+            CURLOPT_REFERER         => 'referer',
+            CURLOPT_COOKIE          => 'cookie',
+            CURLOPT_USERAGENT       => 'userAgent'
+        );
 
-        // Set proxy host
-        if ($this->getParameter('proxyHost') !== null) {
-            $curlOptions[CURLOPT_PROXY] = $this->getParameter('proxyHost');
-        }
-
-        // Set proxy port
-        if ($this->getParameter('proxyPort') !== null) {
-            $curlOptions[CURLOPT_PROXYPORT] = $this->getParameter('proxyPort');
-        }
-
-        if ($this->getParameter('referer') !== null) {
-            $curlOptions[CURLOPT_REFERER] = $this->getParameter('referer');
-        }
-
-        if ($this->getParameter('cookie') !== null) {
-            $curlOptions[CURLOPT_COOKIE] = $this->getParameter('cookie');
-        }
-
-        if ($this->getParameter('userAgent') !== null) {
-            $curlOptions[CURLOPT_USERAGENT] = $this->getParameter('userAgent');
+        foreach ($parametersMapping as $curlKey => $optionKey) {
+            if ($value = $thi->getParameter($optionKey) !== null) {
+                $curlOptions[$curlKey] = $value;
+            }
         }
 
         //
