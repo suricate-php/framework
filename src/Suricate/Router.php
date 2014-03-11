@@ -115,6 +115,7 @@ class Router extends Service
 
     private function triggerError($errorCode)
     {
+        $content = '';
         switch ($errorCode) {
             case 404:
                 $message = 'HTTP/1.0 404 Not Found';
