@@ -68,7 +68,7 @@ class Suricate
         set_error_handler(array('\Fwk\Error', 'handleError'));
         register_shutdown_function(array('\Fwk\Error', 'handleShutdownError'));
 */
-        static::$servicesRepository = new Container();
+        self::$servicesRepository = new Container();
 
 
         $this->initServices();
@@ -80,18 +80,18 @@ class Suricate
      */
     private function initServices()
     {
-        static::$servicesRepository->setWarehouse($this->servicesList);
+        self::$servicesRepository->setWarehouse($this->servicesList);
 
-        static::$servicesRepository['Request']->parse();
+        self::$servicesRepository['Request']->parse();
         if (isset($this->config['App']['locale'])) {
             $this->config['I18n'] = array('locale' => $this->config['App']['locale']);
         }
         // first sync, && init, dependency to Suricate::request
-        static::$servicesContainer = clone static::$servicesRepository;
+        self::$servicesContainer = clone static::$servicesRepository;
 
         foreach (array_keys($this->servicesList) as $serviceName) {
             if (isset($this->config[$serviceName])) {
-                static::$servicesRepository[$serviceName]->configure($this->config[$serviceName]);
+                self::$servicesRepository[$serviceName]->configure($this->config[$serviceName]);
 
                 /**
                  TODO : remove sync in service creation
@@ -110,7 +110,7 @@ class Suricate
 
 
         // final sync, repository is complete
-        static::$servicesContainer = clone static::$servicesRepository;
+        self::$servicesContainer = clone self::$servicesRepository;
     }
 
     private function setConfigFile($configFile)
@@ -198,7 +198,7 @@ class Suricate
     public function run()
     {
         $this->boot();
-        static::$servicesContainer['Router']->doRouting();
+        self::$servicesContainer['Router']->doRouting();
     }
 
 
@@ -207,9 +207,9 @@ class Suricate
     public static function __callStatic($name, $arguments)
     {
         if (isset($arguments[0]) && $arguments[0] === true) {
-            return clone static::$servicesRepository[$name];
+            return clone self::$servicesRepository[$name];
         } else {
-            return static::$servicesContainer[$name];
+            return self::$servicesContainer[$name];
         }
     }
 }
