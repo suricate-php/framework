@@ -71,6 +71,8 @@ class Database extends Service
             return;
         }
 
+        
+
         if ($this->config !== null && isset($this->configs[$this->config])) {
             $params = $this->configs[$this->config];
         } else {
@@ -81,23 +83,10 @@ class Database extends Service
         $PDOAttributes = array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION);
         switch ($params['type']) {
             case 'mysql':
-                $PDODsn         = 'mysql:host=' . $params['hostname'] . ';dbname=' . $params['database'];
-                $PDOUsername    = isset($params['username']) ? $params['username'] : null;
-                $PDOPassword    = isset($params['password']) ? $params['password'] : null;
-                if (isset($params['encoding'])) {
-                    $PDOAttributes[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES " . $params['encoding'];
-                }
+                $this->configurePDOMySQL($params, $PDODsn, $PDOUsername, $PDOPassword, $PDOAttributes);
                 break;
             case 'sqlite':
-                $PDODsn         = 'sqlite';
-
-                if (isset($params['memory']) && $params['memory']) {
-                    $PDODsn .= '::memory:';
-                } else {
-                    $PDODsn .= ':' . $params['file'];
-                }
-                $PDOUsername    = null;
-                $PDOPassword    = null;
+                $this->configurePDOSQLite($params, $PDODsn, $PDOUsername, $PDOPassword, $PDOAttributes);
                 break;
             default:
                 throw new \Exception('Unsupported PDO DB handler');
@@ -172,5 +161,48 @@ class Database extends Service
     public function getColumnCount()
     {
 
+    }
+
+    private function configurePDOMySQL($params, &$PDODsn, &$PDOUsername, &$PDOPassword, &$PDOAttributes)
+    {
+        $defaultParams = array(
+            'hostname' => null,
+            'database' => null,
+            'username' => null,
+            'password' => null,
+            'encoding' => null
+        );
+
+        $params = array_merge($defaultParams, $params);
+
+        $PDODsn         = 'mysql:host=' . $params['hostname'] . ';dbname=' . $params['database'];
+        $PDOUsername    = $params['username'];
+        $PDOPassword    = $params['password'];
+        if ($params['encoding'] != null) {
+            $PDOAttributes[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES " . $params['encoding'];
+        }
+    }
+
+    private function configurePDOSQLite($params, &$PDODsn, &$PDOUsername, &$PDOPassword, &$PDOAttributes)
+    {
+        $defaultParams = array(
+            'username'  => null,
+            'password'  => null,
+            'memory'    => null,
+            'file'      => null,
+        );
+
+        $params = array_merge($defaultParams, $params);
+        
+        $PDODsn         = 'sqlite';
+
+        if ($params['memory']) {
+            $PDODsn .= '::memory:';
+        } else {
+            $PDODsn .= ':' . $params['file'];
+        }
+        
+        $PDOUsername    = $params['username'];
+        $PDOPassword    = $params['password'];
     }
 }
