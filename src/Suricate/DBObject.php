@@ -363,6 +363,6 @@ class DBObject implements Interfaces\IDBObject
     
     protected function accessToProtectedVariable($name)
     {
-
+        return false;
     }
 }
