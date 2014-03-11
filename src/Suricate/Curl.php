@@ -134,7 +134,7 @@ class Curl extends Service
         );
 
         foreach ($parametersMapping as $curlKey => $optionKey) {
-            if ($value = $thi->getParameter($optionKey) !== null) {
+            if ($value = $this->getParameter($optionKey) !== null) {
                 $curlOptions[$curlKey] = $value;
             }
         }
