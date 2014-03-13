@@ -57,22 +57,7 @@ class DBObject implements Interfaces\IDBObject
         if ($this->isDBVariable($name)) {
             return $this->getDBVariable($name);
         } elseif ($this->isProtectedVariable($name)) {
-            if (isset($this->protectedValues[$name]) && $this->isProtectedVariableLoaded($name)) {
-                $returnValue = $this->protectedValues[$name];
-            } else {
-                if (!$this->isProtectedVariableLoaded($name)) {
-                    $protectedAccessResult = $this->accessToProtectedVariable($name);
-
-                    if ($protectedAccessResult) {
-                        $this->markProtectedVariableAsLoaded($name);
-                    }
-                }
-                if (isset($this->protectedValues[$name])) {
-                    $returnValue = $this->protectedValues[$name];
-                } else {
-                    $returnValue = null;
-                }
-            }
+            return $this->getProtectedVariable($name);
         } else {
             throw new \InvalidArgumentException('Undefined property ' . $name);
         }
@@ -86,6 +71,27 @@ class DBObject implements Interfaces\IDBObject
             return $this->dbValues[$name];
         } else {
             return null;
+        }
+    }
+
+    private function getProtectedVariable($name)
+    {
+        // Variable exists, and is already loaded
+        if (isset($this->protectedValues[$name]) && $this->isProtectedVariableLoaded($name)) {
+            return $this->protectedValues[$name];
+        } else {
+            // Variable has not been loaded
+            if (!$this->isProtectedVariableLoaded($name)) {
+                if ($this->accessToProtectedVariable($name);) {
+                    $this->markProtectedVariableAsLoaded($name);
+                }
+            }
+
+            if (isset($this->protectedValues[$name])) {
+                return $this->protectedValues[$name];
+            } else {
+                return null;
+            }
         }
     }
 
@@ -117,7 +123,7 @@ class DBObject implements Interfaces\IDBObject
         if ($this->isDBVariable($name)) {
             return isset($this->dbValues[$name]);
         } elseif ($this->isProtectedVariable($name)) {
-            // Load only one time protected var automatically
+            // Load only one time protected variable automatically
             if (!$this->isProtectedVariableLoaded($name)) {
                 
                 $protectedAccessResult = $this->accessToProtectedVariable($name);
@@ -150,27 +156,27 @@ class DBObject implements Interfaces\IDBObject
         return $this->isDBVariable($property) || $this->isProtectedVariable($property) || property_exists($this, $property);
     }
    
-    public function isProtectedVariable($variable_name)
+    public function isProtectedVariable($name)
     {
-        return in_array($variable_name, $this->protectedVariables);
+        return in_array($name, $this->protectedVariables);
     }
 
-    public function isDBVariable($variable_name)
+    public function isDBVariable($name)
     {
-        return in_array($variable_name, $this->dbVariables);
+        return in_array($name, $this->dbVariables);
     }
 
 
-    public function markProtectedVariableAsLoaded($variable_name)
+    public function markProtectedVariableAsLoaded($name)
     {
-        if ($this->isProtectedVariable($variable_name)) {
-            $this->loadedProtectedVariables[$variable_name] = true;
+        if ($this->isProtectedVariable($name)) {
+            $this->loadedProtectedVariables[$name] = true;
         }
     }
 
-    protected function isProtectedVariableLoaded($variable)
+    protected function isProtectedVariableLoaded($name)
     {
-        return isset($this->loadedProtectedVariables[$variable]);
+        return isset($this->loadedProtectedVariables[$name]);
     }
 
     /**
