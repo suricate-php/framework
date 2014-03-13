@@ -1,6 +1,15 @@
 <?php
 namespace Suricate;
 
+/**
+ * Translation extension for Suricate
+ *
+ * @package Suricate
+ * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
+ *
+ * @property string $locale
+ */
+
 class I18n extends Service
 {
     protected $parametersList = array(
