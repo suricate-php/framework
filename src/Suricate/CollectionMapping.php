@@ -128,17 +128,16 @@ class CollectionMapping extends Collection
             } else {
                 // Build SQL query to load corresponding item
                 $sqlData = array();
-                foreach ($data as $field => $value) {
-                    if ($new_item->isDBVariable($field)) {
-                        $sqlData[$field] = $value;
-                    }
-                }
+                
 
                 $sql  = "SELECT *";
                 $sql .= " FROM `" . $new_item::TABLE_NAME . "`";
                 $sql .= " WHERE";
-                foreach (array_keys($sqlData) as $field) {
-                    $sql .= "   `" . $field . "`=:$field";
+                foreach ($data as $field => $value) {
+                    if ($new_item->isDBVariable($field)) {
+                        $sqlData[$field] = $value;
+                        $sql .= "   `" . $field . "`=:$field";
+                    }
                 }
 
                 $new_item->loadFromSql($sql, $sqlData);
