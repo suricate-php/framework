@@ -101,6 +101,12 @@ class Database extends Service
         }
     }
 
+    /**
+     * Execute a query against database. Create a connection if not already alvailable
+     * @param  string $sql        Query
+     * @param  array  $parameters Parameters used in query
+     * @return Database
+     */
     public function query($sql, $parameters = array())
     {
         $this->connect();
