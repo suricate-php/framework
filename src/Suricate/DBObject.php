@@ -55,11 +55,7 @@ class DBObject implements Interfaces\IDBObject
     public function __get($name)
     {
         if ($this->isDBVariable($name)) {
-            if (isset($this->dbValues[$name])) {
-                $returnValue = $this->dbValues[$name];
-            } else {
-                $returnValue = null;
-            }
+            return $this->getDBVariable($name);
         } elseif ($this->isProtectedVariable($name)) {
             if (isset($this->protectedValues[$name]) && $this->isProtectedVariableLoaded($name)) {
                 $returnValue = $this->protectedValues[$name];
@@ -84,6 +80,15 @@ class DBObject implements Interfaces\IDBObject
         return $returnValue;
     }
     
+    private function getDBVariable($name)
+    {
+        if (isset($this->dbValues[$name])) {
+            return $this->dbValues[$name];
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Magic setter
      * 
