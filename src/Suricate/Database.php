@@ -71,8 +71,6 @@ class Database extends Service
             return;
         }
 
-        
-
         if ($this->config !== null && isset($this->configs[$this->config])) {
             $params = $this->configs[$this->config];
         } else {
