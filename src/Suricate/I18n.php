@@ -9,6 +9,10 @@ class I18n extends Service
     private $baseLocaleDir = 'I18n';
     private $translations;
 
+    /**
+     * Get the list of installed languages for application
+     * @return array Array of available languages of application
+     */
     public function i18nList()
     {
         $langDir    =  Suricate::App()->getParameter('root') . DIRECTORY_SEPARATOR
@@ -29,14 +33,15 @@ class I18n extends Service
         return $langList;
     }
 
-    public function load()
+    public function load($locale = null)
     {
         $filename    = Suricate::App()->getParameter('root') . DIRECTORY_SEPARATOR
             . $this->baseLocaleDir . DIRECTORY_SEPARATOR
-            . $this->locale . DIRECTORY_SEPARATOR
+            . $locale . DIRECTORY_SEPARATOR
             . 'language.php';
             
         if (is_readable($filename)) {
+            $this->locale       = $locale;
             $this->translations = include $filename;
         } else {
             Suricate::Logger()->debug(sprintf('Missing translation file for %s', $this->locale));
