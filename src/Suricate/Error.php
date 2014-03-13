@@ -55,7 +55,7 @@ class Error extends Service
     public static function handleShutdownError()
     {
         if ($error = error_get_last()) {
-            extract($error);
+            list($type, $message, $file, $line) = $error;
 
             static::handleException(new ErrorException($message, $type, 0, $file, $line));
         }
