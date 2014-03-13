@@ -1,6 +1,19 @@
 <?php
 namespace Suricate;
 
+/**
+ * App extension for Suricate
+ *
+ * @package Suricate
+ * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
+ *
+ * @property string $root 
+ * @property string $mode 
+ * @property string $url 
+ * @property string $locale 
+ */
+
+
 class App extends Service
 {
     const DEVELOPMENT_MODE  = 'development';
