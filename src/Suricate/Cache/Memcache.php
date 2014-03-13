@@ -3,6 +3,18 @@ namespace Suricate\Cache;
 
 use Suricate;
 
+/**
+ * Memcache extension for Suricate
+ *
+ * @package Suricate
+ * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
+ *
+ * @property string $host           Memcache host (default: localhost) 
+ * @property string $port           Memcache port (default: 11211)
+ * @property string $defaultExpiry  Key default expiry
+ * @property string $useCompression Use memcache compression (default: false) 
+ */
+
 class Memcache extends Suricate\Cache
 {
     protected $parametersList = array(
