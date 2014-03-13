@@ -56,7 +56,7 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
      * Static wrapper for loadFromSql
      * @param  string     $sql       SQL Statement
      * @param  array      $sqlParams SQL Parameters
-     * @return Collection Loaded collection
+     * @return Suricate\Collection Loaded collection
      */
     public static function buildFromSql($sql, $sqlParams = array())
     {
