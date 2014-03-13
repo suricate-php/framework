@@ -121,12 +121,10 @@ class CollectionMapping extends Collection
         foreach ($item_data as $data) {
             $new_item       = new $item_name();
             $has_data       = false;
-            $item_exists    = false;
 
             // One field contains item unique index, load from it
             if (isset($data[$new_item::TABLE_INDEX]) && $data[$new_item::TABLE_INDEX] != '') {
                 $new_item->load($data[$new_item::TABLE_INDEX]);
-                $item_exists = true;
             } else {
                 // Build SQL query to load corresponding item
                 $sqlData = array();
@@ -158,34 +156,6 @@ class CollectionMapping extends Collection
             if ($has_data) {
                 $this->addItem($new_item);
             }
-
-            /*
-            foreach ($data as $field => $value) {
-                $has_data = $has_data || ($value != '');
-                
-
-                if ($field == $new_item::TABLE_INDEX) {
-                    $item_exists = $new_item->load($value);
-                } else {
-
-                    $sql  = "SELECT *";
-                    $sql .= " FROM `" . $new_item::TABLE_NAME . "`";
-                    $sql .= " WHERE";
-                    $sql .= "   `" . $field . "`=:$field";
-                    echo $sql . "<br/>\n";
-                    $sqlParams = array();
-                    $sqlParams[$field] = $value;
-
-                    $item_exists = $new_item->loadFromSql($sql, $sqlParams);
-                }
-                if ($item_exists === false) {
-                    //echo "NON existent item, building it / $field / $value<br/>";
-                    $new_item->$field = $value;
-                }
-            }
-            if ($has_data) {
-                $this->addItem($new_item);
-            }*/
         }
     }
 }
