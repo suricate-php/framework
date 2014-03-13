@@ -7,7 +7,8 @@
  * @version     0.1
  * @package     Suricate
  *
- * @method Suricate\Database Database() Database() Get instance of Database service
+ * @method Suricate\Database    Database() Database() Get instance of Database service
+ * @method Suricate\Error       Error() Error() Get instance of Error service
  */
 namespace Suricate;
 
