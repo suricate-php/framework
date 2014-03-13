@@ -108,9 +108,7 @@ class CollectionMapping extends Collection
                 
                 $sqlParams['parent_id'] = $this->parent_id;
                 $sqlParams['id']        = $current_item->id;
-                //echo "<pre>SAVING RELATION : $sql <br/>";
-                //print_r($sqlParams);
-                //echo '</pre>';
+
                 $db_handler->query($sql, $sqlParams);
             }
         }
