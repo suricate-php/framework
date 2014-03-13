@@ -8,6 +8,20 @@ class Image
 
     private $width;
     private $height;
+    private $filters = array(
+        'IMG_FILTER_NEGATE',
+        'IMG_FILTER_GRAYSCALE',
+        'IMG_FILTER_BRIGHTNESS',
+        'IMG_FILTER_CONTRAST',
+        'IMG_FILTER_COLORIZE',
+        'IMG_FILTER_EDGEDETECT',
+        'IMG_FILTER_EMBOSS',
+        'IMG_FILTER_GAUSSIAN_BLUR',
+        'IMG_FILTER_SELECTIVE_BLUR',
+        'IMG_FILTER_MEAN_REMOVAL',
+        'IMG_FILTER_SMOOTH',
+        'IMG_FILTER_PIXELATE'
+        );
 
     public function __construct()
     {
@@ -87,6 +101,11 @@ class Image
 
     public function filter($filterType)
     {
+        if (isset($this->filters[$filterType])) {
+
+        } else {
+            throw new \InvalidArgumentException('Unknown filter type ' . $filterType);
+        }
         // See http://wideimage.sourceforge.net/documentation/manipulating-images/
     }
 
