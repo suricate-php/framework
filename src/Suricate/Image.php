@@ -132,6 +132,6 @@ class Image
             }
         }
 
-        return $this;
+        return $result;
     }
 }
