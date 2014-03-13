@@ -82,7 +82,7 @@ class DBObject implements Interfaces\IDBObject
         } else {
             // Variable has not been loaded
             if (!$this->isProtectedVariableLoaded($name)) {
-                if ($this->accessToProtectedVariable($name);) {
+                if ($this->accessToProtectedVariable($name)) {
                     $this->markProtectedVariableAsLoaded($name);
                 }
             }
