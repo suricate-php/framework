@@ -140,9 +140,6 @@ class CollectionMapping extends Collection
                 foreach (array_keys($sqlData) as $field) {
                     $sql .= "   `" . $field . "`=:$field";
                 }
-                
-                $sqlParams = array();
-                $sqlParams[$field] = $value;
 
                 $new_item->loadFromSql($sql, $sqlData);
             }
