@@ -72,9 +72,11 @@ if (!function_exists('camelCase')) {
 }
 
 if (!function_exists('snakeCase')) {
-    function snakeCase($str)
+    function snakeCase($str, $delimiter)
     {
+        $replace = '$1' . $delimiter . '$2';
 
+        return ctype_lower($str) ? $str : strtolower(preg_replace('/(.)([A-Z])/', $replace, $str));
     }
 }
 
