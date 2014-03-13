@@ -7,8 +7,11 @@
  * @version     0.1
  * @package     Suricate
  *
- * @method Database    Database() Database() Get instance of Database service
- * @method Error       Error() Error() Get instance of Error service
+ * @method App          App() App() Get instance of App service
+ * @method Database     Database() Database() Get instance of Database service
+ * @method Error        Error() Error() Get instance of Error service
+ * @method I18n         I18n() I18n() Get instance of I18n service
+ * @method Request      Request() Request() Get instance of Request service
  */
 namespace Suricate;
 
