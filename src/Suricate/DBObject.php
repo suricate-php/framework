@@ -61,8 +61,6 @@ class DBObject implements Interfaces\IDBObject
         } else {
             throw new \InvalidArgumentException('Undefined property ' . $name);
         }
-
-        return $returnValue;
     }
     
     private function getDBVariable($name)
