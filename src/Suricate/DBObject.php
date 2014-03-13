@@ -356,7 +356,7 @@ class DBObject implements Interfaces\IDBObject
     
     protected function connectDB()
     {   
-        if ($this->dbLink === false) {
+        if (!$this->dbLink) {
             $this->dbLink = Suricate::Database();
             if (static::DB_CONFIG != '') {
                 $this->dbLink->setConfig(static::DB_CONFIG);
