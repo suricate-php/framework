@@ -154,17 +154,31 @@ class DBObject implements Interfaces\IDBObject
         return $this->isDBVariable($property) || $this->isProtectedVariable($property) || property_exists($this, $property);
     }
    
+   /**
+    * Check if variable is a protected variable
+    * @param  string  $name variable name
+    * @return boolean
+    */
     public function isProtectedVariable($name)
     {
         return in_array($name, $this->protectedVariables);
     }
 
+    /**
+     * Check if variable is from DB
+     * @param  string  $name variable name
+     * @return boolean
+     */
     public function isDBVariable($name)
     {
         return in_array($name, $this->dbVariables);
     }
 
-
+    /**
+     * Mark a protected variable as loaded
+     * @param  string $name varialbe name
+     * @return void
+     */
     public function markProtectedVariableAsLoaded($name)
     {
         if ($this->isProtectedVariable($name)) {
@@ -172,6 +186,11 @@ class DBObject implements Interfaces\IDBObject
         }
     }
 
+    /**
+     * Check if a protected variable already have been loaded
+     * @param  string  $name Variable name
+     * @return boolean
+     */
     protected function isProtectedVariableLoaded($name)
     {
         return isset($this->loadedProtectedVariables[$name]);
