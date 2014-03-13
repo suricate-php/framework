@@ -79,8 +79,6 @@ class DBObject implements Interfaces\IDBObject
             }
         } else {
             throw new \InvalidArgumentException('Undefined property ' . $name);
-            
-            //$returnValue = null;
         }
 
         return $returnValue;
@@ -262,10 +260,6 @@ class DBObject implements Interfaces\IDBObject
 
             $queryParams = array();
             $queryParams['id'] = $this->{static::TABLE_INDEX};
-
-            if ($this->dbLink === false) {
-                $this->connectDB();
-            }
             
             $this->dbLink->query($query, $queryParams);
         }
@@ -326,9 +320,9 @@ class DBObject implements Interfaces\IDBObject
             $sqlParams[$key] = $val;
         }
         $sql  = substr($sql, 0, -2);
-        $sql .= " WHERE `" . static::TABLE_INDEX . "` = :FwkTableIndex";
+        $sql .= " WHERE `" . static::TABLE_INDEX . "` = :SuricateTableIndex";
 
-        $sqlParams[':FwkTableIndex'] = $this->{static::TABLE_INDEX};
+        $sqlParams[':SuricateTableIndex'] = $this->{static::TABLE_INDEX};
 
         $this->dbLink->query($sql, $sqlParams);
     }
