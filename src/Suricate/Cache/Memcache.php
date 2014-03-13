@@ -100,6 +100,12 @@ class Memcache extends Suricate\Cache
         }
     }
 
+    /**
+     * Put a value into memcache
+     * @param string $variable Variable name
+     * @param mixed $value    Value
+     * @param int $expiry   Cache expiry
+     */
     public function set($variable, $value, $expiry = null)
     {
         $this->connect();
