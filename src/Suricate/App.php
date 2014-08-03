@@ -16,6 +16,7 @@ namespace Suricate;
 
 class App extends Service
 {
+    const DEBUG_MODE        = 'debug';
     const DEVELOPMENT_MODE  = 'development';
     const PRELIVE_MODE      = 'prelive';
     const PRODUCTION_MODE   = 'production';
@@ -26,6 +27,11 @@ class App extends Service
         'url',
         'locale'
         );
+
+    public function isDebug()
+    {
+        return self::DEBUG_MODE == $this->mode;
+    }
 
     public function isDevelopment()
     {
