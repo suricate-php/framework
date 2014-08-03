@@ -20,6 +20,7 @@ class Error extends Service
         TODO : put error in logger
          */
         $errorHandler = Suricate::Error();
+
         if ($errorHandler !== null && $errorHandler->report) {
             echo '<html>'."\n";
             echo '  <head>'."\n";
@@ -31,13 +32,14 @@ class Error extends Service
             echo '  </head>'."\n";
             echo '  <body>'."\n";
             echo '      <h1>Oops, uncaught exception !</h1>'."\n";
-            echo '      <h2>This is embarrassing, but server made a boo boo</h2>'."\n";
+            echo '      <h2>This is embarrassing, but server made a booboo</h2>'."\n";
             echo '      <p><code>' . $e->getMessage() . '</code></p>'."\n";
-            echo '      <h3>From :</h3>'."\n";
+            echo '      <h3>From:</h3>'."\n";
             echo '      <p><code>' . $e->getFile() . ' on line ' . $e->getLine() . '</code></p>'."\n";
             echo '      <h3>Call stack</h3>'."\n";
             echo '      <pre>' . $e->getTraceAsString() . '</pre>'."\n";
             if ($errorHandler->dumpContext) {
+                echo '<h3>Context:</h3>';
                 _p($context);
             }
             echo '  </body>'."\n";
@@ -55,9 +57,7 @@ class Error extends Service
     public static function handleShutdownError()
     {
         if ($error = error_get_last()) {
-            list($type, $message, $file, $line) = $error;
-
-            static::handleException(new ErrorException($message, $type, 0, $file, $line));
+            static::handleException(new ErrorException($error['message'], $error['type'], 0, $error['file'], $error['line']));
         }
     }
 }
