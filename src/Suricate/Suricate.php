@@ -52,16 +52,17 @@ class Suricate
     );
 
 
-    public function __construct($configFile = null)
+    public function __construct($paths = array(), $configFile = null)
     {
         if ($configFile !== null) {
             $this->setConfigFile($configFile);
         }
-
+       
         // Load helpers
         require_once __DIR__ . DIRECTORY_SEPARATOR . 'Helper.php';
 
         $this->loadConfig();
+        $this->setAppPaths($paths);
 
         if ($this->useAutoloader) {
             // Configure autoloader
@@ -79,6 +80,14 @@ class Suricate
         $this->initServices();
     }
 
+    private function setAppPaths($paths = array())
+    {
+        foreach ($paths as $key=>$value) {
+            $this->config['App']['path.' . $key] = realpath($value);
+        }
+
+        return $this;
+    }
     /**
      * Initialize Framework services
      * @return null
@@ -181,10 +190,13 @@ class Suricate
                     $logLevel           = Logger::LOGLEVEL_WARN;
                     break;
                 case App::PRODUCTION_MODE:
+                default:
                     $errorReporting     = false;
                     $errorDumpContext   = false;
                     $logLevel           = Logger::LOGLEVEL_WARN;
                     break;
+                
+
             }
         }
 
@@ -203,7 +215,6 @@ class Suricate
         $logLevel       = 3;
 
         return array(
-                'Paths'     => array(),
                 'Router'    => array(),
                 'Error'     => array('report' => false),
                 'Session'   => array('type' => 'native'),
@@ -215,33 +226,11 @@ class Suricate
                 );
     }
 
-    public function setAppPaths($paths)
-    {
-        foreach ($paths as $key=>$value) {
-            $this->config['App']['Path'][$key] = realpath($value);
-        }
-
-        return $this;
-    }
-
-    public function boot()
-    {
-        // Boot application, if available
-        if (isset($this->config['App']['root']) 
-            && is_readable($this->config['App']['root'] . DIRECTORY_SEPARATOR . 'boot.php')) {
-            require $this->config['App']['root'] . DIRECTORY_SEPARATOR . 'boot.php';
-        }
-    }
-
     public function run()
     {
-        $this->boot();
         self::$servicesContainer['Router']->doRouting();
     }
 
-
-
-   
     public static function __callStatic($name, $arguments)
     {
         if (isset($arguments[0]) && $arguments[0] === true) {

@@ -173,8 +173,24 @@ if (!function_exists('app')) {
 if (!function_exists('app_path')) {
     function app_path($str = '')
     {
-        return Suricate::App()->getParameter('url') . '/'
-            . Suricate::App()->getParameter('root') . ($str ? '/' . $str : $str);
+        return Suricate::App()->getParameter('path.app') 
+            . ($str ? '/' . $str : $str);
+    }
+}
+
+if (!function_exists('base_path')) {
+    function base_path($str = '')
+    {
+        return Suricate::App()->getParameter('path.base') 
+            . ($str ? '/' . $str : $str);
+    }
+}
+
+if (!function_exists('public_path')) {
+    function public_path($str = '')
+    {
+        return Suricate::App()->getParameter('path.public') 
+            . ($str ? '/' . $str : $str);
     }
 }
 

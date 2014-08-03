@@ -25,7 +25,10 @@ class App extends Service
         'root',
         'mode',
         'url',
-        'locale'
+        'locale',
+        'path.app',
+        'path.public',
+        'path.base',
         );
 
     public function isDebug()
