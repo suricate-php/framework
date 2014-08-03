@@ -57,7 +57,7 @@ class Suricate
         if ($configFile !== null) {
             $this->setConfigFile($configFile);
         }
-        
+
         // Load helpers
         require_once __DIR__ . DIRECTORY_SEPARATOR . 'Helper.php';
 
@@ -166,26 +166,31 @@ class Suricate
         if (isset($this->config['App']['mode'])) {
             switch ($this->config['App']['mode']) {
                 case App::DEVELOPMENT_MODE:
-                    $errorReporting = true;
-                    $logLevel       = Logger::LOGLEVEL_INFO;
+                    $errorReporting     = true;
+                    $errorDumpContext   = true;
+                    $logLevel           = Logger::LOGLEVEL_INFO;
                     break;
                 case App::DEBUG_MODE:
-                    $errorReporting = true;
-                    $logLevel       = Logger::LOGLEVEL_DEBUG;
+                    $errorReporting     = true;
+                    $errorDumpContext   = true;
+                    $logLevel           = Logger::LOGLEVEL_DEBUG;
                     break;
                 case App::PRELIVE_MODE:
-                    $errorReporting = true;
-                    $logLevel       = Logger::LOGLEVEL_WARN;
+                    $errorReporting     = true;
+                    $errorDumpContext   = false;
+                    $logLevel           = Logger::LOGLEVEL_WARN;
                     break;
                 case App::PRODUCTION_MODE:
-                    $errorReporting = false;
-                    $logLevel       = Logger::LOGLEVEL_WARN;
+                    $errorReporting     = false;
+                    $errorDumpContext   = false;
+                    $logLevel           = Logger::LOGLEVEL_WARN;
                     break;
             }
         }
 
-        $this->config['Error']['report'] = $errorReporting;
-        $this->config['Logger']['level'] = $logLevel;
+        $this->config['Error']['report']        = $errorReporting;
+        $this->config['Error']['dumpContext']   = $errorDumpContext;
+        $this->config['Logger']['level']        = $logLevel;
     }
 
     /**
@@ -208,6 +213,15 @@ class Suricate
                                 'level'     => Logger::LOGLEVEL_INFO,
                             ),
                 );
+    }
+
+    public function setAppPaths($paths)
+    {
+        foreach ($paths as $key=>$value) {
+            $this->config['App']['Path'][$key] = realpath($value);
+        }
+
+        return $this;
     }
 
     public function boot()
