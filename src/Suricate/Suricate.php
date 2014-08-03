@@ -195,7 +195,7 @@ class Suricate
     {
         // Boot application, if available
         if (isset($this->config['App']['root']) 
-            && is_file($this->config['App']['root'] . DIRECTORY_SEPARATOR . 'boot.php')) {
+            && is_readable($this->config['App']['root'] . DIRECTORY_SEPARATOR . 'boot.php')) {
             require $this->config['App']['root'] . DIRECTORY_SEPARATOR . 'boot.php';
         }
     }
