@@ -66,4 +66,9 @@ class Route
             $this->isMatched        = true;
         }
     }
+
+    public function getUrl()
+    {
+        return $this->url;
+    }
 }
