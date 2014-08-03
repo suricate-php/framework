@@ -58,10 +58,10 @@ class Suricate
             $this->setConfigFile($configFile);
         }
 
-        $this->loadConfig();
-
         // Load helpers
         require_once __DIR__ . DIRECTORY_SEPARATOR . 'Helper.php';
+
+        $this->loadConfig();
 
         if ($this->useAutoloader) {
             // Configure autoloader
