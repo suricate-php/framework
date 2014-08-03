@@ -57,7 +57,7 @@ class Suricate
         if ($configFile !== null) {
             $this->setConfigFile($configFile);
         }
-
+        
         // Load helpers
         require_once __DIR__ . DIRECTORY_SEPARATOR . 'Helper.php';
 
@@ -75,7 +75,6 @@ class Suricate
         register_shutdown_function(array('\Suricate\Error', 'handleShutdownError'));
 
         self::$servicesRepository = new Container();
-
 
         $this->initServices();
     }
@@ -112,8 +111,6 @@ class Suricate
                 define($constantName, $constantValue);
             }
         }
-
-
 
         // final sync, repository is complete
         self::$servicesContainer = clone self::$servicesRepository;
@@ -160,6 +157,35 @@ class Suricate
         }
 
         $this->config = array_merge($this->config, $userConfig);
+        
+        $this->configureAppMode();
+    }
+
+    private function configureAppMode()
+    {
+        if (isset($this->config['App']['mode'])) {
+            switch ($this->config['App']['mode']) {
+                case App::DEVELOPMENT_MODE:
+                    $errorReporting = true;
+                    $logLevel       = Logger::LOGLEVEL_INFO;
+                    break;
+                case App::DEBUG_MODE:
+                    $errorReporting = true;
+                    $logLevel       = Logger::LOGLEVEL_DEBUG;
+                    break;
+                case App::PRELIVE_MODE:
+                    $errorReporting = true;
+                    $logLevel       = Logger::LOGLEVEL_WARN;
+                    break;
+                case App::PRODUCTION_MODE:
+                    $errorReporting = false;
+                    $logLevel       = Logger::LOGLEVEL_WARN;
+                    break;
+            }
+        }
+
+        $this->config['Error']['report'] = $errorReporting;
+        $this->config['Logger']['level'] = $logLevel;
     }
 
     /**
@@ -169,24 +195,17 @@ class Suricate
     private function getDefaultConfig()
     {
         $errorReporting = false;
-        $logLevel       = 4;
-
-        if (isset($this->config['App']['mode'])) {
-            if ($this->config['App']['mode'] == 'development') {
-                $errorReporting = true;
-                $logLevel       = 4;
-            }
-        }
+        $logLevel       = 3;
 
         return array(
-                'Paths' 	=> array(),
-                'Router' 	=> array(),
-                'Error'     => array('report' => $errorReporting),
+                'Paths'     => array(),
+                'Router'    => array(),
+                'Error'     => array('report' => false),
                 'Session'   => array('type' => 'native'),
-                'Logger'	=> array(
+                'Logger'    => array(
                                 'logfile'   => 'php://output',
-                                'enabled'	=> true,
-                                'level'		=> $logLevel
+                                'enabled'   => true,
+                                'level'     => Logger::LOGLEVEL_INFO,
                             ),
                 );
     }
