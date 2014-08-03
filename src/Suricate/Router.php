@@ -63,6 +63,7 @@ class Router extends Service
         $hasRoute = false;
         foreach ($this->routes as $route) {
             if ($route->isMatched) {
+                Suricate::Logger()->debug('Route "' . $route->getUrl() . '" matched, target: ' . json_encode($route->target));
                 if (is_array($route->target)) {
                     $callable = array(
                                     new $route->target[0]($this->response),
@@ -96,6 +97,8 @@ class Router extends Service
                     // Calling $controller->method with arguments in right order
                     call_user_func_array($callable, $methodArguments);
                     $hasRoute = true;
+                } else {
+                    Suricate::Logger()->debug('Route is not callable');
                 }
             }
             if ($hasRoute) {
@@ -105,6 +108,7 @@ class Router extends Service
 
         // No route matched
         if (!$hasRoute) {
+            Suricate::Logger()->debug('No route found');
             $this->triggerError(404);
         }
 
