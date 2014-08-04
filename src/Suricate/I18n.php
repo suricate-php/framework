@@ -15,7 +15,7 @@ class I18n extends Service
     protected $parametersList = array(
         'locale'
     );
-    private $baseLocaleDir = 'I18n';
+    private $baseLocaleDir = 'i18n';
     private $translations;
 
     /**
@@ -24,7 +24,7 @@ class I18n extends Service
      */
     public function i18nList()
     {
-        $langDir    =  Suricate::App()->getParameter('root') . DIRECTORY_SEPARATOR
+        $langDir    =  app_path() . DIRECTORY_SEPARATOR
             . $this->baseLocaleDir;
 
         $langList   = array();
@@ -44,11 +44,11 @@ class I18n extends Service
 
     public function load($locale = null)
     {
-        $filename    = Suricate::App()->getParameter('root') . DIRECTORY_SEPARATOR
+        $filename    = app_path() . DIRECTORY_SEPARATOR
             . $this->baseLocaleDir . DIRECTORY_SEPARATOR
             . $locale . DIRECTORY_SEPARATOR
             . 'language.php';
-            
+
         if (is_readable($filename)) {
             $this->locale       = $locale;
             $this->translations = include $filename;
