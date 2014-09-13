@@ -172,6 +172,10 @@ class Suricate
 
     private function configureAppMode()
     {
+        $errorReporting     = false;
+        $errorDumpContext   = false;
+        $logLevel           = Logger::LOGLEVEL_WARN;
+        
         if (isset($this->config['App']['mode'])) {
             switch ($this->config['App']['mode']) {
                 case App::DEVELOPMENT_MODE:
@@ -190,13 +194,10 @@ class Suricate
                     $logLevel           = Logger::LOGLEVEL_WARN;
                     break;
                 case App::PRODUCTION_MODE:
-                default:
                     $errorReporting     = false;
                     $errorDumpContext   = false;
                     $logLevel           = Logger::LOGLEVEL_WARN;
                     break;
-                
-
             }
         }
 
@@ -211,12 +212,8 @@ class Suricate
      */
     private function getDefaultConfig()
     {
-        $errorReporting = false;
-        $logLevel       = 3;
-
         return array(
                 'Router'    => array(),
-                'Error'     => array('report' => false),
                 'Session'   => array('type' => 'native'),
                 'Logger'    => array(
                                 'logfile'   => 'php://output',
