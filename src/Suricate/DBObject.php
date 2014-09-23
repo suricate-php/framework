@@ -236,7 +236,7 @@ class DBObject implements Interfaces\IDBObject
         }
     }
     
-    public function loadFromSql($sql, $sql_params)
+    public function loadFromSql($sql, $sql_params = array())
     {
         $this->connectDB();
         
