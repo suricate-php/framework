@@ -141,25 +141,30 @@ if (!function_exists('wordLimit')) {
 if (!function_exists('slug')) {
     function slug($str, $isUtf8 = true)
     {
-        if (!$isUtf8) {
-           $str = strtr(
-                $str,
-                utf8_decode("ÀÁÂÃÄÅàáâãäåÇçÒÓÔÕÖØòóôõöøÈÉÊËèéêëÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ"),
-                "AAAAAAaaaaaaCcOOOOOOooooooEEEEeeeeIIIIiiiiUUUUuuuuyNn"
-            );
-       } else {
-            $str = strtr(
-                utf8_decode($str),
-                utf8_decode("ÀÁÂÃÄÅàáâãäåÇçÒÓÔÕÖØòóôõöøÈÉÊËèéêëÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ"),
-                "AAAAAAaaaaaaCcOOOOOOooooooEEEEeeeeIIIIiiiiUUUUuuuuyNn"
-            );
+        if (class_exists('Transliterator')) {
+            $translit = \Transliterator::create('Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC; [:Punctuation:] Remove; Lower();');
+            return preg_replace('/\s/', '-', $translit->transliterate($str));
+        } else {
+            if (!$isUtf8) {
+               $str = strtr(
+                    $str,
+                    utf8_decode("ÀÁÂÃÄÅàáâãäåÇçÒÓÔÕÖØòóôõöøÈÉÊËèéêëÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ"),
+                    "AAAAAAaaaaaaCcOOOOOOooooooEEEEeeeeIIIIiiiiUUUUuuuuyNn"
+                );
+           } else {
+                $str = strtr(
+                    utf8_decode($str),
+                    utf8_decode("ÀÁÂÃÄÅàáâãäåÇçÒÓÔÕÖØòóôõöøÈÉÊËèéêëÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ"),
+                    "AAAAAAaaaaaaCcOOOOOOooooooEEEEeeeeIIIIiiiiUUUUuuuuyNn"
+                );
+            }
+
+            $str = preg_replace('/[^a-z0-9_-\s]/', '', strtolower($str));
+            $str = preg_replace('/[\s]+/', ' ', trim($str));
+            $str = str_replace(' ', '-', $str);
+
+            return $str;
         }
-
-        $str = preg_replace('/[^a-z0-9_-\s]/', '', strtolower($str));
-        $str = preg_replace('/[\s]+/', ' ', trim($str));
-        $str = str_replace(' ', '-', $str);
-
-        return $str;
     }
 }
 
