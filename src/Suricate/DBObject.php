@@ -30,12 +30,19 @@ class DBObject implements Interfaces\IDBObject
      */
     const DB_CONFIG     = '';
 
+    const RELATION_ONE_ONE  = 1;
+    const RELATION_ONE_MANY = 2;
+
     protected $dbVariables = array();
     protected $dbValues = array();
     
     protected $protectedVariables           = array();
     protected $protectedValues              = array();
     protected $loadedProtectedVariables     = array();
+
+    protected $relations                    = array();
+    protected $relationValues               = array();
+    protected $loadedRelations              = array();
 
     protected $dbLink = false;
     
@@ -58,6 +65,8 @@ class DBObject implements Interfaces\IDBObject
             return $this->getDBVariable($name);
         } elseif ($this->isProtectedVariable($name)) {
             return $this->getProtectedVariable($name);
+        } elseif ($this->isRelation($name)) {
+            return $this->getRelation($name);
         } else {
             throw new \InvalidArgumentException('Undefined property ' . $name);
         }
@@ -87,6 +96,25 @@ class DBObject implements Interfaces\IDBObject
 
             if (isset($this->protectedValues[$name])) {
                 return $this->protectedValues[$name];
+            } else {
+                return null;
+            }
+        }
+    }
+
+    private function getRelation($name)
+    {
+        if (isset($this->relationValues[$name]) && $this->isRelationLoaded($name)) {
+            return $this->relationValues[$name];
+        } else {
+            if (!$this->isRelationLoaded($name)) {
+                if ($this->loadRelation($name)) {
+                    $this->markRelationAsLoaded($name);
+                }
+            }
+
+            if (isset($this->relationValues[$name])) {
+                return $this->relationValues[$name];
             } else {
                 return null;
             }
@@ -130,8 +158,16 @@ class DBObject implements Interfaces\IDBObject
                     $this->markProtectedVariableAsLoaded($name);
                 }
             }
-
             return isset($this->protectedValues[$name]);
+        } elseif ($this->isRelation($name)) {
+            if (!$this->isRelationLoaded($name)) {
+                $relationResult = $this->loadRelation($name);
+
+                if ($relationResult) {
+                    $this->markRelationAsLoaded($name);
+                }
+                return isset($this->relationValues[$name]);
+            }
         } else {
             return false;
         }
@@ -144,6 +180,7 @@ class DBObject implements Interfaces\IDBObject
      * <ul>
      *     <li>$dbVariables</li>
      *     <li>$protectedVariables</li>
+     *     <li>$relations</li>
      *     <li>legacy property</li>
      * </ul>
      * @param  string $property Property name
@@ -151,7 +188,7 @@ class DBObject implements Interfaces\IDBObject
      */
     public function propertyExists($property)
     {
-        return $this->isDBVariable($property) || $this->isProtectedVariable($property) || property_exists($this, $property);
+        return $this->isDBVariable($property) || $this->isProtectedVariable($property) || $this->isRelation($property) || property_exists($this, $property);
     }
    
    /**
@@ -175,6 +212,16 @@ class DBObject implements Interfaces\IDBObject
     }
 
     /**
+     * Check if variable is predefined relation
+     * @param  string  $name variable name
+     * @return boolean
+     */
+    protected function isRelation($name)
+    {
+        return isset($this->relations[$name]);
+    }
+
+    /**
      * Mark a protected variable as loaded
      * @param  string $name varialbe name
      * @return void
@@ -187,6 +234,18 @@ class DBObject implements Interfaces\IDBObject
     }
 
     /**
+     * Mark a relation as loaded
+     * @param  string $name varialbe name
+     * @return void
+     */
+    protected function markRelationAsLoaded($name)
+    {
+        if ($this->isRelation($name)) {
+            $this->loadedRelations[$name] = true;
+        }
+    }
+
+    /**
      * Check if a protected variable already have been loaded
      * @param  string  $name Variable name
      * @return boolean
@@ -194,6 +253,35 @@ class DBObject implements Interfaces\IDBObject
     protected function isProtectedVariableLoaded($name)
     {
         return isset($this->loadedProtectedVariables[$name]);
+    }
+
+     /**
+     * Check if a relation already have been loaded
+     * @param  string  $name Variable name
+     * @return boolean
+     */
+    protected function isRelationLoaded($name)
+    {
+        return isset($this->loadedRelations[$name]);
+    }
+
+    protected function loadRelation($name)
+    {
+        if (isset($this->relations[$name])) {
+            if ($this->relations[$name]['type'] == self::RELATION_ONE_ONE) {
+                $target = $this->relations[$name]['target'];
+                $this->relationValues[$name] = with(new $target)->load($this->relations[$name]['source']);
+                
+                return true;
+            } elseif ($this->relations[$name]['type'] == self::RELATION_ONE_MANY) {
+                $target = $this->relations[$name]['target'];
+                $this->relationValues[$name] = $target::loadForParentId($this->relations[$name]['source']);
+_p($this);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
