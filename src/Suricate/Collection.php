@@ -477,6 +477,11 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
 
     }
 
+    public function shuffle()
+    {
+        
+    }
+
     public function unique()
     {
 
@@ -487,5 +492,15 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
         uasort($this->items, $closure);
 
         return $this;
+    }
+
+    public function filter(\Closure $closure)
+    {
+
+    }
+
+    public function has($key)
+    {
+
     }
 }
