@@ -13,13 +13,18 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
     protected $parentFilterType;                // Value of filter
 
     protected $items            = array();
-    protected $mapping          = array();
+    protected $mapping          = array(); // to be deprecated ?
 
-    private $sortField;
-    private $sortOrder;
+    private $sortField;                     // to be deprecated
+    private $sortOrder;                     // to be deprecated
 
     private $itemOffset        = 0;
     private $iteratorPosition  = 0;
+
+    public function __construct($items = array())
+    {
+        $this->items = $items;
+    }
 
     /**
      * Load entire table into collection
@@ -211,7 +216,8 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
         $this->itemOffset   = 0;
     }
 
-
+// To be deprecated
+/*
     public function sort($field, $order)
     {
         $this->sortField   = $field;
@@ -221,7 +227,7 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
 
         return $this;
     }
-
+*/
     public function getPossibleValuesFor($args, $withMapping = true)
     {
         if (!is_array($args)) {
@@ -379,6 +385,7 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
         if (gettype($item) == 'object' || $item == null) {
             return $item;
         } else {
+            // Lazy load
             $itemType = $this::ITEM_TYPE;
             $itemToLoad = new $itemType;
             $itemToLoad->load($this->items[$offset]);
@@ -417,11 +424,13 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
         return $str;
     }
 
+    // to be deprecated
     public function getSlice($start, $nbItems = null)
     {
         return array_slice($this->items, $start, $nbItems, true);
     }
 
+    // to be deprecated
     public function getFirstItem()
     {
         foreach ($this->items as $currentItem) {
@@ -429,6 +438,7 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
         }
     }
 
+    // to be deprecated
     public function getRandom($nb = 1)
     {
         $keys = (array) array_rand($this->items, $nb);
@@ -438,5 +448,44 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
         }
 
         return $result;
+    }
+
+    // Helpers
+    public function first()
+    {
+        foreach ($this->items as $currentItem) {
+            return $currentItem;
+        }
+    }
+
+    public function last()
+    {
+        if (count($this->items)) {
+            return end($this->items);
+        } else {
+            return null;
+        }
+    }
+
+    public function isEmpty()
+    {
+        return empty($this->items);
+    }
+
+    public function random($nbItems = 1)
+    {
+
+    }
+
+    public function unique()
+    {
+
+    }
+
+    public function sort(\Closure $closure)
+    {
+        uasort($this->items, $closure);
+
+        return $this;
     }
 }
