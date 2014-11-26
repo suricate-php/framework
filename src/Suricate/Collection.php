@@ -8,6 +8,7 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
     const PARENT_ID_NAME        = 'parent_id';  // Name of the field referencing to parent_id
     const PARENT_OBJECT_TYPE    = '';           // Parent object type
 
+    protected $lazyLoad = false;
     protected $parentId;                       // Id of the parent
     protected $parentFilterName;                // Name of field used for filtering
     protected $parentFilterType;                // Value of filter
@@ -26,6 +27,14 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
         $this->items = $items;
     }
 
+    public function setLazyLoad($lazyLoad)
+    {
+        $this->lazyLoad = $lazyLoad;
+
+        return $this;
+    }
+
+    
     /**
      * Load entire table into collection
      * @return Collection Loaded collection
@@ -479,7 +488,7 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
 
     public function shuffle()
     {
-        
+
     }
 
     public function unique()
