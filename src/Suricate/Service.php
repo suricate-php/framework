@@ -22,7 +22,7 @@ class Service implements Interfaces\IService
                 return null;
             }
         } else {
-            throw new InvalidArgumentException("Unknown configuration property '" . $variable . "'");
+            throw new InvalidArgumentException("Unknown configuration property " . get_called_class() . '->' .$variable);
         }
     }
 
@@ -33,7 +33,7 @@ class Service implements Interfaces\IService
 
             return $this;
         } else {
-            throw new InvalidArgumentException("Unknown configuration property '" . $variable . "'");
+            throw new InvalidArgumentException("Unknown configuration property " . get_called_class() . '->' . $variable);
         }
     }
 
@@ -43,7 +43,7 @@ class Service implements Interfaces\IService
             if (in_array($key, $this->parametersList)) {
                 $this->$key = $value;
             } else {
-                throw new InvalidArgumentException("Unknown parameter '" . $key . "'");
+                throw new InvalidArgumentException("Unknown configuration property : " . get_called_class() . "->" . $key);
             }
         }
 
@@ -55,7 +55,7 @@ class Service implements Interfaces\IService
         if (in_array($parameter, $this->parametersList)) {
             return isset($this->parametersValues[$parameter]) ? $this->parametersValues[$parameter] : null;
         } else {
-            throw new InvalidArgumentException("Unknown configuration property : " . $parameter);
+            throw new InvalidArgumentException("Unknown configuration property : " . get_called_class() . "->" . $parameter);
         }
     }
 
