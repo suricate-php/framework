@@ -7,7 +7,8 @@ class Error extends Service
 {
     protected $parametersList   = array(
         'report',
-        'dumpContext'
+        'dumpContext',
+        'httpHandler'
         );
 
     public static function handleException($e, $context = null)
