@@ -15,13 +15,13 @@ class Error extends Service
         while (ob_get_level() > 1) {
             ob_end_clean();
         }
-        
+
         /**
         TODO : put error in logger
          */
         $errorHandler = Suricate::Error();
 
-        if ($errorHandler !== null && $errorHandler->report) {
+        if ($errorHandler !== null && ($errorHandler->report || $errorHandler->report === null)) {
             echo '<html>'."\n";
             echo '  <head>'."\n";
             echo '      <title>Oops, Uncaught Exception</title>'."\n";
