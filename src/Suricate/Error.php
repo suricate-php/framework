@@ -13,6 +13,24 @@ class Error extends Service
 
     public static function handleException($e, $context = null)
     {
+        if ($e instanceof Exception\HttpException) {
+            $httpHandler = Suricate::Error()->httpHandler;
+            if (is_array($httpHandler)) {
+                if (isset($httpHandler['class']) && isset($httpHandler['method'])) {
+                    call_user_func(array($httpHandler['class'], $httpHandler['method']), $e);
+                    return;
+                } elseif (isset($httpHandler['function'])) {
+                    call_user_func($httpHandler['function'], $e);
+                    return;
+                }
+            } elseif (is_object($httpHandler) && ($httpHandler instanceof \Closure)) {
+                $httpHandler($e);
+                return;
+            }
+            
+            Suricate::Error()->displayGenericHttpExceptionPage($e);
+        }
+
         while (ob_get_level() > 1) {
             ob_end_clean();
         }
@@ -20,9 +38,24 @@ class Error extends Service
         /**
         TODO : put error in logger
          */
-        $errorHandler = Suricate::Error();
+        Suricate::Error()->displayGenericExceptionPage($e, $context);
+    }
 
-        if ($errorHandler !== null && ($errorHandler->report || $errorHandler->report === null)) {
+    public static function handleError($code, $message, $file, $line, $context)
+    {
+        static::handleException(new ErrorException($message, $code, 0, $file, $line), $context);
+    }
+
+    public static function handleShutdownError()
+    {
+        if ($error = error_get_last()) {
+            static::handleException(new ErrorException($error['message'], $error['type'], 0, $error['file'], $error['line']));
+        }
+    }
+
+    private function displayGenericExceptionPage($e, $context = null)
+    {
+        if ($this->report || $this->report === null) {
             echo '<html>'."\n";
             echo '  <head>'."\n";
             echo '      <title>Oops, Uncaught Exception</title>'."\n";
@@ -39,7 +72,7 @@ class Error extends Service
             echo '      <p><code>' . $e->getFile() . ' on line ' . $e->getLine() . '</code></p>'."\n";
             echo '      <h3>Call stack</h3>'."\n";
             echo '      <pre>' . $e->getTraceAsString() . '</pre>'."\n";
-            if ($errorHandler->dumpContext) {
+            if ($this->dumpContext) {
                 echo '<h3>Context:</h3>';
                 _p($context);
             }
@@ -50,15 +83,19 @@ class Error extends Service
         exit(1);
     }
 
-    public static function handleError($code, $message, $file, $line, $context)
+    private function displayGenericHttpExceptionPage($e)
     {
-        static::handleException(new ErrorException($message, $code, 0, $file, $line), $context);
-    }
+        $innerContent = '<h1>' . $e->getStatusCode() . '</h1>';
+        $page = new Page();
+        $page->setTitle($e->getStatusCode());
+        
+        $response = Suricate::Request();
+        $response
+            ->setBody($page->render($innerContent))
+            ->setHttpCode($e->getStatusCode());
 
-    public static function handleShutdownError()
-    {
-        if ($error = error_get_last()) {
-            static::handleException(new ErrorException($error['message'], $error['type'], 0, $error['file'], $error['line']));
-        }
+
+        $response->write();
+        die();
     }
 }
