@@ -40,6 +40,8 @@ class DBObject implements Interfaces\IDBObject
     protected $protectedValues              = array();
     protected $loadedProtectedVariables     = array();
 
+    protected $readOnlyVariables            = array();
+
     protected $relations                    = array();
     protected $relationValues               = array();
     protected $loadedRelations              = array();
@@ -441,9 +443,12 @@ class DBObject implements Interfaces\IDBObject
         $sql  = 'UPDATE `' . static::TABLE_NAME . '`';
         $sql .= ' SET ';
         
+
         foreach ($this->dbValues as $key => $val) {
-            $sql .= ' `' . $key . '`=:' . $key .', ';
-            $sqlParams[$key] = $val;
+            if (!in_array($key, $this->readOnlyVariables)) {
+                $sql .= ' `' . $key . '`=:' . $key .', ';
+                $sqlParams[$key] = $val;
+            }
         }
         $sql  = substr($sql, 0, -2);
         $sql .= " WHERE `" . static::TABLE_INDEX . "` = :SuricateTableIndex";
@@ -462,16 +467,18 @@ class DBObject implements Interfaces\IDBObject
     {
         $this->connectDB();
         
+        $variables = array_diff($this->dbVariables, $this->readOnlyVariables);
+
         $sql  = 'INSERT INTO `' . static::TABLE_NAME . '`';
         $sql .= '(`';
-        $sql .= implode('`, `', $this->dbVariables);
+        $sql .= implode('`, `', $variables);
         $sql .= '`)';
         $sql .= ' VALUES (:';
-        $sql .= implode(', :', $this->dbVariables);
+        $sql .= implode(', :', $variables);
         $sql .= ')';
 
         $sqlParams = array();
-        foreach ($this->dbVariables as $field) {
+        foreach ($variables as $field) {
             $sqlParams[':' . $field] = $this->$field;
         }
         
