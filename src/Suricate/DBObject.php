@@ -276,7 +276,7 @@ class DBObject implements Interfaces\IDBObject
             } elseif ($this->relations[$name]['type'] == self::RELATION_ONE_MANY) {
                 $target = $this->relations[$name]['target'];
                 $this->relationValues[$name] = $target::loadForParentId($this->relations[$name]['source']);
-_p($this);
+
                 return true;
             }
         }
@@ -319,6 +319,16 @@ _p($this);
             $params['id']   = $id;
 
             return $this->loadFromSql($query, $params);
+        } else {
+            return $this;
+        }
+    }
+
+    public function loadOrFail($id)
+    {
+        $this->load($id);
+        if ($this->{static::TABLE_INDEX} != $id) {
+            throw (new Exception\ModelNotFoundException)->setModel(get_called_class());
         } else {
             return $this;
         }
