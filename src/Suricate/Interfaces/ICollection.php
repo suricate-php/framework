@@ -30,7 +30,7 @@ interface ICollection
 
     public function purgeItems();
 
-    public function sort($field, $order);
+    public function sort(\Closure $closure);
 
     public function getPossibleValuesFor($args, $withMapping = true);
 
