@@ -6,7 +6,7 @@ namespace Suricate;
  * Inspired from Kieron Wilson PHP Validator
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
- * @copyright   2013-2015 Mathieu LESNIAK
+ * @copyright   2013-2014 Mathieu LESNIAK
  * @package     Suricate
  */
 class Validator
@@ -167,7 +167,7 @@ class Validator
                 $this->value = $this->datas[$index];
                 $this->index = $index;
             } else {
-                throw new \InvalidArgumentException('Index / Property' . $index . ' does not exists');
+                throw new \InvalidArgumentException('Index / Property "' . $index . '" does not exists');
             }
         }
 
