@@ -30,8 +30,9 @@ class DBObject implements Interfaces\IDBObject
      */
     const DB_CONFIG     = '';
 
-    const RELATION_ONE_ONE  = 1;
-    const RELATION_ONE_MANY = 2;
+    const RELATION_ONE_ONE      = 1;
+    const RELATION_ONE_MANY     = 2;
+    const RELATION_MANY_MANY    = 3;
 
     protected $dbVariables = array();
     protected $dbValues = array();
@@ -270,20 +271,46 @@ class DBObject implements Interfaces\IDBObject
     protected function loadRelation($name)
     {
         if (isset($this->relations[$name])) {
-            if ($this->relations[$name]['type'] == self::RELATION_ONE_ONE) {
-                $target = $this->relations[$name]['target'];
-                $this->relationValues[$name] = with(new $target)->load($this->relations[$name]['source']);
-                
-                return true;
-            } elseif ($this->relations[$name]['type'] == self::RELATION_ONE_MANY) {
-                $target = $this->relations[$name]['target'];
-                $this->relationValues[$name] = $target::loadForParentId($this->relations[$name]['source']);
-
-                return true;
+            switch ($this->relations[$name]['type']) {
+                case self::RELATION_ONE_ONE:
+                    return $this->loadRelationOneOne($name);
+                    break;
+                case self::RELATION_ONE_MANY:
+                    return $this->loadRelationOneMany($name);
+                    break;
+                case self::RELATION_MANY_MANY:
+                    return $this->loadRelationManyMany($name);
+                    break;
             }
         }
 
         return false;
+    }
+
+    private function loadRelationOneOne($name)
+    {
+        $target = $this->relations[$name]['target'];
+        $this->relationValues[$name] = with(new $target)->load($this->{$this->relations[$name]['source']});
+        
+        return true;
+    }
+
+    private function loadRelationOneMany($name)
+    {
+        $target = $this->relations[$name]['target'];
+        $this->relationValues[$name] = $target::loadForParentId($this->{$this->relations[$name]['source']});
+
+        return true;
+    }
+
+    private function loadRelationManyMany($name)
+    {
+        $pivot      = $this->relations[$name]['pivot'];
+        $sourceType = $this->relations[$name]['source_type'];
+
+        $this->relationValues[$name] = $pivot::loadFor($sourceType, $this->{$this->relations[$name]['source']}, 'ingredient');
+        
+        return true;
     }
 
     /**
