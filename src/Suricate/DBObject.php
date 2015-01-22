@@ -362,6 +362,44 @@ class DBObject implements Interfaces\IDBObject
             return $this;
         }
     }
+
+    public static function loadOrCreate($arg)
+    {
+        $obj = static::loadOrInstanciate($arg);
+        $obj->save();
+
+        return $obj;
+    }
+
+    public static function loadOrInstanciate($arg)
+    {
+        if (!is_array($arg)) {
+            $arg = array(static::TABLE_INDEX => $arg);
+        }
+
+        $sql = "SELECT *";
+        $sql .= " FROM " . static::TABLE_NAME;
+        $sql .= " WHERE ";
+
+        $sqlArray = array();
+        $i = 0;
+        foreach ($arg as $key=>$val) {
+            $sqlArray[] = '`' . $key . '`=:arg' . $i;
+            $params['arg' .$i] = $val;
+            $i++;
+        }
+        $sql .= implode(' AND ', $sqlArray);
+
+        $calledClass = get_called_class();
+        $obj = new $calledClass;
+        if (!$obj->loadFromSql($sql, $params)) {
+            foreach($arg as $property=>$value) {
+                $obj->$property = $value;
+            }
+        }
+
+        return $obj;
+    }
     
     public function loadFromSql($sql, $sql_params = array())
     {
