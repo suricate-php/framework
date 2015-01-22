@@ -274,13 +274,10 @@ class DBObject implements Interfaces\IDBObject
             switch ($this->relations[$name]['type']) {
                 case self::RELATION_ONE_ONE:
                     return $this->loadRelationOneOne($name);
-                    break;
                 case self::RELATION_ONE_MANY:
                     return $this->loadRelationOneMany($name);
-                    break;
                 case self::RELATION_MANY_MANY:
                     return $this->loadRelationManyMany($name);
-                    break;
             }
         }
 
@@ -332,7 +329,7 @@ class DBObject implements Interfaces\IDBObject
     /**
      * Load ORM from Database
      * @param  mixed $id SQL Table Unique id
-     * @return DBObject     Loaded object
+     * @return mixed     Loaded object or false on failure
      */
     public function load($id)
     {
