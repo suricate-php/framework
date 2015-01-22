@@ -381,7 +381,8 @@ class DBObject implements Interfaces\IDBObject
         $sql .= " FROM " . static::TABLE_NAME;
         $sql .= " WHERE ";
 
-        $sqlArray = array();
+        $sqlArray   = array();
+        $params     = array();
         $i = 0;
         foreach ($arg as $key=>$val) {
             $sqlArray[] = '`' . $key . '`=:arg' . $i;
