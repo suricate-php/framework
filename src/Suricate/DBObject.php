@@ -388,6 +388,8 @@ class DBObject implements Interfaces\IDBObject
         }
         $sql .= implode(' AND ', $sqlArray);
 
+
+
         $calledClass = get_called_class();
         $obj = new $calledClass;
         if (!$obj->loadFromSql($sql, $params)) {
@@ -421,7 +423,7 @@ class DBObject implements Interfaces\IDBObject
      * @param  array $data  associative array
      * @return DBObject       Built DBObject
      */
-    public static function buildFromArray($data)
+    public static function instanciate($data = array())
     {
         $calledClass    = get_called_class();
         $orm            = new $calledClass;
@@ -433,6 +435,14 @@ class DBObject implements Interfaces\IDBObject
         }
         
         return $orm;
+    }
+
+    public static function create($data = array())
+    {
+        $obj = static::instanciate($data);
+        $obj->save();
+
+        return $obj;
     }
     
     /**

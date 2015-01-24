@@ -59,7 +59,7 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
         if ($results !== false) {
             foreach ($results as $currentResult) {
                 $itemName = $collection::ITEM_TYPE;
-                $collection->addItem($itemName::buildFromArray($currentResult));
+                $collection->addItem($itemName::instanciate($currentResult));
             }
         }
 
@@ -89,7 +89,7 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
         if ($results !== false) {
             foreach ($results as $currentResult) {
                 $itemName = $this::ITEM_TYPE;
-                $this->addItem($itemName::buildFromArray($currentResult));
+                $this->addItem($itemName::instanciate($currentResult));
             }
         }
 
@@ -136,7 +136,7 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
             if ($results !== false) {
                 foreach ($results as $currentResult) {
                     $itemName = $collection::ITEM_TYPE;
-                    $collection->addItem($itemName::buildFromArray($currentResult));
+                    $collection->addItem($itemName::instanciate($currentResult));
                 }
             }
 

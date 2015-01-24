@@ -31,7 +31,7 @@ class PivotTable extends DBObject
         $results = $pivot->dbLink->query($query, $params)->fetchAll(\PDO::FETCH_ASSOC);
    
         foreach ($results as $result) {
-            $items[] = static::buildFromArray($result);
+            $items[] = static::instanciate($result);
         }
         
         return $items;

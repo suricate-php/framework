@@ -19,5 +19,5 @@ interface IDBObject
 
     public function save($forceInsert = false);
 
-    public static function buildFromArray($data);
+    public static function instanciate($data = array());
 }
