@@ -282,7 +282,7 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
 
     public function filter(\Closure $closure)
     {
-        return new static(array_filter($this->items, $callback));
+        return new static(array_filter($this->items, $closure));
     }
 
     public function search($value, $strict = false)
