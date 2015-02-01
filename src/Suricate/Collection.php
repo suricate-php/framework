@@ -199,12 +199,6 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
     }
 
     // to be deprecated
-    public function getSlice($start, $nbItems = null)
-    {
-        return array_slice($this->items, $start, $nbItems, true);
-    }
-
-    // to be deprecated
     public function getFirstItem()
     {
         foreach ($this->items as $currentItem) {
@@ -268,14 +262,15 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
         return $this;
     }
 
-    public function reverse()
-    {
-        return new static(array_reverse($this->items));
-    }
-
     public function unique()
     {
         return new static(array_unique($this->items));
+    }
+
+    public function each(\Closure $callback)
+    {
+        array_map($callback, $this->items);
+        return $this;
     }
 
     public function sort(\Closure $closure)
@@ -290,9 +285,19 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
         return new static(array_filter($this->items, $callback));
     }
 
+    public function search($value, $strict = false)
+    {
+        return array_search($value, $this->items, $strict);
+    }
+
     public function has($key)
     {
+        return $this->offsetExists($key);
+    }
 
+    public function keys()
+    {
+        return array_keys($this->items);
     }
 
     public function prepend($item)
@@ -309,13 +314,54 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
         return $this;
     }
 
+    public function put($key, $val)
+    {
+        $this->items[$key] = $val;
+
+        return $this;
+    }
+
     public function pop()
     {
         return array_pop($this->items);
     }
 
+    public function reverse()
+    {
+        return new static(array_reverse($this->items));
+    }
+
+    public function reduce(callable $callback, $initial = null)
+    {
+        return array_reduce($this->items, $callback, $initial);
+    }
+
     public function slice($offset, $length = null, $preserveKeys = false)
     {
         return new static(array_slice($this->items, $offset, $length, $preserveKeys));
+    }
+
+    public function take($limit = null)
+    {
+        if ($limit < 0) {
+            return $this->slice(abs($limit), $limit);
+        } else {
+            return $this->slice(0, $limit);
+        }
+    }
+
+    public function splice($offset, $length = null, $replacement = array())
+    {
+        return new static(array_splice($this->items, $offset, $length, $replacement));
+    }
+
+    public function chunk($size, $preserveKeys = false)
+    {
+        $result = new static;
+        foreach (array_chunk($this->items, $size, $preserveKeys) as $chunk)
+        {
+            $result->push(new static($chunk));
+        }
+        return $result;
     }
 }
