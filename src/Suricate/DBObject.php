@@ -70,8 +70,11 @@ class DBObject implements Interfaces\IDBObject
             return $this->getProtectedVariable($name);
         } elseif ($this->isRelation($name)) {
             return $this->getRelation($name);
+        } elseif (!empty($this->$name)) {
+            return $this->$name;
         } else {
             throw new \InvalidArgumentException('Undefined property ' . $name);
+        
         }
     }
     
@@ -142,8 +145,10 @@ class DBObject implements Interfaces\IDBObject
             $this->dbValues[$name] = $value;
         } elseif ($this->isProtectedVariable($name)) {
             $this->protectedValues[$name] = $value;
+        } elseif ($this->isRelation($name)) {
+            $this->relationValues[$name] = $value;
         } else {
-            throw new \RuntimeException("Unknown object variable : " . $name);
+            $this->$name = $value;
         }
     }
 
@@ -302,8 +307,11 @@ class DBObject implements Interfaces\IDBObject
 
     private function loadRelationOneMany($name)
     {
-        $target = $this->relations[$name]['target'];
-        $this->relationValues[$name] = $target::loadForParentId($this->{$this->relations[$name]['source']});
+        $target         = $this->relations[$name]['target'];
+        $parentId       = $this->{$this->relations[$name]['source']};
+        $parentIdField  = isset($this->relations[$name]['target_field']) ? $this->relations[$name]['target_field'] : null;
+        
+        $this->relationValues[$name] = $target::loadForParentId($parentId, $parentIdField);
 
         return true;
     }
