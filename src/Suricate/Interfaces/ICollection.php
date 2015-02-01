@@ -18,9 +18,4 @@ interface ICollection
 
     public function getItems();
 
-
-    
-    public function getSlice($start, $nbItems = null);
-
-    public function getFirstItem();
 }
