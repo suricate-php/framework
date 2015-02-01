@@ -176,6 +176,14 @@ class DBObject implements Interfaces\IDBObject
         }
     }
 
+    private function resetLoadedVariables()
+    {
+        $this->loadedProtectedVariables = array();
+        $this->loadedRelations          = array();
+
+        return $this;
+    }
+
     /**
      * Check if requested property exists
      *
@@ -334,6 +342,7 @@ class DBObject implements Interfaces\IDBObject
     public function load($id)
     {
         $this->connectDB();
+        $this->resetLoadedVariables();
 
         if ($id != '') {
             $query  = "SELECT *";
@@ -404,6 +413,7 @@ class DBObject implements Interfaces\IDBObject
     public function loadFromSql($sql, $sql_params = array())
     {
         $this->connectDB();
+        $this->resetLoadedVariables();
         
         $results = $this->dbLink->query($sql, $sql_params)->fetch();
 
