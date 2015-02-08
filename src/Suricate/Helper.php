@@ -221,7 +221,43 @@ if (!function_exists('getParam')) {
 }
 
 if (!function_exists('i18n')) {
-    function i18n() {
+    function i18n()
+    {
         return call_user_func_array(array(Suricate::I18n(), 'get'), func_get_args());
+    }
+}
+
+/**
+ TODO : implements i18n
+**/
+if (!function_exists('niceTime')) {
+    function niceTime($time)
+    {
+        $delta = time() - $time;
+        if ($delta < 60) {
+            return 'il y a moins d\'une minute.';
+        } elseif ($delta < 120) {
+            return 'il y a environ une minute.';
+        } elseif ($delta < (45 * 60)) {
+            return 'il y a ' . floor($delta / 60) . ' minutes.';
+        } elseif ($delta < (90 * 60)) {
+            return 'il y a environ une heure.';
+        } elseif ($delta < (24 * 60 * 60)) {
+            return 'il y a environ ' . floor($delta / 3600) . ' heures.';
+        } elseif ($delta < (48 * 60 * 60)) {
+            return 'hier';
+        } elseif ($delta < 30 * 24 *3600) {
+            return 'il y a ' . floor($delta / 86400) . ' jours.';
+        } elseif ($delta < 365 * 24 * 3600) {
+              return 'il y a ' . floor($delta / (24*3600*30)) . ' mois.';
+        } else {
+            $diff = floor($delta / (24*3600*365));
+
+            if ($diff == 1) {
+                return 'il y a plus d\'un an.';
+            } else {
+                return 'il y a plus de ' . $diff . ' ans.';
+            }
+        }
     }
 }
