@@ -174,8 +174,8 @@ class DBObject implements Interfaces\IDBObject
                 if ($relationResult) {
                     $this->markRelationAsLoaded($name);
                 }
-                return isset($this->relationValues[$name]);
             }
+            return isset($this->relationValues[$name]);
         } else {
             return false;
         }
