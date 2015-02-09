@@ -64,7 +64,6 @@ if (!function_exists('dataGet')) {
                 $target = $target[$segment];
             } elseif (is_object($target)) {
                 if (!isset($target->{$segment})) {
-                    echo "ISSET";
                     return value($default);
                 }
                 $target = $target->{$segment};
