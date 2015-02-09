@@ -97,7 +97,7 @@ class DBCollection extends Collection
         return $this;
     }
 
-    public static function loadForParentId($parentId)
+    public static function loadForParentId($parentId, $parentIdField = null)
     {
         $calledClass   = get_called_class();
         $collection     = new $calledClass;
@@ -109,7 +109,11 @@ class DBCollection extends Collection
             $sql  = "SELECT *";
             $sql .= " FROM `" . $collection::TABLE_NAME . "`";
             $sql .= " WHERE";
-            $sql .= "   " . $collection::PARENT_ID_NAME . "=:parent_id";
+            if ($parentIdField !== null) {
+                $sql .= "   " . $parentIdField . "=:parent_id";
+            } else {
+                $sql .= "   " . $collection::PARENT_ID_NAME . "=:parent_id";
+            }
 
             if ($collection->parentFilterType !== null) {
                 $sql .= "   AND " . $collection->parentFilterName . "=:parent_type";
