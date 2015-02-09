@@ -3,12 +3,6 @@ namespace Suricate\Interfaces;
 
 interface ICollection
 {
-    const SORT_ASC              = 'ASC';
-    const SORT_DESC             = 'DESC';
-
-    
-
-    public function purgeItems();
 
     public function sort(\Closure $closure);
 

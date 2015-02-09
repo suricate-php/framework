@@ -7,38 +7,14 @@ class Collection implements  \IteratorAggregate, \Countable, \ArrayAccess, Inter
     protected $items            = array();
     protected $mapping          = array(); // to be deprecated ?
 
-    private $sortField;                     // to be deprecated
-    private $sortOrder;                     // to be deprecated
-
-    protected $itemOffset        = 0;
-    protected $iteratorPosition  = 0;
+    
+    //protected $iteratorPosition  = 0;
 
     public function __construct($items = array())
     {
         $this->items = $items;
     }
 
-    
-
-    public function purgeItems()
-    {
-        $this->items        = array();
-        $this->mapping      = array();
-        $this->itemOffset   = 0;
-    }
-
-// To be deprecated
-/*
-    public function sort($field, $order)
-    {
-        $this->sortField   = $field;
-        $this->sortOrder   = $order;
-
-        uasort($this->items, array($this, 'sortFunction'));
-
-        return $this;
-    }
-*/
     public function getPossibleValuesFor($args, $withMapping = true)
     {
         if (!is_array($args)) {
@@ -78,31 +54,14 @@ class Collection implements  \IteratorAggregate, \Countable, \ArrayAccess, Inter
         return $this->items;
     }
 
-
-    private function sortFunction($a, $b)
-    {
-        $first  = $this->cleanStr($a->{$this->sortField});
-        $second = $this->cleanStr($b->{$this->sortField});
-
-        if ($first === $second) {
-            return 0;
-        }
-
-        if ($this->sortOrder == self::SORT_ASC) {
-            return ($first < $second) ? -1 : +1;
-        } else {
-            return ($first < $second) ? +1 : -1;
-        }
-    }
-
-    public function addItemLink($linkId)
+    /*public function addItemLink($linkId)
     {
         $this->items[$this->itemOffset] = $linkId;
         // add mapping between item->index and $position in items pool
         $this->mapping[$this->itemOffset] = $linkId;
 
         $this->itemOffset++;
-    }
+    }*/
 
     
 
