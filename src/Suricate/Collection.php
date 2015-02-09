@@ -1,7 +1,7 @@
 <?php
 namespace Suricate;
 
-class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICollection
+class Collection implements  \IteratorAggregate, \Countable, \ArrayAccess, Interfaces\ICollection
 {
     
     protected $items            = array();
@@ -121,8 +121,12 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
         return count($this->items);
     }
 
-    // Implementation of Iterator Interface
-    public function current()
+    // Implementation of IteratorAggregate Interface
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->items);
+    }
+    /*public function current()
     {
         return $this->offsetGet($this->iteratorPosition);
     }
@@ -145,7 +149,7 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
     public function rewind()
     {
         $this->iteratorPosition = 0;
-    }
+    }*/
 
     // Implementation of ArrayAccess Interface
     public function offsetExists($offset)
@@ -276,6 +280,34 @@ class Collection implements  \Iterator, \Countable, \ArrayAccess, Interfaces\ICo
     public function sort(\Closure $closure)
     {
         uasort($this->items, $closure);
+
+        return $this;
+    }
+
+    public function sortBy($field, $reverse = false)
+    {
+        if ($reverse) {
+            $sortFunction = function($a, $b) use ($field) {
+                $first = dataGet($a, $field);
+                $second = dataGet($b, $field);
+                if ($first == $second) {
+                    return 0;
+                }
+                return ($first < $second) ? -1 : 1;
+            };
+        } else {
+            $sortFunction = function($a, $b) use($field) {
+                $first = dataGet($a, $field);
+                $second = dataGet($b, $field);
+                if ($first == $second) {
+                    return 0;
+                }
+                return ($first > $second) ? -1 : 1;
+            };
+        }
+
+
+        uasort($this->items, $sortFunction);
 
         return $this;
     }
