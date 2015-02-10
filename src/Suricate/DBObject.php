@@ -320,8 +320,9 @@ class DBObject implements Interfaces\IDBObject
     {
         $pivot      = $this->relations[$name]['pivot'];
         $sourceType = $this->relations[$name]['source_type'];
+        $target     = dataGet($this->relations[$name], 'target');
 
-        $this->relationValues[$name] = $pivot::loadFor($sourceType, $this->{$this->relations[$name]['source']}, 'ingredient');
+        $this->relationValues[$name] = $pivot::loadFor($sourceType, $this->{$this->relations[$name]['source']}, $target);
         
         return true;
     }

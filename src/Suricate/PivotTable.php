@@ -14,7 +14,7 @@ class PivotTable extends DBObject
         }
     }
 
-    public static function loadFor($relation, $parentId)
+    public static function loadFor($relation, $parentId, $target = null)
     {
         $pivot = new static;
         $pivot->connectDB();
@@ -24,14 +24,14 @@ class PivotTable extends DBObject
         $query .= " FROM `" . static::TABLE_NAME ."`";
         $query .= " WHERE";
         $query .= "     `" . $pivot->getFieldForRelation($relation) . "` =  :id";
-            
+
         $params         = array();
         $params['id']   = $parentId;
 
         $results = $pivot->dbLink->query($query, $params)->fetchAll(\PDO::FETCH_ASSOC);
-   
+
         foreach ($results as $result) {
-            $items[] = static::instanciate($result);
+            $items[] = static::instanciate($result)->$target;
         }
         
         return $items;
