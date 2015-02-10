@@ -78,8 +78,6 @@ if (!function_exists('dataGet')) {
 if (!function_exists('value')) {
     function value($value)
     {
-        var_dump($value);
-        echo "DD : $value";
         return $value instanceof \Closure ? $value() : $value;
     }
 }
