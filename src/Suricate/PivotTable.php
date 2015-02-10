@@ -31,10 +31,14 @@ class PivotTable extends DBObject
         $results = $pivot->dbLink->query($query, $params)->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($results as $result) {
-            $items[] = static::instanciate($result)->$target;
+            if ($target !== null) {
+                $items[] = static::instanciate($result)->$target;
+            } else {
+                $items[] = static::instanciate($result);
+            }
         }
         
-        return $items;
+        return new Collection($items);
     }
 
     private function getFieldForRelation($relationName)
