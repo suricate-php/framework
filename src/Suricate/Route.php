@@ -4,7 +4,6 @@ namespace Suricate;
 class Route
 {
     private $url;
-    //private $HTTPMethod;
     private $parametersDefinitions;
     public $parametersValues;
 
@@ -17,7 +16,7 @@ class Route
     const ROUTE_DEFAULT_CONTROLLER  = 'home';
     const ROUTE_DEFAULT_METHOD      = 'index';
 
-    public function __construct($url, $requestUri, $routeTarget, $parametersDefinitions = array())
+    public function __construct($url, $requestUri, $routeTarget, $parametersDefinitions = array(), $middleware = null)
     {
         $this->isMatched                = false;
         $this->url                      = $url;

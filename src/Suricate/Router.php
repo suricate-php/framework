@@ -36,10 +36,17 @@ class Router extends Service
                 $parameters = $routeData['parameters'];
             }
 
+            if (isset($routeData['middleware'])) {
+                $middleware = $routeData['middleware'];
+            } else {
+                $middleware = null;
+            }
+
             $this->addRoute(
                 $routeData['path'],
                 $handler,
-                $parameters
+                $parameters,
+                $middleware
             );
         }
     }
@@ -49,9 +56,9 @@ class Router extends Service
         $this->requestUri = Suricate::Request()->getRequestUri();
     }
 
-    public function addRoute($routeName, $routeTarget, $parametersDefinitions)
+    public function addRoute($routeName, $routeTarget, $parametersDefinitions, $middleware = null)
     {
-        $this->routes[$routeName] = new Route($routeName, $this->requestUri, $routeTarget, $parametersDefinitions);
+        $this->routes[$routeName] = new Route($routeName, $this->requestUri, $routeTarget, $parametersDefinitions, $middleware);
     }
 
     /**
