@@ -9,6 +9,9 @@ class Router extends Service
     private $requestUri;
     private $routes;
     private $response;
+    private $appMiddlewares = array(
+        '\Suricate\Middleware\CheckMaintenance',
+        );
 
 
 
@@ -22,31 +25,26 @@ class Router extends Service
     public function configure($parameters = array())
     {
         foreach ($parameters as $routeData) {
-            if (isset($routeData['class']) && isset($routeData['method'])) {
-                $handler = array($routeData['class'], $routeData['method']);
-            } elseif (isset($routeData['function'])) {
-                $handler = $routeData['function'];
+            if (isset($routeData['target'])) {
+                $handler = explode('::', $routeData['target']);
             } else {
-                throw new \Exception("Ni classe ni fonction, closure ? (" . json_encode($routeData) . ")");
+                $handler = null;
             }
 
-            if (!isset($routeData['parameters'])) {
-                $parameters = array();
-            } else {
-                $parameters = $routeData['parameters'];
-            }
+            $parameters = isset($routeData['parameters']) ? $routeData['parameters'] : array();
+            
 
             if (isset($routeData['middleware'])) {
-                $middleware = $routeData['middleware'];
+                $middleware = (array)$routeData['middleware'];
             } else {
-                $middleware = null;
+                $middleware = array(); 
             }
 
             $this->addRoute(
                 $routeData['path'],
                 $handler,
                 $parameters,
-                $middleware
+                array_merge($this->appMiddlewares, $middleware)
             );
         }
     }
@@ -71,9 +69,9 @@ class Router extends Service
         foreach ($this->routes as $route) {
             if ($route->isMatched) {
                 Suricate::Logger()->debug('Route "' . $route->getUrl() . '" matched, target: ' . json_encode($route->target));
-                if (is_array($route->target)) {
+                if (count($route->target) > 1) {
                     $callable = array(
-                                    new $route->target[0]($this->response),
+                                    new $route->target[0]($this->response, $route),
                                     $route->target[1]
                                     );
                 } else {
@@ -84,7 +82,7 @@ class Router extends Service
                 if (is_callable($callable)) {
                     // We found a valid method for this controller
                     // Find parameters order
-                    if (is_array($route->target)) {
+                    if (count($route->target) > 1) {
                         $reflection = new \ReflectionMethod($route->target[0], $route->target[1]);
                     } else {
                         $reflection = new \ReflectionFunction($route->target);
@@ -109,6 +107,14 @@ class Router extends Service
                 }
             }
             if ($hasRoute) {
+                // Middleware stack processing
+                foreach ($route->middlewares as $middleware) {
+                    if (is_object($middleware)) {
+                        $middleware->handle($this->response);
+                    } else {
+                        with(new $middleware)->handle($this->response);
+                    }
+                }
                 break;
             }
         }
@@ -131,6 +137,10 @@ class Router extends Service
             case 404:
                 $message = 'HTTP/1.0 404 Not Found';
                 $content = '<h1>404</h1>';
+                break;
+            case 401:
+                $message = 'HTTP/1.0 401 Unauthorized';
+                $content = '<h1>401</h1>';
                 break;
             default:
                 $message = false;
