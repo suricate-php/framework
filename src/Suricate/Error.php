@@ -13,18 +13,20 @@ class Error extends Service
 
     public static function handleException($e, $context = null)
     {
+
         if ($e instanceof Exception\HttpException) {
             $httpHandler = Suricate::Error()->httpHandler;
-            if (is_array($httpHandler)) {
-                if (isset($httpHandler['class']) && isset($httpHandler['method'])) {
-                    call_user_func(array($httpHandler['class'], $httpHandler['method']), $e);
-                    return;
-                } elseif (isset($httpHandler['function'])) {
-                    call_user_func($httpHandler['function'], $e);
-                    return;
-                }
-            } elseif (is_object($httpHandler) && ($httpHandler instanceof \Closure)) {
+            if (is_object($httpHandler) && ($httpHandler instanceof \Closure)) {
                 $httpHandler($e);
+                return;
+            } else {
+                $httpHandler = explode('::', $httpHandler);
+                if (count($httpHandler) > 1) {
+                    call_user_func($httpHandler, $e);
+                } else {
+                    call_user_func(head($httpHandler), $e);
+                }
+
                 return;
             }
             
