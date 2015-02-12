@@ -9,6 +9,7 @@ class Route
 
     public $isMatched;
     public $target;
+    public $middlewares = array();
     
     const PARAMETER_TYPE_ALPHA  = '[\d\w\s_-]+';
     const PARAMETER_TYPE_NUMBER = '\d+';
@@ -22,6 +23,10 @@ class Route
         $this->url                      = $url;
         $this->parametersDefinitions    = $parametersDefinitions;
         $this->parametersValues         = array();
+        if ($middleware !== null) {
+
+        }
+        $this->middlewares               = (array)$middleware;
 
         if (($pos = strpos($requestUri, '?')) !== false) {
             $requestUri = substr($requestUri, 0, $pos);
