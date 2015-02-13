@@ -24,14 +24,14 @@ class Router extends Service
 
     public function configure($parameters = array())
     {
-        foreach ($parameters as $routeData) {
+        foreach ($parameters as $routeName => $routeData) {
             if (isset($routeData['target'])) {
-                $handler = explode('::', $routeData['target']);
+                $target = explode('::', $routeData['target']);
             } else {
-                $handler = null;
+                $target = null;
             }
-
-            $parameters = isset($routeData['parameters']) ? $routeData['parameters'] : array();
+            $routeMethod    = isset($routeData['method']) ? $routeData['method'] : 'any';
+            $parameters     = isset($routeData['parameters']) ? $routeData['parameters'] : array();
             
 
             if (isset($routeData['middleware'])) {
@@ -41,8 +41,10 @@ class Router extends Service
             }
 
             $this->addRoute(
+                $routeName,
+                $routeMethod,
                 $routeData['path'],
-                $handler,
+                $target,
                 $parameters,
                 array_merge($this->appMiddlewares, $middleware)
             );
@@ -54,9 +56,17 @@ class Router extends Service
         $this->requestUri = Suricate::Request()->getRequestUri();
     }
 
-    public function addRoute($routeName, $routeTarget, $parametersDefinitions, $middleware = null)
+    public function addRoute($routeName, $routeMethod, $routePath, $routeTarget, $parametersDefinitions, $middleware = null)
     {
-        $this->routes[$routeName] = new Route($routeName, $this->requestUri, $routeTarget, $parametersDefinitions, $middleware);
+        $this->routes[$routeName] = new Route(
+            $routeName,
+            $routeMethod,
+            $routePath,
+            Suricate::Request(),
+            $routeTarget,
+            $parametersDefinitions,
+            $middleware
+        );
     }
 
     /**
@@ -68,7 +78,7 @@ class Router extends Service
         $hasRoute = false;
         foreach ($this->routes as $route) {
             if ($route->isMatched) {
-                Suricate::Logger()->debug('Route "' . $route->getUrl() . '" matched, target: ' . json_encode($route->target));
+                Suricate::Logger()->debug('Route "' . $route->getPath() . '" matched, target: ' . json_encode($route->target));
                 if (count($route->target) > 1) {
                     $callable = array(
                                     new $route->target[0]($this->response, $route),
