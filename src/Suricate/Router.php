@@ -26,9 +26,9 @@ class Router extends Service
     {
         foreach ($parameters as $routeName => $routeData) {
             if (isset($routeData['target'])) {
-                $target = explode('::', $routeData['target']);
+                $routeTarget = explode('::', $routeData['target']);
             } else {
-                $target = null;
+                $routeTarget = null;
             }
             $routeMethod    = isset($routeData['method']) ? $routeData['method'] : 'any';
             $parameters     = isset($routeData['parameters']) ? $routeData['parameters'] : array();
@@ -44,7 +44,7 @@ class Router extends Service
                 $routeName,
                 $routeMethod,
                 $routeData['path'],
-                $target,
+                $routeTarget,
                 $parameters,
                 array_merge($this->appMiddlewares, $middleware)
             );
@@ -79,42 +79,21 @@ class Router extends Service
         foreach ($this->routes as $route) {
             if ($route->isMatched) {
                 Suricate::Logger()->debug('Route "' . $route->getPath() . '" matched, target: ' . json_encode($route->target));
-                if (count($route->target) > 1) {
-                    $callable = array(
-                                    new $route->target[0]($this->response, $route),
-                                    $route->target[1]
-                                    );
-                } else {
-                    $callable = $route->target;
-                }
+
+                $hasRoute = $route->dispatch($this->response);
+
+                
+                /*
 
                 // We found a valid route
                 if (is_callable($callable)) {
-                    // We found a valid method for this controller
-                    // Find parameters order
-                    if (count($route->target) > 1) {
-                        $reflection = new \ReflectionMethod($route->target[0], $route->target[1]);
-                    } else {
-                        $reflection = new \ReflectionFunction($route->target);
-                    }
-                    $methodParameters = $reflection->getParameters();
-                    $methodArguments = array();
                     
-                    foreach ($methodParameters as $index => $parameter) {
-                        if (isset($route->parametersValues[$parameter->name])) {
-                            $methodArguments[$index] = urldecode($route->parametersValues[$parameter->name]);
-                        } else {
-                            // No value matching this parameter
-                            $methodArguments[$index] = null;
-                        }
-                    }
-
                     // Calling $controller->method with arguments in right order
                     call_user_func_array($callable, $methodArguments);
                     $hasRoute = true;
                 } else {
                     Suricate::Logger()->debug('Route is not callable');
-                }
+                }*/
             }
             if ($hasRoute) {
                 // Middleware stack processing
