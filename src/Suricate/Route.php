@@ -15,15 +15,8 @@ class Route
     public $target;
     public $middlewares = array();
     
-    const PARAMETER_TYPE_ALPHA  = '[\d\w\s_-]+';
-    const PARAMETER_TYPE_NUMBER = '\d+';
-
-    const ROUTE_DEFAULT_CONTROLLER  = 'home';
-    const ROUTE_DEFAULT_METHOD      = 'index';
-
     public function __construct($name, $method, $path, $request, $routeTarget, $parametersDefinitions = array(), $middleware = null)
     {
-
         $this->isMatched                = false;
         $this->name                     = $name;
         $this->method                   = $method;
@@ -63,18 +56,18 @@ class Route
                     $this->parametersValues[$currentParameter] = isset($matching[$currentParameter]) ? $matching[$currentParameter] : null;
                 }
 
-                
                 $this->isMatched        = true;
             }
         }
     }
 
-    public function dispatch(&$response)
+    public function dispatch($response, $middlewares =array())
     {
         $result     = false;
         $callable   = $this->getCallable($response);
-
         if (is_callable($callable)) {
+            $this->middlewares = array_merge($middlewares, $this->middlewares);
+            
             // We found a valid method for this controller
             // Find parameters order
             $methodArguments = $this->getCallableArguments();
@@ -82,16 +75,21 @@ class Route
             // Calling $controller->method with arguments in right order
             $result = true;
             call_user_func_array($callable, $methodArguments);
-            
-            foreach ($this->middlewares as $middleware) {
 
+            // Middleware stack processing
+            foreach ($this->middlewares as $middleware) {
+                if (is_object($middleware)) {
+                    $middleware->call($response);
+                } else {
+                    with(new $middleware)->call($response);
+                }
             }
         }
 
         return $result;
     }
 
-    private function getCallable(&$response)
+    private function getCallable($response)
     {
         if (count($this->target) > 1) {
             $callable = array(
