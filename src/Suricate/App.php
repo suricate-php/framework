@@ -51,6 +51,11 @@ class App extends Service
         return self::PRODUCTION_MODE == $this->mode;
     }
 
+    public function inMaintenance()
+    {
+        return is_file($this->getParameter('path.app') . '/config/maintenance');
+    }
+
     public function abort($httpCode, $message = '', $headers = array())
     {
         throw new Exception\HttpException($httpCode, $message, null, $headers);
