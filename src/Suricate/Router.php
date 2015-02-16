@@ -102,35 +102,9 @@ class Router extends Service
         // No route matched
         if (!$hasRoute) {
             Suricate::Logger()->debug('No route found');
-            $this->triggerError(404);
+            app()->abort('404');
         }
 
         $this->response->write();
-    }
-
-    
-
-    private function triggerError($errorCode)
-    {
-        $content = '';
-        switch ($errorCode) {
-            case 404:
-                $message = 'HTTP/1.0 404 Not Found';
-                $content = '<h1>404</h1>';
-                break;
-            case 401:
-                $message = 'HTTP/1.0 401 Unauthorized';
-                $content = '<h1>401</h1>';
-                break;
-            default:
-                $message = false;
-                break;
-        }
-
-        if ($message !== false) {
-            header($message);
-            echo $content;
-            die();
-        }
     }
 }
