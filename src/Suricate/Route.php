@@ -74,8 +74,6 @@ class Route
 
             // Calling $controller->method with arguments in right order
             $result = true;
-            call_user_func_array($callable, $methodArguments);
-
             // Middleware stack processing
             foreach ($this->middlewares as $middleware) {
                 if (is_object($middleware)) {
@@ -84,6 +82,10 @@ class Route
                     with(new $middleware)->call($response);
                 }
             }
+            
+            call_user_func_array($callable, $methodArguments);
+
+            
         }
 
         return $result;
