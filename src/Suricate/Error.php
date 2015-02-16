@@ -13,13 +13,12 @@ class Error extends Service
 
     public static function handleException($e, $context = null)
     {
-
         if ($e instanceof Exception\HttpException) {
             $httpHandler = Suricate::Error()->httpHandler;
             if (is_object($httpHandler) && ($httpHandler instanceof \Closure)) {
                 $httpHandler($e);
                 return;
-            } else {
+            } elseif ($httpHandler != '') {
                 $httpHandler = explode('::', $httpHandler);
                 if (count($httpHandler) > 1) {
                     call_user_func($httpHandler, $e);
@@ -57,7 +56,7 @@ class Error extends Service
 
     private function displayGenericExceptionPage($e, $context = null)
     {
-        if ($this->report || $this->report === null) {
+        if ($this->report || $this->report === null) {  
             echo '<html>'."\n";
             echo '  <head>'."\n";
             echo '      <title>Oops, Uncaught Exception</title>'."\n";
@@ -87,15 +86,29 @@ class Error extends Service
 
     private function displayGenericHttpExceptionPage($e)
     {
-        $innerContent = '<h1>' . $e->getStatusCode() . '</h1>';
-        $page = new Page();
-        $page->setTitle($e->getStatusCode());
-        
         $response = Suricate::Request();
-        $response
-            ->setBody($page->render($innerContent))
-            ->setHttpCode($e->getStatusCode());
 
+        if (is_readable(app_path() . '/views/Errors/' . $e->getStatusCode() . '.php')) {
+            ob_start();
+            include app_path() . '/views/Errors/' . $e->getStatusCode() . '.php';
+            $body = ob_get_clean();
+            
+        } else {
+            $innerHtml = '<h1>' . $e->getStatusCode()  .'</h1>';
+            
+            $page = new Page();
+            $body = $page
+                ->setTitle($e->getStatusCode())
+                ->render($innerHtml);
+        }
+        
+        
+        $response
+            ->setBody($body)
+            ->setHttpCode($e->getStatusCode());
+        foreach ($e->getHeaders() as $header => $value) {
+            $response->addHeader($header, $value);
+        }
 
         $response->write();
         die();
