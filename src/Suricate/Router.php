@@ -54,6 +54,7 @@ class Router extends Service
     private function parseRequest()
     {
         $this->requestUri = Suricate::Request()->getRequestUri();
+        $this->response->setRequestUri($this->requestUri);
     }
 
     public function addRoute($routeName, $routeMethod, $routePath, $routeTarget, $parametersDefinitions, $middleware = null)
@@ -94,6 +95,7 @@ class Router extends Service
         $hasRoute = false;
         foreach ($this->routes as $route) {
             if ($route->isMatched) {
+
                 Suricate::Logger()->debug('Route "' . $route->getPath() . '" matched, target: ' . json_encode($route->target));
                 $hasRoute = $route->dispatch($this->response, $this->appMiddlewares);
             }
