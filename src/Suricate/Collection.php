@@ -15,24 +15,19 @@ class Collection implements  \IteratorAggregate, \Countable, \ArrayAccess, Inter
         $this->items = $items;
     }
 
-    public function getPossibleValuesFor($args, $withMapping = true)
+    public function getPossibleValuesFor($args, $key = null)
     {
         if (!is_array($args)) {
             $args = array('format' => '%s', 'data' => array($args));
         }
 
-        if ($withMapping) {
-            $class = $this::ITEM_TYPE;
-            $dummyItem = new $class();
-            $mappingKey = $dummyItem::TABLE_INDEX;
-        }
         $values = array();
-        foreach ($this->items as $key => $item) {
+        foreach ($this->items as $itemKey => $item) {
             $itemValues = array();
             foreach ($args['data'] as $arg) {
-                $itemValues[] = $item->$arg;
+                $itemValues[] = dataGet($item, $arg);
             }
-            $arrayKey = ( $withMapping ) ? $item->$mappingKey: $key;
+            $arrayKey = ($key !== null) ? dataGet($item, $key) : null;
             $values[$arrayKey] = vsprintf($args['format'], $itemValues);
         }
 
@@ -43,7 +38,7 @@ class Collection implements  \IteratorAggregate, \Countable, \ArrayAccess, Inter
     {
         $values = array();
         foreach ($this->items as $item) {
-            $values[] = $item->$name;
+            $values[] = dataGet($item, $name);
         }
 
         return $values;
