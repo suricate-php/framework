@@ -24,30 +24,63 @@ class Router extends Service
 
     public function configure($parameters = array())
     {
+
         foreach ($parameters as $routeName => $routeData) {
-            if (isset($routeData['target'])) {
-                $routeTarget = explode('::', $routeData['target']);
+            if (isset($routeData['isRest']) && $routeData['isRest']) {
+                $this->buildRestRoutes($routeName, $routeData);
             } else {
-                $routeTarget = null;
+                $this->buildRoute($routeName, $routeData);
             }
-            $routeMethod    = isset($routeData['method']) ? $routeData['method'] : 'any';
-            $parameters     = isset($routeData['parameters']) ? $routeData['parameters'] : array();
-            
+        }
+    }
 
-            if (isset($routeData['middleware'])) {
-                $middleware = (array)$routeData['middleware'];
-            } else {
-                $middleware = array(); 
-            }
+    private function buildRoute($routeName, $routeData) {
+        if (isset($routeData['target'])) {
+            $routeTarget = explode('::', $routeData['target']);
+        } else {
+            $routeTarget = null;
+        }
+        $routeMethod    = isset($routeData['method']) ? $routeData['method'] : 'any';
+        $parameters     = isset($routeData['parameters']) ? $routeData['parameters'] : array();
+        
 
-            $this->addRoute(
-                $routeName,
-                $routeMethod,
-                $routeData['path'],
-                $routeTarget,
-                $parameters,
-                $middleware
+        if (isset($routeData['middleware'])) {
+            $middleware = (array)$routeData['middleware'];
+        } else {
+            $middleware = array(); 
+        }
+
+        $this->addRoute(
+            $routeName,
+            $routeMethod,
+            $routeData['path'],
+            $routeTarget,
+            $parameters,
+            $middleware
+        );
+    }
+
+    private function buildRestRoutes($routeBaseName, $routeBaseData)
+    {
+        $resources = array(
+            'index'     => array('method' => 'GET', 'append' => ''),
+            'create'    => array('method' => 'GET', 'append' => '/create'),
+            'store'     => array('method' => 'POST', 'append' => ''),
+            'show'      => array('method' => 'GET', 'append' => '/:id'),
+            'edit'      => array('method' => 'GET', 'append' => '/:id/edit'),
+            'update'    => array('method' => 'PUT', 'append' => '/:id'),
+            'destroy'   => array('method' => 'DELETE', 'append' => '/:id'),
             );
+
+        foreach ($resources as $name => $definition) {
+            $routeName = $routeBaseName . '.' . $name;
+            $routeData = $routeBaseData;
+            $routeData['method'] = $definition['method'];
+            $routeData['path'] .= $definition['append'];
+            $routeData['target'] .= '::' . $name;
+            $routeData['parameters'] = array('id' => '[^/]*');
+
+            $this->buildRoute($routeName, $routeData);
         }
     }
 
