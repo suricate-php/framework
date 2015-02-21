@@ -109,6 +109,11 @@ class Request
         if (isset($_SERVER['REQUEST_URI'])) {
             $this->setRequestUri($_SERVER['REQUEST_URI']);
         }
+
+        if (isset($_SERVER['REQUEST_METHOD'])) {
+            $this->setMethod($_SERVER['REQUEST_METHOD']);
+        }
+
     }
 
     public function setMethod($method)
