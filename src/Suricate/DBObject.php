@@ -370,6 +370,11 @@ class DBObject implements Interfaces\IDBObject
         }
     }
 
+    public function isLoaded()
+    {
+        return $this->{static::TABLE_INDEX} !== null;
+    }
+
     public function loadOrFail($id)
     {
         $this->load($id);
