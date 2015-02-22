@@ -78,7 +78,10 @@ class Router extends Service
             $routeData['method'] = $definition['method'];
             $routeData['path'] .= $definition['append'];
             $routeData['target'] .= '::' . $name;
-            $routeData['parameters'] = array('id' => '[^/]*');
+            $routeData['parameters'] = array_merge(
+                array('id' => '[^/]*'),
+                dataGet($routeBaseData, 'parameters', array())
+                );
 
             $this->buildRoute($routeName, $routeData);
         }
