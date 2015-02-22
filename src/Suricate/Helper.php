@@ -44,6 +44,14 @@ if (!function_exists('last')) {
     }
 }
 
+if (!function_exists('flatten')) {
+    function flatten(array $array) {
+        $return = array();
+        array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
+        return $return;
+    }
+}
+
 // Inspired from laravel helper
 if (!function_exists('dataGet')) {
     function dataGet($target, $key, $default = null)
