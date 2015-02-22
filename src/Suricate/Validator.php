@@ -253,5 +253,14 @@ class Validator
         }
     }
 
+    public function pass()
+    {
+        return count($this->errors) == 0;
+    }
+
+    public function fails()
+    {
+        return !$this->pass();
+    }
 
 }
