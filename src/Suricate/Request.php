@@ -97,6 +97,7 @@ class Request
     private $requestUri;
     private $url;
     private $body;
+    private $flashData = array();
 
     public function __construct()
     {
@@ -270,6 +271,20 @@ class Request
         return $this->httpCode;
     }
 
+    public function flash($type, $data)
+    {
+        Flash::write($type, $data);
+        
+        return $this;
+    }
+
+    public function flashData($name, $value)
+    {
+        Flash::write('data', array($name => $value));
+
+        return $this;
+    }
+
     public function redirect($url, $httpCode = 302)
     {
         $this->setHttpCode($httpCode);
@@ -279,30 +294,32 @@ class Request
         die();
     }
 
-    public function redirectWith($url, $type, $data)
-    {
-        Flash::write($type, (array) $data);
-        $this->redirect($url);
-    }
-
     public function redirectWithSuccess($url, $message)
     {
-        $this->redirectWith($url, 'success', $message);
+        $this
+            ->flash('success', $message)
+            ->redirect($url);
     }
 
     public function redirectWithInfo($url, $message)
     {
-        $this->redirectWith($url, 'info', $message);
+        $this
+            ->flash('info', $message)
+            ->redirect($url);
     }
 
     public function redirectWithError($url, $message)
     {
-        $this->redirectWith($url, 'error', $message);
+        $this
+            ->flash('error', $message)
+            ->redirect($url);
     }
 
     public function redirectWithData($url, $key, $value)
     {
-        $this->redirectWith($url, 'data', array($key => $value));
+        $this
+            ->flashData($key, $value)
+            ->redirect($url);
     }
 
     public function isOK()

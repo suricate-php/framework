@@ -33,8 +33,10 @@ class Flash
         self::read();
         $output = '';
         $availableTypes = array('success' => 'success', 'info' => 'info', 'error' => 'danger');
+        
         foreach ($availableTypes as $type => $displayAlias) {
             $currentMessage = dataGet(self::$items, $type, null);
+            
             if ($currentMessage !== null) {
                 $output .= '<div class="alert alert-' . $displayAlias . '">' . implode('<br/>', (array) $currentMessage) . '</div>';
             }
@@ -46,6 +48,7 @@ class Flash
     public static function getData($key)
     {
         self::read();
+
         if (isset(self::$items['data']) && array_key_exists($key, self::$items['data'])) {
             return self::$items['data'][$key];
         } else {
@@ -55,6 +58,7 @@ class Flash
 
     public static function write($type, $message)
     {
+
         if (in_array($type, static::$types)) {
             $currentSessionData = Suricate::Session()->read('flash');
 
