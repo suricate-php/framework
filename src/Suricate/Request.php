@@ -113,6 +113,9 @@ class Request
         if (isset($_SERVER['REQUEST_METHOD'])) {
             $this->setMethod($_SERVER['REQUEST_METHOD']);
         }
+        if (isset($_POST['_method'])) {
+            $this->setMethod($_POST['_method']);
+        }
 
     }
 
@@ -274,6 +277,32 @@ class Request
 
         $this->write();
         die();
+    }
+
+    public function redirectWith($url, $type, $data)
+    {
+        Flash::write($type, (array) $data);
+        $this->redirect($url);
+    }
+
+    public function redirectWithSuccess($url, $message)
+    {
+        $this->redirectWith($url, 'success', $message);
+    }
+
+    public function redirectWithInfo($url, $message)
+    {
+        $this->redirectWith($url, 'info', $message);
+    }
+
+    public function redirectWithError($url, $message)
+    {
+        $this->redirectWith($url, 'error', $message);
+    }
+
+    public function redirectWithData($url, $key, $value)
+    {
+        $this->redirectWith($url, 'data', array($key => $value));
     }
 
     public function isOK()
