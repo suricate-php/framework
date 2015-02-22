@@ -48,6 +48,8 @@ class DBObject implements Interfaces\IDBObject
     protected $loadedRelations              = array();
 
     protected $dbLink = false;
+
+    protected $validatorMessages = array();
     
     /**
      * Magic getter
@@ -593,5 +595,10 @@ class DBObject implements Interfaces\IDBObject
     protected function accessToProtectedVariable($name)
     {
         return false;
+    }
+
+    public function getValidatorMessages()
+    {
+        return $this->validatorMessages;
     }
 }
