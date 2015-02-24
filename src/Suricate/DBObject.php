@@ -602,6 +602,11 @@ class DBObject implements Interfaces\IDBObject
         return false;
     }
 
+    public function validate()
+    {
+        return true;
+    }
+
     public function getValidatorMessages()
     {
         return $this->validatorMessages;
