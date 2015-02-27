@@ -79,7 +79,7 @@ class Router extends Service
             $routeData['path'] .= $definition['append'];
             $routeData['target'] .= '::' . $name;
             $routeData['parameters'] = array_merge(
-                array('id' => '[^/]*'),
+                array('id' => '[0-9]*'),
                 dataGet($routeBaseData, 'parameters', array())
                 );
 
