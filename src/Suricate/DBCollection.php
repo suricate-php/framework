@@ -13,9 +13,34 @@ class DBCollection extends Collection
     protected $parentFilterName;                // Name of field used for filtering
     protected $parentFilterType;                // Value of filter
 
+    public $pagination = array(
+        'nbPage'    => 0,
+        'page'      => 1,
+        );
+
+    protected $itemOffset        = 0;
+
     public function setLazyLoad($lazyLoad)
     {
         $this->lazyLoad = $lazyLoad;
+
+        return $this;
+    }
+
+    
+    public function purgeItems()
+    {
+        $this->items        = array();
+        $this->mapping      = array();
+        $this->itemOffset   = 0;
+    }
+
+    public function paginate($nbItemPerPage, $currentPage = 1)
+    {
+        $this->pagination['page']   = $currentPage;
+        $this->pagination['nbPages'] = ceil(count($this->items) / $nbItemPerPage);
+        $this->items = array_slice($this->items,($currentPage - 1) * $nbItemPerPage, $nbItemPerPage);
+        
 
         return $this;
     }
