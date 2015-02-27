@@ -302,7 +302,9 @@ class DBObject implements Interfaces\IDBObject
     private function loadRelationOneOne($name)
     {
         $target = $this->relations[$name]['target'];
-        $this->relationValues[$name] = with(new $target)->load($this->{$this->relations[$name]['source']});
+        $source = $this->relations[$name]['source'];
+        $this->relationValues[$name] = new $target();
+        $this->relationValues[$name]->load($this->$source);
         
         return true;
     }
