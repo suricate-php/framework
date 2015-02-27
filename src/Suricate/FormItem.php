@@ -109,9 +109,9 @@ class FormItem
         return static::input('checkbox', $name, $value, $label, $htmlAttributes);
     }
 
-    public static function file($name, $value, $label = null, $htmlAttributes = array())
+    public static function file($name, $label = null, $htmlAttributes = array())
     {
-
+        return static::input('file', $name, null, $label, $htmlAttributes);
     }
 
     public static function hidden($name, $value, $label = null, $htmlAttributes = array())
