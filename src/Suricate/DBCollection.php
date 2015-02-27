@@ -14,7 +14,7 @@ class DBCollection extends Collection
     protected $parentFilterType;                // Value of filter
 
     public $pagination = array(
-        'nbPage'    => 0,
+        'nbPages'    => 0,
         'page'      => 1,
         );
 
