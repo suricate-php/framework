@@ -3,13 +3,13 @@ namespace Suricate;
 
 class Page
 {
-    private $title;
-    private $encoding       = 'utf-8';
-    private $language       = 'en_US';
-    private $stylesheets    = array();
-    private $metas          = array();
-    private $scripts        = array();
-    private $rss            = array();
+    protected $title;
+    protected $encoding       = 'utf-8';
+    protected $language       = 'en_US';
+    protected $stylesheets    = array();
+    protected $metas          = array();
+    protected $scripts        = array();
+    protected $rss            = array();
 
     public function __construct()
     {
