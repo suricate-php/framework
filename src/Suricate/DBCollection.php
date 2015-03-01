@@ -14,8 +14,9 @@ class DBCollection extends Collection
     protected $parentFilterType;                // Value of filter
 
     public $pagination = array(
-        'nbPages'    => 0,
+        'nbPages'   => 0,
         'page'      => 1,
+        'nbItems'   => 0,
         );
 
     protected $itemOffset        = 0;
@@ -37,10 +38,12 @@ class DBCollection extends Collection
 
     public function paginate($nbItemPerPage, $currentPage = 1)
     {
-        $this->pagination['page']   = $currentPage;
-        $this->pagination['nbPages'] = ceil(count($this->items) / $nbItemPerPage);
+        $this->pagination['page']       = $currentPage;
+        $this->pagination['nbItems']    = count($this->items);
+        $this->pagination['nbPages']    = ceil($this->pagination['nbItems'] / $nbItemPerPage);
+
         $this->items = array_slice($this->items,($currentPage - 1) * $nbItemPerPage, $nbItemPerPage);
-        
+
 
         return $this;
     }
