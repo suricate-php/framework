@@ -7,12 +7,29 @@ class Collection implements  \IteratorAggregate, \Countable, \ArrayAccess, Inter
     protected $items            = array();
     protected $mapping          = array(); // to be deprecated ?
 
+    public $pagination = array(
+        'nbPages'   => 0,
+        'page'      => 1,
+        'nbItems'   => 0,
+        );
     
     //protected $iteratorPosition  = 0;
 
     public function __construct($items = array())
     {
         $this->items = $items;
+    }
+
+    public function paginate($nbItemPerPage, $currentPage = 1)
+    {
+        $this->pagination['page']       = $currentPage;
+        $this->pagination['nbItems']    = count($this->items);
+        $this->pagination['nbPages']    = ceil($this->pagination['nbItems'] / $nbItemPerPage);
+
+        $this->items = array_slice($this->items,($currentPage - 1) * $nbItemPerPage, $nbItemPerPage);
+
+
+        return $this;
     }
 
     public function getPossibleValuesFor($args, $key = null)

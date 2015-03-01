@@ -13,11 +13,7 @@ class DBCollection extends Collection
     protected $parentFilterName;                // Name of field used for filtering
     protected $parentFilterType;                // Value of filter
 
-    public $pagination = array(
-        'nbPages'   => 0,
-        'page'      => 1,
-        'nbItems'   => 0,
-        );
+    
 
     protected $itemOffset        = 0;
 
@@ -34,18 +30,6 @@ class DBCollection extends Collection
         $this->items        = array();
         $this->mapping      = array();
         $this->itemOffset   = 0;
-    }
-
-    public function paginate($nbItemPerPage, $currentPage = 1)
-    {
-        $this->pagination['page']       = $currentPage;
-        $this->pagination['nbItems']    = count($this->items);
-        $this->pagination['nbPages']    = ceil($this->pagination['nbItems'] / $nbItemPerPage);
-
-        $this->items = array_slice($this->items,($currentPage - 1) * $nbItemPerPage, $nbItemPerPage);
-
-
-        return $this;
     }
 
     
