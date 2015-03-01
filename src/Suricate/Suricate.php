@@ -127,9 +127,13 @@ class Suricate
 
     private function setConfigFile($configFile)
     {
-        if (is_file($configFile)) {
-            $this->configFile = $configFile;
+        foreach ((array) $configFile as $file) {
+            if (is_file($file)) {
+                $this->configFile[] = $file;
+            }
         }
+        
+        
 
         return $this;
     }
@@ -141,7 +145,10 @@ class Suricate
     {
         $userConfig = array();
         if ($this->configFile !== null) {
-            $userConfig = parse_ini_file($this->configFile, true);
+            $userConfig = array();
+            foreach ($this->configFile as $configFile) {
+                $userConfig = array_merge($userConfig, parse_ini_file($configFile, true));
+            }
 
             // Advanced ini parsing, split key with '.' into subarrays
             foreach ($userConfig as $section => $configData) {
