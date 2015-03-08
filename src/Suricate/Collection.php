@@ -264,7 +264,7 @@ class Collection implements  \IteratorAggregate, \Countable, \ArrayAccess, Inter
                 if ($first == $second) {
                     return 0;
                 }
-                return ($first < $second) ? -1 : 1;
+                return ($first > $second) ? -1 : 1;
             };
         } else {
             $sortFunction = function($a, $b) use($field) {
@@ -273,7 +273,7 @@ class Collection implements  \IteratorAggregate, \Countable, \ArrayAccess, Inter
                 if ($first == $second) {
                     return 0;
                 }
-                return ($first > $second) ? -1 : 1;
+                return ($first < $second) ? -1 : 1;
             };
         }
 
