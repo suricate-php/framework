@@ -98,6 +98,8 @@ class Request
     private $url;
     private $body;
     private $flashData = array();
+    private $path;
+    private $query;
 
     public function __construct()
     {
@@ -109,6 +111,9 @@ class Request
     {
         if (isset($_SERVER['REQUEST_URI'])) {
             $this->setRequestUri($_SERVER['REQUEST_URI']);
+            $parseResult = parse_url($_SERVER['REQUEST_URI']);
+            $this->path     = dataGet($parseResult, 'path');
+            $this->query    = dataGet($parseResult, 'query');
         }
 
         if (isset($_SERVER['REQUEST_METHOD'])) {
@@ -157,6 +162,16 @@ class Request
     public function getRequestUri()
     {
         return $this->requestUri;
+    }
+
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    public function getQuery()
+    {
+        return $this->query;
     }
 
     public static function getPostParam($variable, $defaultValue = null)
