@@ -278,7 +278,7 @@ class Collection implements  \IteratorAggregate, \Countable, \ArrayAccess, Inter
         }
 
 
-        uasort($this->items, $sortFunction);
+        usort($this->items, $sortFunction);
 
         return $this;
     }
