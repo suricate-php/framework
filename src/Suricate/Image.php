@@ -42,36 +42,68 @@ class Image
         return $this;
     }
 
-    public function resize($width, $height)
+    public function isPortrait()
+    {
+        return $this->width < $this->height;
+    }
+
+    public function isLandscape()
+    {
+        return $this->height < $this->width;
+    }
+
+    public function chain()
+    {
+        $this->source   = $this->destination;
+        $this->width    = imagesx($this->source);
+        $this->height   = imagesy($this->source);
+
+        return $this;
+    }
+
+    public function resize($width = null, $height = null)
     {
         if ($this->source) {
-            $testH = round(($width / $this->width) * $this->height);
-            $testW = round(($height / $this->height) * $this->width);
-            
-            if ($testH > $height) {
-                $width = $testW;
-            } else {
-                $height = $testH;
+            if ($width == null) {
+                $width = round(($height / $this->height) * $this->width);
+            } elseif ($height == null) {
+                $height = round(($width / $this->width) * $this->height);
             }
-        
-            $this->destination = ImageCreateTrueColor($width,$height); 
-            ImageCopyResampled(
+
+            $this->destination = imagecreatetruecolor($width,$height); 
+            imagecopyresampled(
                 $this->destination,
                 $this->source,
                 0,
                 0,
                 0,
                 0,
-                $width,$height,$this->width,
+                $width,
+                $height,
+                $this->width,
                 $this->height
             );
+
+            return $this->chain();
         }
         return $this;
     }
 
-    public function crop()
+    public function crop($width, $height)
     {
+        $centerX = round($this->width / 2);
+        $centerY = round($this->height / 2);
 
+        $cropWidthHalf  = round($width / 2);
+        $cropHeightHalf = round($height / 2);
+
+        $x1 = max(0, $centerX - $cropWidthHalf);
+        $y1 = max(0, $centerY - $cropHeightHalf);
+        
+        $this->destination = imagecreatetruecolor($width, $height);
+        imagecopy($this->destination, $this->source, 0, 0, $x1, $y1, $width, $height);
+
+        return $this->chain();
     }
 
     public function asNegative()
@@ -121,13 +153,13 @@ class Image
             switch (strtolower($extension)) {
                 case 'jpg':
                 case 'jpeg':
-                    $result = imagejpeg($this->destination, $filename, $quality);
+                    $result = imagejpeg($this->source, $filename, $quality);
                     break;
                 case 'png':
-                    $result = imagepng($this->destination, $filename);
+                    $result = imagepng($this->source, $filename);
                     break;
                 case 'gif':
-                    $result = imagegif($this->destination, $filename);
+                    $result = imagegif($this->source, $filename);
                     break;
             }
         }
