@@ -323,7 +323,11 @@ class Collection implements  \IteratorAggregate, \Countable, \ArrayAccess, Inter
 
         return $this;
     }
-
+    public function shift()
+    {
+        return array_shift($this->items);
+    }
+    
     public function pop()
     {
         return array_pop($this->items);
