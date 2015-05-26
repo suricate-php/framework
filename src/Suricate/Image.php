@@ -3,7 +3,7 @@ namespace Suricate;
 
 class Image
 {
-    private $source;
+    public $source;
     private $destination;
 
     private $width;
@@ -108,12 +108,64 @@ class Image
 
     public function asNegative()
     {
-
+        return $this->filter('IMG_FILTER_NEGATE');
     }
 
     public function asGrayscale()
     {
+        return $this->filter('IMG_FILTER_GRAYSCALE');
+    }
 
+    public function setBrightness($level)
+    {
+        return $this->filter('IMG_FILTER_BRIGHTNESS', $level);
+    }
+
+    public function setContrast($level)
+    {
+        return $this->filter('IMG_FILTER_CONTRAST', $level);
+    }
+
+    public function colorize($r, $g, $b, $alpha)
+    {
+        $this->filter('IMG_FILTER_COLORIZE', $r, $g, $b, $alpha);
+
+        return $this;
+    }
+
+    public function detectEdge()
+    {
+        return $this->filter('IMG_FILTER_EDGEDETECT');
+    }
+
+    public function emboss()
+    {
+        return $this->filter('IMG_FILTER_EMBOSS');
+    }
+
+    public function blur()
+    {
+        return $this->filter('IMG_FILTER_GAUSSIAN_BLUR');
+    }
+
+    public function selectiveBlur()
+    {
+        return $this->filter('IMG_FILTER_SELECTIVE_BLUR');
+    }
+
+    public function meanRemoval()
+    {
+        return $this->filter('IMG_FILTER_MEAN_REMOVAL');
+    }
+
+    public function smooth($level)
+    {
+        return $this->filter('IMG_FILTER_SMOOTH', $level);
+    }
+
+    public function pixelate($size)
+    {
+        return $this->filter('IMG_FILTER_PIXELATE', $size);
     }
 
     public function rotate()
@@ -131,14 +183,24 @@ class Image
 
     }
 
-    public function filter($filterType)
+    public function filter()
     {
-        if (isset($this->filters[$filterType])) {
+        $args = func_get_args();
+        $filterType = array_shift($args);
+        
+        if (in_array($filterType, $this->filters)) {
+            $params = array(
+                $this->source,
+                constant($filterType)
+            );
+            $params = array_merge($params, $args);
 
+            call_user_func_array('imagefilter', $params);
+            
+            return $this;
         } else {
             throw new \InvalidArgumentException('Unknown filter type ' . $filterType);
         }
-        // See http://wideimage.sourceforge.net/documentation/manipulating-images/
     }
 
     public function save($filename, $outputType = null, $quality = 70)
