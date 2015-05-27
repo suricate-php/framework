@@ -191,8 +191,7 @@ class Image
         if ($y < 0) {
             $y = $this->height + $y;
         }
-        $imageFont = new ImageFont();
-        $imageFont->text($text);
+        $imageFont = new ImageFont($text);
 
         if ($callback != null) {
             $callback($imageFont);

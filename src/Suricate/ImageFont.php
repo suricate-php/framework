@@ -14,6 +14,11 @@ class ImageFont
     private $font;
     private $image;
 
+    public function __construct($text = '')
+    {
+        $this->text = $text;
+    }
+    
     public function font($fontFile)
     {
         if (is_int($fontFile)) {
