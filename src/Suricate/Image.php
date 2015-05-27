@@ -183,7 +183,27 @@ class Image
 
     }
 
-    public function filter()
+    public function writeText($text, $x = 0, $y = 0, \Closure $callback = null)
+    {
+        if ($x < 0) {
+            $x = $this->width + $x;
+        }
+        if ($y < 0) {
+            $y = $this->height + $y;
+        }
+        $imageFont = new ImageFont();
+        $imageFont->text($text);
+
+        if ($callback != null) {
+            $callback($imageFont);
+        }
+
+        $imageFont->apply($this->source, $x, $y);
+        
+        return $this;
+    }
+
+    protected function filter()
     {
         $args = func_get_args();
         $filterType = array_shift($args);
