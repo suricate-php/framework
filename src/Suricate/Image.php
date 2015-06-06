@@ -42,6 +42,16 @@ class Image
         return $this;
     }
 
+    public function getWidth()
+    {
+        return $this->width;
+    }
+
+    public function getHeight()
+    {
+        return $this->height;
+    }
+
     public function isPortrait()
     {
         return $this->width < $this->height;
