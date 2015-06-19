@@ -215,6 +215,18 @@ class Collection implements  \IteratorAggregate, \Countable, \ArrayAccess, Inter
         return empty($this->items);
     }
 
+    public function sum($field = null)
+    {
+        if ($field == null) {
+            return array_sum($this->items);
+        }
+        $result = 0;
+        foreach ($this->items as $item) {
+            $result += dataGet($item, $field);
+        }
+        return $result;
+    }
+
     public function random($nbItems = 1)
     {
         if ($this->isEmpty()) {
