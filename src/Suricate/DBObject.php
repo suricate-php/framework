@@ -314,8 +314,9 @@ class DBObject implements Interfaces\IDBObject
         $target         = $this->relations[$name]['target'];
         $parentId       = $this->{$this->relations[$name]['source']};
         $parentIdField  = isset($this->relations[$name]['target_field']) ? $this->relations[$name]['target_field'] : null;
+        $validate       = dataGet($this->relations[$name], 'validate', null);
         
-        $this->relationValues[$name] = $target::loadForParentId($parentId, $parentIdField);
+        $this->relationValues[$name] = $target::loadForParentId($parentId, $parentIdField, $validate);
 
         return true;
     }

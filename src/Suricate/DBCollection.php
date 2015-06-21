@@ -109,7 +109,13 @@ class DBCollection extends Collection
         return $this;
     }
 
-    public static function loadForParentId($parentId, $parentIdField = null)
+    /**
+     * Load items linked to a parentId
+     * @param mixed     $parentId       Parent id description
+     * @param string    $parentIdField  Name of parent id referencing field
+     * @param closure   $validate       Callback use to validate add to items collection
+     */
+    public static function loadForParentId($parentId, $parentIdField = null, $validate = null)
     {
         $calledClass   = get_called_class();
         $collection     = new $calledClass;
@@ -138,7 +144,10 @@ class DBCollection extends Collection
             if ($results !== false) {
                 foreach ($results as $currentResult) {
                     $itemName = $collection::ITEM_TYPE;
-                    $collection->addItem($itemName::instanciate($currentResult));
+                    $item = $itemName::instanciate($currentResult);
+                    if ($validate === null || $validate($item)) {
+                        $collection->addItem($item);
+                    }
                 }
             }
 
