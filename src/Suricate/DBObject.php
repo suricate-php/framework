@@ -325,8 +325,9 @@ class DBObject implements Interfaces\IDBObject
         $pivot      = $this->relations[$name]['pivot'];
         $sourceType = $this->relations[$name]['source_type'];
         $target     = dataGet($this->relations[$name], 'target');
+        $validate   = dataGet($this->relations[$name], 'validate', null);
 
-        $this->relationValues[$name] = $pivot::loadFor($sourceType, $this->{$this->relations[$name]['source']}, $target);
+        $this->relationValues[$name] = $pivot::loadFor($sourceType, $this->{$this->relations[$name]['source']}, $target, $validate);
         
         return true;
     }
