@@ -39,6 +39,17 @@ class Session extends Service implements Interfaces\ISession
         return self::$container;
     }
 
+    public function getId()
+    {
+        $this->init();
+        return self::$container->getId();
+    }
+    public function regenerate()
+    {
+        $this->init();
+        return self::$container->regenerate();
+    }
+
     public function read($key)
     {
         $this->init();
@@ -62,6 +73,8 @@ class Session extends Service implements Interfaces\ISession
         $this->init();
         return self::$container->close();
     }
+
+
 
 
 }

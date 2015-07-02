@@ -15,6 +15,16 @@ class Native extends \Suricate\Session
         }
     }
 
+    public function getId()
+    {
+        return session_id();
+    }
+
+    public function regenerate()
+    {
+        return session_regenerate_id();
+    }
+
     public function read($key)
     {
         $this->loadSession();
