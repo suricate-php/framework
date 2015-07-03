@@ -129,11 +129,16 @@ class Router extends Service
     public function doRouting()
     {
         $hasRoute = false;
+
         foreach ($this->routes as $route) {
             if ($route->isMatched) {
+                $hasRoute = true;
 
                 Suricate::Logger()->debug('Route "' . $route->getPath() . '" matched, target: ' . json_encode($route->target));
-                $hasRoute = $route->dispatch($this->response, $this->appMiddlewares);
+                $result = $route->dispatch($this->response, $this->appMiddlewares);
+                if ($result === false) {
+                    break;
+                }
             }
         }
 
