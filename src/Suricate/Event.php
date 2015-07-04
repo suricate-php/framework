@@ -10,7 +10,13 @@ class Event
 
     public function listen($events, $listener, $priority = 0)
     {
+        foreach ((array) $events as $event) {
+            if (strpos($event, '*') !== false) {
 
+            } else {
+                $this->listeners[$event][$priority][] = $listener;
+            }
+        }
     }
 
     public function fire($event, $eventData = array())
@@ -23,7 +29,9 @@ class Event
 
     public function subscribe($subscriber)
     {
+        $subscriber->subscribe($this);
 
+        return $this;
     }
 
     protected function getImpactedListeners($eventName)
@@ -33,7 +41,7 @@ class Event
             $listeners = array_merge($listeners, $this->getImpactedWildcardListeners($listeners));
 
             $listeners = krsort($listeners);
-            $this->sortedListeners[$eventName] = $listeners
+            $this->sortedListeners[$eventName] = $listeners;
         }
 
         return $this->sortedListeners[$eventName];
