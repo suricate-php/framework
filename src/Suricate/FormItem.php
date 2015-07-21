@@ -177,7 +177,7 @@ class FormItem
 
         $output  = $item->renderLabel();
         $output .= '<select';
-        $output .= $item->renderAttributes();
+        $output .= $item->renderAttributes(true);
         $output .= '>' . "\n";
         foreach ($availableValues as $currentKey=>$currentOption) {
             
