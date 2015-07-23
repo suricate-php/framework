@@ -212,6 +212,19 @@ class Image
         return $this;
     }
 
+    public function line($x1, $y1, $x2, $y2, \Closure $callback = null)
+    {
+        $imageShape = new ImageShape();
+        $imageShape->setImage($this->source);
+        if ($callback != null) {
+            $callback($imageShape);
+        }
+
+        $imageShape->drawLine($x1, $y1, $x2, $y2);
+
+        return $this;
+    }
+
     protected function filter()
     {
         $args = func_get_args();
