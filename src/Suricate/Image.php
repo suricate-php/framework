@@ -195,7 +195,7 @@ class Image
 
     public function merge($source, $position = null, $x = null, $y = null, $percent = 100)
     {
-        if ($source instanceof Suricate\Image) {
+        if ($source instanceof \Suricate\Image) {
 
         } else {
             $source = with(new Image())->load($source);
@@ -313,10 +313,7 @@ class Image
     private function getCoordinatesFromString($position, $offsetWidth = 0, $offsetHeight = 0)
     {
         switch ($position) {
-            case 'top-left':
-                $x = 0;
-                $y = 0;
-                break;
+            
             case 'top':
                 $x = floor(($this->width / 2) - ($offsetWidth / 2));
                 $y = 0;
@@ -348,6 +345,12 @@ class Image
             case 'bottom-right':
                 $x = $x = $this->width - $offsetWidth;
                 $y = $this->height - $offsetHeight;
+                break;
+            
+            case 'top-left':
+            default:
+                $x = 0;
+                $y = 0;
                 break;
         }
 
