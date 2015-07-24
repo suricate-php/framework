@@ -193,6 +193,45 @@ class Image
 
     }
 
+    public function merge($source, $position = null, $x = null, $y = null, $percent = 100)
+    {
+        if ($source instanceof Suricate\Image) {
+
+        } else {
+            $source = with(new Image())->load($source);
+        }
+
+        if ($position !== null) {
+            list($x, $y) = $this->getCoordinatesFromString($position, $source->width, $source->height);
+        }
+        $x = $x !== null ? $x : 0;
+        $y = $y !== null ? $y : 0;
+
+        // Handle transparent image
+        // creating a cut resource 
+        $cut = imagecreatetruecolor($source->getWidth(), $source->getHeight()); 
+
+        // copying relevant section from background to the cut resource 
+        imagecopy($cut, $this->destination, 0, 0, $x, $y, $source->getWidth(), $source->getHeight()); 
+        
+        // copying relevant section from watermark to the cut resource 
+        imagecopy($cut, $source->source, 0, 0, 0, 0, $source->getWidth(), $source->getHeight()); 
+
+        imagecopymerge(
+            $this->destination,
+            $cut,
+            $x,
+            $y,
+            0,
+            0,
+            $source->getWidth(),
+            $source->getHeight(),
+            $percent
+        );
+
+        return $this->chain();
+    }
+
     public function writeText($text, $x = 0, $y = 0, \Closure $callback = null)
     {
         if ($x < 0) {
@@ -269,5 +308,49 @@ class Image
         }
 
         return $result;
+    }
+
+    private function getCoordinatesFromString($position, $offsetWidth = 0, $offsetHeight = 0)
+    {
+        switch ($position) {
+            case 'top-left':
+                $x = 0;
+                $y = 0;
+                break;
+            case 'top':
+                $x = floor(($this->width / 2) - ($offsetWidth / 2));
+                $y = 0;
+                break;
+            case 'top-right':
+                $x = $this->width - $offsetWidth;
+                $y = 0;
+                break;
+            case 'left':
+                $x = 0;
+                $y = floor(($this->height / 2) - ($offsetHeight / 2));
+                break;
+            case 'center':
+                $x = floor(($this->width / 2) - ($offsetWidth / 2));
+                $y = floor(($this->height / 2) - ($offsetHeight / 2));
+                break;
+            case 'right':
+                $x = $x = $this->width - $offsetWidth;
+                $y = floor(($this->height / 2) - ($offsetHeight / 2));
+                break;
+            case 'bottom-left':
+                $x = 0;
+                $y = $this->height - $offsetHeight;
+                break;
+            case 'bottom':
+                $x = floor(($this->width / 2) - ($offsetWidth / 2));
+                $y = $this->height - $offsetHeight;
+                break;
+            case 'bottom-right':
+                $x = $x = $this->width - $offsetWidth;
+                $y = $this->height - $offsetHeight;
+                break;
+        }
+
+        return [$x, $y];
     }
 }
