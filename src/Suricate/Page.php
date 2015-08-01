@@ -59,7 +59,7 @@ class Page
      * Render stylesheets html tags
      * @return string Stylesheet HTML
      */
-    private function renderStylesheets()
+    protected function renderStylesheets()
     {
         $output = '';
         foreach ($this->stylesheets as $id => $stylesheet) {
@@ -87,7 +87,7 @@ class Page
         return $this;
     }
 
-    private function renderRss()
+    protected function renderRss()
     {
         $output = '';
         foreach ($this->rss as $id => $rss) {
@@ -111,7 +111,7 @@ class Page
         return $this;
     }
 
-    private function renderScripts()
+    protected function renderScripts()
     {
         $output = '';
         
@@ -142,7 +142,7 @@ class Page
         $this->metas[$name] = array('href' => $href, 'type' => 'rel', 'relType' => $type);
     }
 
-    private function renderMetas()
+    protected function renderMetas()
     {
         $output = '';
         foreach ($this->metas as $name => $metaData) {
