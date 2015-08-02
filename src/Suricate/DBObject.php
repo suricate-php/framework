@@ -382,7 +382,7 @@ class DBObject implements Interfaces\IDBObject
     public function loadOrFail($id)
     {
         $this->load($id);
-        if ($this->{static::TABLE_INDEX} != $id) {
+        if ($id == '' || $this->{static::TABLE_INDEX} != $id) {
             throw (new Exception\ModelNotFoundException)->setModel(get_called_class());
         } else {
             return $this;
