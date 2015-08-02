@@ -20,6 +20,7 @@ class FormItem
                                     'events',
                                     'multiple',
                                     'autocomplete',
+				    'autofocus',
                                     'required',
                                     'pattern',
                                     'min',
