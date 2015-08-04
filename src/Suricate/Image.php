@@ -116,6 +116,26 @@ class Image
         return $this->chain();
     }
 
+    public function resizeCanvas($width, $height, $position = null, $color = [0, 0, 0])
+    {
+        $this->destination = imagecreatetruecolor($width, $height);
+        $colorRes = imagecolorallocate($this->destination, $color[0], $color[1], $color[2]);
+        $imageObj = new Image();
+        $imageObj->width = $width;
+        $imageObj->height = $height;
+        imagefill($this->destination, 0, 0, $colorRes);
+
+        if ($position !== null) {
+            list($x, $y) = $imageObj->getCoordinatesFromString($position, $this->width,  $this->height);
+        } else {
+            $x = 0;
+            $y = 0;
+        }
+        imagecopy($this->destination, $this->source, $x, $y, 0, 0, $this->width, $this->height);
+
+        return $this->chain();
+    }
+
     public function asNegative()
     {
         return $this->filter('IMG_FILTER_NEGATE');
