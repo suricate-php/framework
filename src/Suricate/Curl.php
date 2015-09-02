@@ -147,7 +147,7 @@ class Curl extends Service
         } elseif ($this->request->getMethod() == Request::HTTP_METHOD_POST) {
             $curlOptions[CURLOPT_POST] = true;
             if ($this->getParameter('postFields') !== null) {
-                $curlOptions[CURLOPT_FIELDS] = $this->getParameter('postFields');
+                $curlOptions[CURLOPT_POSTFIELDS] = $this->getParameter('postFields');
             }
         } elseif ($this->request->getMethod() == Request::HTTP_METHOD_PUT) {
             $curlOptions[CURLOPT_PUT] = true;
