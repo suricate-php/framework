@@ -29,6 +29,7 @@ class PivotTable extends DBObject
             $query .= "     ON p.`" . $sourceField . "`=t." . $targetType::TABLE_INDEX;
             $query .= " WHERE";
             $query .= "     `" . $pivot->getSourceFieldForRelation($relation) . "` =  :id";
+            $query .= " GROUP BY t." . $targetType::TABLE_INDEX;
             
             $itemToAddType  = $targetType;
         } else {
