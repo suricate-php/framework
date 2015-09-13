@@ -20,11 +20,25 @@ class PivotTable extends DBObject
         $pivot->connectDB();
 
         $items = array();
-        $query  = "SELECT *";
-        $query .= " FROM `" . static::TABLE_NAME ."`";
-        $query .= " WHERE";
-        $query .= "     `" . $pivot->getFieldForRelation($relation) . "` =  :id";
+        if ($target !== null)  {
+            $targetType     = $pivot->getTargetForRelation($target);
+            $sourceField    = $pivot->getSourceFieldForRelation($target);
+            
+            $query  = "SELECT t.* FROM " . $targetType::TABLE_NAME . " t";
+            $query .= " LEFT JOIN " . static::TABLE_NAME . " p";
+            $query .= "     ON p.`" . $sourceField . "`=t." . $targetType::TABLE_INDEX;
+            $query .= " WHERE";
+            $query .= "     `" . $pivot->getSourceFieldForRelation($relation) . "` =  :id";
+            
+            $itemToAddType  = $targetType;
+        } else {
+            $query  = "SELECT *";
+            $query .= " FROM `" . static::TABLE_NAME ."`";
+            $query .= " WHERE";
+            $query .= "     `" . $pivot->getSourceFieldForRelation($relation) . "` =  :id";
 
+            $itemToAddType = get_called_class();
+        }
         $params         = array();
         $params['id']   = $parentId;
 
@@ -33,29 +47,38 @@ class PivotTable extends DBObject
         foreach ($results as $result) {
             $add = true;
 
-            if ($target !== null) {
-                $itemToAdd = static::instanciate($result)->$target;
-            } else {
-                $itemToAdd = static::instanciate($result);
-            }
+            $itemToAdd = $itemToAddType::instanciate($result);
             
-            if (is_callable($validate)) {
+            if ($validate !== null && is_callable($validate)) {
                 $add = $validate($itemToAdd);
             }
             if ($add) {
                 $items[] = $itemToAdd;
             }
         }
+    
 
         return new Collection($items);
     }
 
-    private function getFieldForRelation($relationName)
+    private function getSourceFieldForRelation($relationName)
     {
         if (isset($this->relations[$relationName])) {
             return $this->relations[$relationName]['source'];
         } else {
-            throw new \InvalidArgumentException('Cannot get field for relation "' . $relationName. '" : Unknown relation');
+            throw new \InvalidArgumentException('Cannot get field for relation "' . $relationName . '" : Unknown relation');
         }
     }
+
+    private function getTargetForRelation($relationName)
+    {
+        if (isset($this->relations[$relationName])) {
+            return $this->relations[$relationName]['target'];
+        } else {
+            throw new \InvalidArgumentException('Cannot get target for relation "' . $relationName . '" : Unknown relation');
+        }
+    }
+
+
+
 }
