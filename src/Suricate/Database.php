@@ -127,14 +127,14 @@ class Database extends Service
         return $this->statement->fetch($mode);
     }
 
-    public function fetchColumn()
+    public function fetchColumn($colNb = 0)
     {
-
+        return $this->statement->fetchColumn($colNb);
     }
 
     public function fetchObject()
     {
-
+        return $this->statement->fetch(\PDO::FETCH_OBJ);
     }
 
     public function lastInsertId()
@@ -164,7 +164,7 @@ class Database extends Service
 
     public function getColumnCount()
     {
-
+        return $this->statement->columnCount();
     }
 
     private function configurePDOMySQL($params, &$PDODsn, &$PDOUsername, &$PDOPassword, &$PDOAttributes)
