@@ -10,6 +10,7 @@ class Page
     protected $metas          = array();
     protected $scripts        = array();
     protected $rss            = array();
+    protected $htmlClass      = array();
 
     public function __construct()
     {
@@ -72,6 +73,13 @@ class Page
         }
 
         return $output;
+    }
+
+    public function addHtmlClass($className)
+    {
+        $this->htmlClass[$className] = true;
+
+        return $this;
     }
 
      /**
@@ -160,8 +168,9 @@ class Page
 
     public function render($content = '')
     {
+        $htmlClass = count($this->htmlClass) ? ' class="' . implode(' ', array_keys($this->htmlClass)) .'"' : '';
         $output  = '<!DOCTYPE html>' . "\n";
-        $output .= '<html lang="' . substr($this->language, 0, 2) . '">' . "\n";
+        $output .= '<html lang="' . substr($this->language, 0, 2) . '"' . $htmlClass . '>' . "\n";
         $output .= '    <head>' . "\n";
         $output .= '        <title>' . $this->title . '</title>' . "\n";
         $output .= '        <meta http-equiv="Content-Type" content="text/html; charset=' . $this->encoding . '" />'."\n";
