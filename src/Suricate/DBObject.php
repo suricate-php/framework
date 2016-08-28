@@ -411,7 +411,11 @@ class DBObject implements Interfaces\IDBObject
         $params     = array();
         $i = 0;
         foreach ($arg as $key=>$val) {
-            $sqlArray[] = '`' . $key . '`=:arg' . $i;
+            if (is_null($val)) {
+                $sqlArray[] = '`' . $key . '` IS :arg' . $i;
+            } else {
+                $sqlArray[] = '`' . $key . '`=:arg' . $i;    
+            }
             $params['arg' .$i] = $val;
             $i++;
         }
