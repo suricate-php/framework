@@ -7,6 +7,7 @@ namespace Suricate;
 class Router extends Service
 {
     private $requestUri;
+    private $baseUri;
     private $routes;
     private $response;
     private $appMiddlewares = array(
@@ -20,6 +21,9 @@ class Router extends Service
         $this->routes   = array();
         $this->response = Suricate::Response();
         $this->parseRequest();
+
+        // Get app base URI, to transform real path before passing to route
+        $this->baseUri = Suricate::App()->getParameter('base_uri');
     }
 
     public function configure($parameters = array())
@@ -95,10 +99,11 @@ class Router extends Service
 
     public function addRoute($routeName, $routeMethod, $routePath, $routeTarget, $parametersDefinitions, $middleware = null)
     {
+        $computedRoutePath = ($this->baseUri != '/') ? $this->baseUri . $routePath : $routePath;
         $this->routes[$routeName] = new Route(
             $routeName,
             $routeMethod,
-            $routePath,
+            $computedRoutePath,
             Suricate::Request(),
             $routeTarget,
             $parametersDefinitions,

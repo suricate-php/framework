@@ -29,6 +29,7 @@ class App extends Service
         'path.app',
         'path.public',
         'path.base',
+        'base_uri',
         );
 
     public function isDebug()

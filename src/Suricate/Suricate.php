@@ -227,6 +227,7 @@ class Suricate
                                 'enabled'   => true,
                                 'level'     => Logger::LOGLEVEL_INFO,
                             ),
+                'App'       => array('base_uri' => '/'),
                 );
     }
 
