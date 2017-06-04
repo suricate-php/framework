@@ -16,7 +16,9 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
 
     public function testUnique()
     {
-        
+       $arr = array(1, 2, 1,3);
+       $collection = new \Suricate\Collection($arr);
+        $this->assertEquals([0 => 1, 1 => 2,3 => 3], $collection->unique()->getItems()); 
     }
 
     public function testCount()
@@ -63,10 +65,10 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
     {
         $arr = array('a' => 1, 'b' => 2, 'c' => 3);
         $collection = new \Suricate\Collection($arr);
-        $this->assertEquals(['b' => 2], $collection->filter(
-            function ($value, $key) {
+        $this->assertEquals(['b' => 2],  $collection->filter(
+            function($value) {
                 return ($value % 2) === 0;
-            })
+            })->getItems()
         );
     }
 
@@ -74,6 +76,6 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
     {
         $arr = array(1, 2, 3);
         $collection = new \Suricate\Collection($arr);
-        $this->assertEquals([1, 2, 3, 4], $collection->push(4));
+        $this->assertEquals([1, 2, 3, 4], $collection->push(4)->getItems());
     }
 }
