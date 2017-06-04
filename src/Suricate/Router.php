@@ -66,27 +66,43 @@ class Router extends Service
 
     private function buildRestRoutes($routeBaseName, $routeBaseData)
     {
-        $resources = array(
-            'index'     => array('method' => 'GET', 'append' => ''),
-            'create'    => array('method' => 'GET', 'append' => '/create'),
-            'store'     => array('method' => 'POST', 'append' => ''),
-            'show'      => array('method' => 'GET', 'append' => '/:id'),
-            'edit'      => array('method' => 'GET', 'append' => '/:id/edit'),
-            'update'    => array('method' => 'PUT', 'append' => '/:id'),
-            'destroy'   => array('method' => 'DELETE', 'append' => '/:id'),
+        // If route has a parameters array defined, take the first defined 
+        // argument as ":id" parameter, and use key as parameter name
+        // otherwise, default to id => [0-9]*
+        if (isset($routeBaseData['parameters'])
+            && is_array($routeBaseData['parameters'])) {
+            reset($routeBaseData['parameters']);
+            $primaryParameterName = key($routeBaseData['parameters']);
+
+            $routeParameters = dataGet($routeBaseData, 'parameters', []);
+        } else {
+            $primaryParameterName       = 'id';
+            $primaryParameterPattern    = '[0-9]*';
+
+            $routeParameters = array_merge(
+                [$primaryParameterName => $primaryParameterPattern],
+                dataGet($routeBaseData, 'parameters', [])
             );
+        }
+        
+        $resources = [
+            'index'     => ['method' => 'GET',      'append' => ''],
+            'create'    => ['method' => 'GET',      'append' => '/create'],
+            'store'     => ['method' => 'POST',     'append' => ''],
+            'show'      => ['method' => 'GET',      'append' => '/:' . $primaryParameterName],
+            'edit'      => ['method' => 'GET',      'append' => '/:' . $primaryParameterName . '/edit'],
+            'update'    => ['method' => 'PUT',      'append' => '/:' . $primaryParameterName],
+            'destroy'   => ['method' => 'DELETE',   'append' => '/:' . $primaryParameterName],
+        ];
 
         foreach ($resources as $name => $definition) {
-            $routeName = $routeBaseName . '.' . $name;
-            $routeData = $routeBaseData;
-            $routeData['method'] = $definition['method'];
-            $routeData['path'] .= $definition['append'];
-            $routeData['target'] .= '::' . $name;
-            $routeData['parameters'] = array_merge(
-                array('id' => '[0-9]*'),
-                dataGet($routeBaseData, 'parameters', array())
-                );
-
+            $routeName                  = $routeBaseName . '.' . $name;
+            $routeData                  = $routeBaseData;
+            $routeData['method']        = $definition['method'];
+            $routeData['path']         .= $definition['append'];
+            $routeData['target']       .= '::' . $name;
+            $routeData['parameters']    = $routeParameters;
+            
             $this->buildRoute($routeName, $routeData);
         }
     }
