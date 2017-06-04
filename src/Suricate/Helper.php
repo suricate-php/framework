@@ -273,6 +273,19 @@ if (!function_exists('i18n')) {
     }
 }
 
+if (!function_exists('generateUuid')) {
+    // Via https://rogerstringer.com/2013/11/15/generate-uuids-php/
+    function generateUuid() {
+        return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000,
+            mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+        );
+    }
+}
+
 /**
  TODO : implements i18n
 **/
