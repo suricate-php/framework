@@ -70,7 +70,8 @@ class Router extends Service
         // argument as ":id" parameter, and use key as parameter name
         // otherwise, default to id => [0-9]*
         if (isset($routeBaseData['parameters'])
-            && is_array($routeBaseData['parameters'])) {
+            && is_array($routeBaseData['parameters'])
+            && count($routeBaseData['parameters']) > 1) {
             reset($routeBaseData['parameters']);
             $primaryParameterName = key($routeBaseData['parameters']);
 
