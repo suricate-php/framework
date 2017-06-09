@@ -4,19 +4,25 @@ use Suricate\Suricate;
 // Debug
 // 
 if (!function_exists('_p')) {
-    function _p($var)
+    function _p()
     {
         echo '<pre>';
-        print_r($var);
+        foreach (func_get_args() as $var) {
+            print_r($var);
+            echo "\n";
+        }
         echo '</pre>';
     }
 }
 
 if (!function_exists('_d')) {
-    function _d($var)
+    function _d()
     {
         echo '<pre>';
-        var_dump($var);
+        foreach (func_get_args() as $var) {
+            var_dump($var);
+            echo "\n";
+        }
         echo '</pre>';
     }
 }
