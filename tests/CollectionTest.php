@@ -61,6 +61,75 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(false, $collection->has('d'));
     }
 
+	public function testKeys()
+	{
+		$arr = array('a' => 1, 'b' => 2, 'c' => 3);
+        $collection = new \Suricate\Collection($arr);
+		$this->assertEquals(['a', 'b', 'c'], $collection->keys());
+	}
+
+	public function testPrepend()
+	{
+		$arr = [4, 5, 6];
+        $collection = new \Suricate\Collection($arr);
+		$collection->prepend(99);
+		$this->assertEquals([99, 4, 5, 6], $collection->getItems());
+	}
+	
+	public function testPut()
+	{
+		$arr = array('a' => 1, 'b' => 2, 'c' => 3);
+        $collection = new \Suricate\Collection($arr);
+		$collection->put('z', 99);
+		$this->assertEquals(['a' => 1, 'b' => 2, 'c' => 3, 'z' => 99], $collection->getItems());
+	}
+
+	public function testShift()
+	{
+		$arr = array('a' => 1, 'b' => 2, 'c' => 3);
+        $collection = new \Suricate\Collection($arr);
+		$t = $collection->shift();
+		$this->assertEquals(1, $t);
+		$this->assertEquals(['b' => 2, 'c' => 3], $collection->getItems());
+	}
+
+	public function testPop()
+	{
+		$arr = array('a' => 1, 'b' => 2, 'c' => 3);
+        $collection = new \Suricate\Collection($arr);
+		$t = $collection->pop();
+		$this->assertEquals(3, $t);
+		$this->assertEquals(['a' => 1, 'b' => 2], $collection->getItems());
+	}
+
+	public function testReverse()
+	{
+		$arr = array('a' => 1, 'b' => 2, 'c' => 3);
+        $collection = new \Suricate\Collection($arr);
+		$t = $collection->reverse();
+		$this->assertEquals(['c' => 3, 'b' => 2, 'a' => 1], $t->getItems());
+	}
+
+	public function testReduce()
+	{
+
+	}
+
+	public function testSlice()
+	{
+
+	}
+	
+	public function testTake()
+	{
+		$arr = array('a' => 1, 'b' => 2, 'c' => 3);
+        $collection = new \Suricate\Collection($arr);
+		$t = $collection->take(2);
+		$this->assertEquals(['a' => 1, 'b' => 2], $t->getItems());
+		
+	}
+
+
     public function testFilter()
     {
         $arr = array('a' => 1, 'b' => 2, 'c' => 3);
