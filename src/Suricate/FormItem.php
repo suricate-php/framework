@@ -20,7 +20,7 @@ class FormItem
                                     'events',
                                     'multiple',
                                     'autocomplete',
-				    'autofocus',
+                                    'autofocus',
                                     'required',
                                     'pattern',
                                     'min',
@@ -33,7 +33,7 @@ class FormItem
 
     public function __construct($itemData = array())
     {
-         foreach ($itemData as $itemProperty => $itemValue) {
+        foreach ($itemData as $itemProperty => $itemValue) {
             $this->$itemProperty = $itemValue;
         }
     }
@@ -101,7 +101,7 @@ class FormItem
         return static::input('button', $name, $value, $label, $htmlAttributes);
     }
 
-    public static function checkbox($name, $value = 1, $checked = false, $label = null, $htmlAttributes = array()) 
+    public static function checkbox($name, $value = 1, $checked = false, $label = null, $htmlAttributes = array())
     {
         if (!isset($htmlAttributes['checked']) && $checked) {
             $htmlAttributes['checked'] = 'checked';
@@ -180,17 +180,25 @@ class FormItem
         $output .= '<select';
         $output .= $item->renderAttributes(true);
         $output .= '>' . "\n";
-        foreach ($availableValues as $currentKey=>$currentOption) {
-            
+        foreach ($availableValues as $currentKey => $currentOption) {
             if (is_array($currentOption)) {
                 $output .= '<optgroup label="' . $currentKey . '">'."\n";
-                foreach ($currentOption as $subKey=>$subOption) {
+                foreach ($currentOption as $subKey => $subOption) {
+                    if (is_array($value)) {
+                        $selected = in_array($subKey, $value) ? ' selected' : '';
+                    } else {
+                        $selected = ($subKey == $value) ? ' selected' : '';
+                    }
                     $selected = $subKey == $value ? ' selected' : '';
                     $output .= '<option value="' . $subKey . '"' . $selected . '>' . $subOption . '</option>'."\n";
                 }
                 $output .= '</optgroup>'."\n";
             } else {
-                $selected = $currentKey == $value ? ' selected' : '';
+                if (is_array($value)) {
+                    $selected = in_array($currentKey, $value) ? ' selected' : '';
+                } else {
+                    $selected = ($currentKey == $value) ? ' selected' : '';
+                }
                 $output .= '<option value="' . $currentKey . '"' . $selected . '>' . $currentOption . '</option>'."\n";
             }
         }
@@ -211,7 +219,7 @@ class FormItem
         $itemData['name']   = $name;
         $itemData['value']  = $value;
         $itemData['label']  = $label;
-         if ($label !== null && !isset($htmlAttributes['id'])) {
+        if ($label !== null && !isset($htmlAttributes['id'])) {
             $itemData['id']     = $name;
         }
         $itemData = array_merge($itemData, $htmlAttributes);
