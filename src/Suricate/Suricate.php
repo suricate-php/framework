@@ -18,7 +18,7 @@ namespace Suricate;
 class Suricate
 {
 
-    const VERSION = '0.1';
+    const VERSION = '0.1.7';
 
     const CONF_DIR = '/conf/';
 
@@ -43,6 +43,7 @@ class Suricate
         'Cache'             => '\Suricate\Cache',
         'CacheMemcache'     => '\Suricate\Cache\Memcache',
         'CacheApc'          => '\Suricate\Cache\Apc',
+        'CacheFile'         => '\Suricate\Cache\File',
         'Curl'              => '\Suricate\Curl',
         'Response'          => '\Suricate\Request',
         'Session'           => '\Suricate\Session',
@@ -82,7 +83,7 @@ class Suricate
 
     private function setAppPaths($paths = array())
     {
-        foreach ($paths as $key=>$value) {
+        foreach ($paths as $key => $value) {
             $this->config['App']['path.' . $key] = realpath($value);
         }
 
