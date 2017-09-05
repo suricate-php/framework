@@ -6,7 +6,7 @@ namespace Suricate;
  * Inspired from Kieron Wilson PHP Validator
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
- * @copyright   2013-2014 Mathieu LESNIAK
+ * @copyright   Mathieu LESNIAK
  * @package     Suricate
  */
 class Validator
@@ -18,7 +18,8 @@ class Validator
     private $index;
     private $stop = false;
 
-    public function __construct($input) {
+    public function __construct($input)
+    {
         $this->datas = $input;
         $this->value = $input;
         $this->createChecks();
@@ -26,47 +27,47 @@ class Validator
 
     private function createChecks()
     {
-        $this->checks['equalTo'] = function($value, $compare) {
+        $this->checks['equalTo'] = function ($value, $compare) {
             return $value == $compare;
         };
 
-        $this->checks['identicalTo'] = function($value, $compare) {
+        $this->checks['identicalTo'] = function ($value, $compare) {
             return $value === $compare;
         };
 
-        $this->checks['lessThan'] = function($value, $compare) {
+        $this->checks['lessThan'] = function ($value, $compare) {
             return $value < $compare;
         };
 
-        $this->checks['lessThanOrEqual'] = function($value, $compare) {
+        $this->checks['lessThanOrEqual'] = function ($value, $compare) {
             return $value <= $compare;
         };
 
-        $this->checks['greaterThan'] = function($value, $compare) {
+        $this->checks['greaterThan'] = function ($value, $compare) {
             return $value > $compare;
         };
 
-        $this->checks['greaterThanOrEqual'] = function($value, $compare) {
+        $this->checks['greaterThanOrEqual'] = function ($value, $compare) {
             return $value >= $compare;
         };
 
-        $this->checks['blank'] = function($value) {
+        $this->checks['blank'] = function ($value) {
             return $value == '';
         };
 
-        $this->checks['null'] = function($value) {
+        $this->checks['null'] = function ($value) {
             return is_null($value);
         };
 
-        $this->checks['true'] = function($value) {
+        $this->checks['true'] = function ($value) {
             return $value === true;
         };
 
-        $this->checks['false'] = function($value) {
+        $this->checks['false'] = function ($value) {
             return !($value === true);
         };
 
-        $this->checks['type'] = function($value, $type) {
+        $this->checks['type'] = function ($value, $type) {
             switch ($type) {
                 case 'array':
                     return is_array($value);
@@ -93,63 +94,63 @@ class Validator
             }
         };
 
-        $this->checks['email'] = function($value) {
+        $this->checks['email'] = function ($value) {
             return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
         };
 
-        $this->checks['url'] = function($value) {
+        $this->checks['url'] = function ($value) {
             return filter_var($value, FILTER_VALIDATE_URL) !== false;
         };
 
-        $this->checks['ip'] = function($value) {
+        $this->checks['ip'] = function ($value) {
             return filter_var($value, FILTER_VALIDATE_IP) !== false;
         };
 
-        $this->checks['regexp'] = function($value, $regexp) {
+        $this->checks['regexp'] = function ($value, $regexp) {
             return filter_var($value, FILTER_VALIDATE_REGEXP, $regexp) !== false;
         };
 
-        $this->checks['longerThan'] = function($value, $length) {
+        $this->checks['longerThan'] = function ($value, $length) {
             return strlen($value) > $length;
         };
 
-        $this->checks['longerThanOrEqual'] = function($value, $length) {
+        $this->checks['longerThanOrEqual'] = function ($value, $length) {
             return strlen($value) >= $length;
         };
 
-        $this->checks['shorterThan'] = function($value, $length) {
+        $this->checks['shorterThan'] = function ($value, $length) {
             return strlen($value) < $length;
         };
 
-        $this->checks['shortThanOrEqual'] = function($value, $length) {
+        $this->checks['shortThanOrEqual'] = function ($value, $length) {
             return strlen($value) <= $length;
         };
 
-        $this->checks['contains'] = function($value, $toFind) {
+        $this->checks['contains'] = function ($value, $toFind) {
             return strpos($value, $toFind) !== false;
         };
         
-        $this->checks['alnum'] = function($value) {
+        $this->checks['alnum'] = function ($value) {
             return ctype_alnum($value);
         };
 
-        $this->checks['alpha'] = function($value) {
+        $this->checks['alpha'] = function ($value) {
             return ctype_alpha($value);
         };
 
-        $this->checks['digit'] = function($value) {
+        $this->checks['digit'] = function ($value) {
             return ctype_digit($value);
         };
         
-        $this->checks['lower'] = function($value) {
+        $this->checks['lower'] = function ($value) {
             return ctype_lower($value);
         };
 
-        $this->checks['upper'] = function($value) {
+        $this->checks['upper'] = function ($value) {
             return ctype_upper($value);
         };
 
-        $this->checks['space'] = function($value) {
+        $this->checks['space'] = function ($value) {
             return ctype_space($value);
         };
     }
@@ -163,7 +164,7 @@ class Validator
             if (is_object($this->datas) && isset($this->datas->$index)) {
                 $this->value = $this->datas->$index;
                 $this->index = $index;
-            } elseif (array_key_exists( $index, $this->datas)) {
+            } elseif (array_key_exists($index, $this->datas)) {
                 $this->value = $this->datas[$index];
                 $this->index = $index;
             } else {
@@ -236,7 +237,6 @@ class Validator
                 } else {
                     $this->errors[$this->index][] = $errorMessage;
                 }
-                
             }
         }
 
@@ -262,5 +262,4 @@ class Validator
     {
         return !$this->pass();
     }
-
 }
