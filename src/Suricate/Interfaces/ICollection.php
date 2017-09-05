@@ -11,5 +11,4 @@ interface ICollection
     public function getValuesFor($name);
 
     public function getItems();
-
 }

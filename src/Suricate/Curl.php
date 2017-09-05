@@ -108,7 +108,6 @@ class Curl extends Service
             // Reponse data
             $this->response->setHttpCode($this->responseData['http_code']);
             $this->response->setBody(substr($curlResponse, $this->responseData['header_size']));
-
         }
         return $this;
     }

@@ -56,7 +56,7 @@ class Error extends Service
 
     private function displayGenericExceptionPage($e, $context = null)
     {
-        if ($this->report || $this->report === null) {  
+        if ($this->report || $this->report === null) {
             echo '<html>'."\n";
             echo '  <head>'."\n";
             echo '      <title>Oops, Uncaught Exception</title>'."\n";
@@ -79,7 +79,6 @@ class Error extends Service
             }
             echo '  </body>'."\n";
             echo '</html>';
-            
         }
         exit(1);
     }
@@ -92,7 +91,6 @@ class Error extends Service
             ob_start();
             include app_path() . '/views/Errors/' . $e->getStatusCode() . '.php';
             $body = ob_get_clean();
-            
         } else {
             $innerHtml = '<h1>' . $e->getStatusCode()  .'</h1>';
             
@@ -101,7 +99,6 @@ class Error extends Service
                 ->setTitle($e->getStatusCode())
                 ->render($innerHtml);
         }
-        
         
         $response
             ->setBody($body)

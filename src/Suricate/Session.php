@@ -31,7 +31,7 @@ class Session extends Service implements Interfaces\ISession
     
     /**
      * Get instance of session driver used
-     * @return Sessiondriver instance 
+     * @return Sessiondriver instance
      */
     public function getInstance()
     {
@@ -73,8 +73,4 @@ class Session extends Service implements Interfaces\ISession
         $this->init();
         return self::$container->close();
     }
-
-
-
-
 }

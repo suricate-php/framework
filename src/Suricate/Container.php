@@ -27,7 +27,6 @@ class Container implements \ArrayAccess
             } else {
                 throw new \InvalidArgumentException('Unknown service ' . $offset);
             }
-            
         }
     }
 

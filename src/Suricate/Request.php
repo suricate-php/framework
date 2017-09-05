@@ -122,7 +122,6 @@ class Request
         if (isset($_POST['_method'])) {
             $this->setMethod($_POST['_method']);
         }
-
     }
 
     public function setMethod($method)

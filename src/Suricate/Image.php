@@ -80,7 +80,7 @@ class Image
                 $height = round(($width / $this->width) * $this->height);
             }
 
-            $this->destination = imagecreatetruecolor($width,$height); 
+            $this->destination = imagecreatetruecolor($width, $height);
             imagecopyresampled(
                 $this->destination,
                 $this->source,
@@ -126,7 +126,7 @@ class Image
         imagefill($this->destination, 0, 0, $colorRes);
 
         if ($position !== null) {
-            list($x, $y) = $imageObj->getCoordinatesFromString($position, $this->width,  $this->height);
+            list($x, $y) = $imageObj->getCoordinatesFromString($position, $this->width, $this->height);
         } else {
             $x = 0;
             $y = 0;
@@ -228,14 +228,14 @@ class Image
         $y = $y !== null ? $y : 0;
 
         // Handle transparent image
-        // creating a cut resource 
-        $cut = imagecreatetruecolor($source->getWidth(), $source->getHeight()); 
+        // creating a cut resource
+        $cut = imagecreatetruecolor($source->getWidth(), $source->getHeight());
 
-        // copying relevant section from background to the cut resource 
-        imagecopy($cut, $this->destination, 0, 0, $x, $y, $source->getWidth(), $source->getHeight()); 
+        // copying relevant section from background to the cut resource
+        imagecopy($cut, $this->destination, 0, 0, $x, $y, $source->getWidth(), $source->getHeight());
         
-        // copying relevant section from watermark to the cut resource 
-        imagecopy($cut, $source->source, 0, 0, 0, 0, $source->getWidth(), $source->getHeight()); 
+        // copying relevant section from watermark to the cut resource
+        imagecopy($cut, $source->source, 0, 0, 0, 0, $source->getWidth(), $source->getHeight());
 
         imagecopymerge(
             $this->destination,
@@ -333,7 +333,6 @@ class Image
     private function getCoordinatesFromString($position, $offsetWidth = 0, $offsetHeight = 0)
     {
         switch ($position) {
-            
             case 'top':
                 $x = floor(($this->width / 2) - ($offsetWidth / 2));
                 $y = 0;

@@ -9,10 +9,10 @@ use Suricate;
  * @package Suricate
  * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
  *
- * @property string $host           Memcache host (default: localhost) 
+ * @property string $host           Memcache host (default: localhost)
  * @property string $port           Memcache port (default: 11211)
  * @property int    $defaultExpiry  Key default expiry
- * @property string $useCompression Use memcache compression (default: false) 
+ * @property string $useCompression Use memcache compression (default: false)
  */
 
 class Memcache extends Suricate\Cache
@@ -91,7 +91,6 @@ class Memcache extends Suricate\Cache
                 } catch (\Exception $e) {
                     throw new \Exception('Can\'t connect to memcache server');
                 }
-
             } else {
                 throw new \BadMethodCallException('Can\'t find Memcached extension');
             }

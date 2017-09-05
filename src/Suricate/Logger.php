@@ -53,7 +53,6 @@ class Logger extends Service
                 $message = "[" . date('M d H:i:s') . "] " . $message;
             }
             fputs($this->resource, '[' . $this->levels[$level] . '] '. (string) $message . PHP_EOL);
-
         }
         
         return $this;

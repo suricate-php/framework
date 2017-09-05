@@ -51,9 +51,12 @@ if (!function_exists('last')) {
 }
 
 if (!function_exists('flatten')) {
-    function flatten(array $array) {
+    function flatten(array $array)
+    {
         $return = array();
-        array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
+        array_walk_recursive($array, function ($a) use (&$return) {
+            $return[] = $a;
+        });
         return $return;
     }
 }
@@ -62,7 +65,9 @@ if (!function_exists('flatten')) {
 if (!function_exists('dataGet')) {
     function dataGet($target, $key, $default = null)
     {
-        if (is_null($key)) return $target;
+        if (is_null($key)) {
+            return $target;
+        }
         
         foreach (explode('.', $key) as $segment) {
             if (is_array($target)) {
@@ -148,8 +153,7 @@ if (!function_exists('contains')) {
 if (!function_exists('startsWith')) {
     function startsWith($haystack, $needles)
     {
-        foreach ((array) $needles as $currentNeedle)
-        {
+        foreach ((array) $needles as $currentNeedle) {
             if (strpos($haystack, $currentNeedle) === 0) {
                 return true;
             }
@@ -198,12 +202,12 @@ if (!function_exists('slug')) {
             return preg_replace('/\s/', '-', $translit->transliterate($str));
         } else {
             if (!$isUtf8) {
-               $str = strtr(
+                $str = strtr(
                     $str,
                     utf8_decode("ÀÁÂÃÄÅàáâãäåÇçÒÓÔÕÖØòóôõöøÈÉÊËèéêëÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ"),
                     "AAAAAAaaaaaaCcOOOOOOooooooEEEEeeeeIIIIiiiiUUUUuuuuyNn"
                 );
-           } else {
+            } else {
                 $str = strtr(
                     utf8_decode($str),
                     utf8_decode("ÀÁÂÃÄÅàáâãäåÇçÒÓÔÕÖØòóôõöøÈÉÊËèéêëÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ"),
@@ -230,7 +234,7 @@ if (!function_exists('app')) {
 if (!function_exists('app_path')) {
     function app_path($str = '')
     {
-        return Suricate::App()->getParameter('path.app') 
+        return Suricate::App()->getParameter('path.app')
             . ($str ? '/' . $str : $str);
     }
 }
@@ -238,7 +242,7 @@ if (!function_exists('app_path')) {
 if (!function_exists('base_path')) {
     function base_path($str = '')
     {
-        return Suricate::App()->getParameter('path.base') 
+        return Suricate::App()->getParameter('path.base')
             . ($str ? '/' . $str : $str);
     }
 }
@@ -246,7 +250,7 @@ if (!function_exists('base_path')) {
 if (!function_exists('public_path')) {
     function public_path($str = '')
     {
-        return Suricate::App()->getParameter('path.public') 
+        return Suricate::App()->getParameter('path.public')
             . ($str ? '/' . $str : $str);
     }
 }
@@ -281,13 +285,18 @@ if (!function_exists('i18n')) {
 
 if (!function_exists('generateUuid')) {
     // Via https://rogerstringer.com/2013/11/15/generate-uuids-php/
-    function generateUuid() {
-        return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+    function generateUuid()
+    {
+        return sprintf(
+            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
             mt_rand(0, 0xffff),
             mt_rand(0, 0x0fff) | 0x4000,
             mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff)
         );
     }
 }

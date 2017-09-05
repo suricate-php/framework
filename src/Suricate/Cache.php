@@ -3,7 +3,7 @@ namespace Suricate;
 
 /**
  * Cache
- * 
+ *
  * @package Suricate
  * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
  *
@@ -44,7 +44,7 @@ class Cache extends Service implements Interfaces\ICache
      * @param string $variable The key that will be associated with the item.
      * @param mixed $value    The variable to store.
      * @param int $expiry   Expiration time of the item. If it's equal to zero, the item will never expire.
-     *                      You can also use Unix timestamp or a number of seconds starting from current time, 
+     *                      You can also use Unix timestamp or a number of seconds starting from current time,
      *                      but in the latter case the number of seconds may not exceed 2592000 (30 days).
      */
     public function set($variable, $value, $expiry = null)

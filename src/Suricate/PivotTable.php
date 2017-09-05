@@ -20,7 +20,7 @@ class PivotTable extends DBObject
         $pivot->connectDB();
 
         $items = array();
-        if ($target !== null)  {
+        if ($target !== null) {
             $targetType     = $pivot->getTargetForRelation($target);
             $sourceField    = $pivot->getSourceFieldForRelation($target);
             
@@ -79,7 +79,4 @@ class PivotTable extends DBObject
             throw new \InvalidArgumentException('Cannot get target for relation "' . $relationName . '" : Unknown relation');
         }
     }
-
-
-
 }

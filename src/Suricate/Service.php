@@ -8,11 +8,6 @@ class Service implements Interfaces\IService
     protected $parametersList   = array();
     protected $parametersValues = array();
 
-    public function __construct()
-    {
-
-    }
-
     public function __get($variable)
     {
         if (in_array($variable, $this->parametersList)) {

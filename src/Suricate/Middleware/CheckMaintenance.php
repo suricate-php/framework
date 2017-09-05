@@ -1,7 +1,7 @@
 <?php
 namespace Suricate\Middleware;
 
-class checkMaintenance implements \Suricate\Interfaces\IMiddleware
+class CheckMaintenance implements \Suricate\Interfaces\IMiddleware
 {
     public function call(&$response)
     {

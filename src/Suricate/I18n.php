@@ -31,7 +31,7 @@ class I18n extends Service
         $iterator   = new \DirectoryIterator($langDir);
 
         foreach ($iterator as $currentFile) {
-            if ($currentFile->isDir() 
+            if ($currentFile->isDir()
                 && !$currentFile->isDot()
                 && is_readable($currentFile->getPathname() . DIRECTORY_SEPARATOR . 'language.php')) {
                 $langList[$currentFile->getFilename()] = $currentFile->getFilename();
@@ -105,8 +105,6 @@ class I18n extends Service
         } else {
             return $str;
         }
-
-
     }
 
     public function has($str)

@@ -1,7 +1,6 @@
 <?php
 namespace Suricate\Exception;
 
-
 class HttpException extends \RuntimeException
 {
     private $statusCode;

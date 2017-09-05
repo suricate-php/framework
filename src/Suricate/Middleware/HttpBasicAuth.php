@@ -1,5 +1,6 @@
 <?php
 namespace Suricate\Middleware;
+
 use Suricate\Suricate;
 
 class HttpBasicAuth implements \Suricate\Interfaces\IMiddleware
@@ -72,8 +73,6 @@ class HttpBasicAuth implements \Suricate\Interfaces\IMiddleware
                         "WWW-Authenticate" => sprintf('Basic realm="%s"', $this->options["realm"])
                     )
                 );
-                
-
             }
         }
     }

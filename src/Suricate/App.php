@@ -7,10 +7,10 @@ namespace Suricate;
  * @package Suricate
  * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
  *
- * @property string $root 
- * @property string $mode 
- * @property string $url 
- * @property string $locale 
+ * @property string $root
+ * @property string $mode
+ * @property string $url
+ * @property string $locale
  */
 
 

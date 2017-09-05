@@ -1,7 +1,7 @@
 <?php
 namespace Suricate;
 
-class Collection implements  \IteratorAggregate, \Countable, \ArrayAccess, Interfaces\ICollection
+class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interfaces\ICollection
 {
     
     protected $items            = array();
@@ -26,8 +26,7 @@ class Collection implements  \IteratorAggregate, \Countable, \ArrayAccess, Inter
         $this->pagination['nbItems']    = count($this->items);
         $this->pagination['nbPages']    = ceil($this->pagination['nbItems'] / $nbItemPerPage);
 
-        $this->items = array_slice($this->items,($currentPage - 1) * $nbItemPerPage, $nbItemPerPage);
-
+        $this->items = array_slice($this->items, ($currentPage - 1) * $nbItemPerPage, $nbItemPerPage);
 
         return $this;
     }
@@ -270,7 +269,7 @@ class Collection implements  \IteratorAggregate, \Countable, \ArrayAccess, Inter
     public function sortBy($field, $reverse = false)
     {
         if ($reverse) {
-            $sortFunction = function($a, $b) use ($field) {
+            $sortFunction = function ($a, $b) use ($field) {
                 $first = dataGet($a, $field);
                 $second = dataGet($b, $field);
                 if ($first == $second) {
@@ -279,7 +278,7 @@ class Collection implements  \IteratorAggregate, \Countable, \ArrayAccess, Inter
                 return ($first > $second) ? -1 : 1;
             };
         } else {
-            $sortFunction = function($a, $b) use($field) {
+            $sortFunction = function ($a, $b) use ($field) {
                 $first = dataGet($a, $field);
                 $second = dataGet($b, $field);
                 if ($first == $second) {
@@ -377,8 +376,7 @@ class Collection implements  \IteratorAggregate, \Countable, \ArrayAccess, Inter
     public function chunk($size, $preserveKeys = false)
     {
         $result = new static;
-        foreach (array_chunk($this->items, $size, $preserveKeys) as $chunk)
-        {
+        foreach (array_chunk($this->items, $size, $preserveKeys) as $chunk) {
             $result->push(new static($chunk));
         }
         return $result;

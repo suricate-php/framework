@@ -38,7 +38,8 @@ class Router extends Service
         }
     }
 
-    private function buildRoute($routeName, $routeData) {
+    private function buildRoute($routeName, $routeData)
+    {
         if (isset($routeData['target'])) {
             $routeTarget = explode('::', $routeData['target']);
         } else {
@@ -51,7 +52,7 @@ class Router extends Service
         if (isset($routeData['middleware'])) {
             $middleware = (array)$routeData['middleware'];
         } else {
-            $middleware = array(); 
+            $middleware = array();
         }
 
         $this->addRoute(
@@ -66,7 +67,7 @@ class Router extends Service
 
     private function buildRestRoutes($routeBaseName, $routeBaseData)
     {
-        // If route has a parameters array defined, take the first defined 
+        // If route has a parameters array defined, take the first defined
         // argument as ":id" parameter, and use key as parameter name
         // otherwise, default to id => [0-9]*
         if (isset($routeBaseData['parameters'])

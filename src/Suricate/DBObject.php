@@ -4,7 +4,7 @@ namespace Suricate;
 /**
  * DBObject, Pseudo ORM Class
  *
- * Two types of variables are available : 
+ * Two types of variables are available :
  * - $dbVariables, an array of fields contained in linked SQL table
  * - $protectedVariables, an array of variables not stored in SQL
  *     that can be triggered on access
@@ -53,14 +53,14 @@ class DBObject implements Interfaces\IDBObject
     
     /**
      * Magic getter
-     * 
+     *
      * Try to get object property according this order :
      * <ul>
      *     <li>$dbVariable</li>
      *     <li>$protectedVariable (triggger call to accessToProtectedVariable()
      *         if not already loaded)</li>
      * </ul>
-     *         
+     *
      * @param  string $name     Property name
      * @return Mixed            Property value
      */
@@ -76,7 +76,6 @@ class DBObject implements Interfaces\IDBObject
             return $this->$name;
         } else {
             throw new \InvalidArgumentException('Undefined property ' . $name);
-        
         }
     }
     
@@ -131,9 +130,9 @@ class DBObject implements Interfaces\IDBObject
 
     /**
      * Magic setter
-     * 
+     *
      * Set a property to defined value
-     * Assignment in this order : 
+     * Assignment in this order :
      * <ul>
      *     <li>$dbVariable</li>
      *     <li>$protectedVariable</li>
@@ -161,7 +160,6 @@ class DBObject implements Interfaces\IDBObject
         } elseif ($this->isProtectedVariable($name)) {
             // Load only one time protected variable automatically
             if (!$this->isProtectedVariableLoaded($name)) {
-                
                 $protectedAccessResult = $this->accessToProtectedVariable($name);
 
                 if ($protectedAccessResult) {
@@ -410,7 +408,7 @@ class DBObject implements Interfaces\IDBObject
         $sqlArray   = array();
         $params     = array();
         $i = 0;
-        foreach ($arg as $key=>$val) {
+        foreach ($arg as $key => $val) {
             if (is_null($val)) {
                 $sqlArray[] = '`' . $key . '` IS :arg' . $i;
             } else {
@@ -426,7 +424,7 @@ class DBObject implements Interfaces\IDBObject
         $calledClass = get_called_class();
         $obj = new $calledClass;
         if (!$obj->loadFromSql($sql, $params)) {
-            foreach($arg as $property=>$value) {
+            foreach($arg as $property => $value) {
                 $obj->$property = $value;
             }
         }
@@ -595,7 +593,7 @@ class DBObject implements Interfaces\IDBObject
     }
     
     protected function connectDB()
-    {   
+    {
         if (!$this->dbLink) {
             $this->dbLink = Suricate::Database();
             if (static::DB_CONFIG != '') {

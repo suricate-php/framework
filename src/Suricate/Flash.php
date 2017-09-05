@@ -65,7 +65,6 @@ class Flash
             if (isset($currentSessionData[$type]) && is_array($currentSessionData[$type])) {
                 $newData = array_merge($currentSessionData[$type], (array) $message);
             } else {
-
                 $newData = (array) $message;
             }
 

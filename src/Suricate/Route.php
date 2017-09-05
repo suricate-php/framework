@@ -51,7 +51,6 @@ class Route
         if ($this->method == 'any' || strtolower($this->method) == strtolower($request->getMethod())) {
             // requestUri is matching pattern, set as matched route
             if (preg_match('#^' . $this->computedPath . '$#', $requestUri, $matching)) {
-
                 foreach (array_keys($this->parametersDefinitions) as $currentParameter) {
                     $this->parametersValues[$currentParameter] = isset($matching[$currentParameter]) ? $matching[$currentParameter] : null;
                 }
@@ -61,7 +60,7 @@ class Route
         }
     }
 
-    public function dispatch($response, $middlewares =array())
+    public function dispatch($response, $middlewares = array())
     {
         $result     = false;
         $callable   = $this->getCallable($response);
@@ -84,8 +83,6 @@ class Route
             }
             
             $result = call_user_func_array($callable, $methodArguments);
-
-            
         }
 
         return $result;
