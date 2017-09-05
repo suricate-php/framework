@@ -25,6 +25,9 @@ class Cache extends Service implements Interfaces\ICache
                 case 'apc':
                     static::$container = Suricate::CacheApc(true);
                     break;
+                case 'file':
+                    static::$container = Suricate::CacheFile(true);
+                    break;
                 default:
                     throw new \Exception("Unknown cache type " . $this->type);
                     break;
