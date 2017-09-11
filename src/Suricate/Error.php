@@ -35,11 +35,22 @@ class Error extends Service
         while (ob_get_level() > 1) {
             ob_end_clean();
         }
+        
+        $json = [];
+        $error = $e;
+        do {
+            $json[] = [
+                'type' => get_class($error),
+                'code' => $error->getCode(),
+                'message' => $error->getMessage(),
+                'file' => $error->getFile(),
+                'line' => $error->getLine(),
+                'trace' => explode("\n", $error->getTraceAsString()),
+            ];
+        } while ($error = $error->getPrevious());
+        Suricate::Logger()->error(json_encode($json));
 
-        /**
-        TODO : put error in logger
-         */
-        Suricate::Error()->displayGenericExceptionPage($e, $context);
+        Suricate::Error()->displayExceptionPage($e, $context);
     }
 
     public static function handleError($code, $message, $file, $line, $context)
@@ -54,7 +65,7 @@ class Error extends Service
         }
     }
 
-    private function displayGenericExceptionPage($e, $context = null)
+    private function displayExceptionPage($e, $context = null)
     {
         if ($this->report || $this->report === null) {
             echo '<html>'."\n";
@@ -79,6 +90,11 @@ class Error extends Service
             }
             echo '  </body>'."\n";
             echo '</html>';
+        } else {
+            if ($e->getCode() <= 1) {
+                $err = new Exception\HttpException('500');
+                $this->displayGenericHttpExceptionPage($err);
+            }
         }
         exit(1);
     }

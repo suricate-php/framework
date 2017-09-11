@@ -190,21 +190,25 @@ class Suricate
                     $errorReporting     = true;
                     $errorDumpContext   = true;
                     $logLevel           = Logger::LOGLEVEL_INFO;
+                    $logFile            = 'php://stdout';
                     break;
                 case App::DEBUG_MODE:
                     $errorReporting     = true;
                     $errorDumpContext   = true;
                     $logLevel           = Logger::LOGLEVEL_DEBUG;
+                    $logFile            = 'php://stdout';
                     break;
                 case App::PRELIVE_MODE:
                     $errorReporting     = true;
                     $errorDumpContext   = false;
                     $logLevel           = Logger::LOGLEVEL_WARN;
+                    $logFile            = 'php://stderr';
                     break;
                 case App::PRODUCTION_MODE:
                     $errorReporting     = false;
                     $errorDumpContext   = false;
                     $logLevel           = Logger::LOGLEVEL_WARN;
+                    $logFile            = 'php://stderr';
                     break;
             }
         }
@@ -212,6 +216,7 @@ class Suricate
         $this->config['Error']['report']        = $errorReporting;
         $this->config['Error']['dumpContext']   = $errorDumpContext;
         $this->config['Logger']['level']        = $logLevel;
+        $this->config['Logger']['logfile']      = $logFile;
     }
 
     /**
@@ -221,14 +226,13 @@ class Suricate
     private function getDefaultConfig()
     {
         return array(
-                'Router'    => array(),
-                'Session'   => array('type' => 'native'),
-                'Logger'    => array(
-                                'logfile'   => 'php://output',
-                                'enabled'   => true,
-                                'level'     => Logger::LOGLEVEL_INFO,
-                            ),
-                'App'       => array('base_uri' => '/'),
+                'Router'    => [],
+                'Session'   => ['type' => 'native'],
+                'Logger'    => [
+                    'enabled'   => true,
+                    'level'     => Logger::LOGLEVEL_INFO,
+                    ],
+                'App'       => ['base_uri' => '/'],
                 );
     }
 
