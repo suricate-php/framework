@@ -183,6 +183,7 @@ class Suricate
         $errorReporting     = false;
         $errorDumpContext   = false;
         $logLevel           = Logger::LOGLEVEL_WARN;
+        $logFile            = 'php://stdout';
         
         if (isset($this->config['App']['mode'])) {
             switch ($this->config['App']['mode']) {
