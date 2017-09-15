@@ -24,7 +24,6 @@ class Suricate
 
     protected $router;
 
-    private $defaultConfig = [];
     private $config;
     private $configFile;
 
@@ -232,7 +231,10 @@ class Suricate
         $this->config['Error']['report']        = $errorReporting;
         $this->config['Error']['dumpContext']   =  $errorDumpContext;
     }
-
+    /**
+     * Default setup template
+     * @return array setup
+     */
     private function getDefaultConfig()
     {
         return [
