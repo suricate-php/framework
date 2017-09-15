@@ -1,10 +1,10 @@
 <?php
 /**
- * Suricate - Another micro PHP framework
+ * Fwk - Another micro PHP 5 framework
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
- * @copyright   2013-2017 Mathieu LESNIAK
- * @version     0.1.9
+ * @copyright   2013-2014 Mathieu LESNIAK
+ * @version     0.1
  * @package     Suricate
  *
  * @method App          App() App() Get instance of App service
@@ -18,12 +18,13 @@ namespace Suricate;
 class Suricate
 {
 
-    const VERSION = '0.1.9';
+    const VERSION = '0.1.7';
 
     const CONF_DIR = '/conf/';
 
     protected $router;
 
+    private $defaultConfig = [];
     private $config;
     private $configFile;
 
@@ -144,7 +145,6 @@ class Suricate
      */
     private function loadConfig()
     {
-        $this->configureAppMode();
         $userConfig = array();
         if ($this->configFile !== null) {
             $userConfig = array();
@@ -175,8 +175,8 @@ class Suricate
         }
 
         $this->config = array_merge($this->config, $userConfig);
-        
-        
+
+        $this->configureAppMode();
     }
 
     private function configureAppMode()
@@ -214,28 +214,35 @@ class Suricate
                     break;
             }
         }
+        if (isset($this->config['Logger']['level'])) {
+            $logLevel = $this->config['Logger']['level'];
+        }
+        if (isset($this->config['Logger']['logfile'])) {
+            $logFile = $this->config['Logger']['logfile'];
+        }
+        if (isset($this->config['Error']['report'])) {
+            $errorReporting = $this->config['Error']['report'];
+        }
+        if (isset($this->config['Error']['dumpContext'])) {
+            $errorDumpContext = $this->config['Error']['dumpContext'];
+        }
 
-        $this->config['Error']['report']        = $errorReporting;
-        $this->config['Error']['dumpContext']   = $errorDumpContext;
         $this->config['Logger']['level']        = $logLevel;
         $this->config['Logger']['logfile']      = $logFile;
+        $this->config['Error']['report']        = $errorReporting;
+        $this->config['Error']['dumpContext']   =  $errorDumpContext;
     }
 
-    /**
-     * Default setup template
-     * @return array setup
-     */
     private function getDefaultConfig()
     {
-        return array(
-                'Router'    => [],
-                'Session'   => ['type' => 'native'],
-                'Logger'    => [
-                    'enabled'   => true,
-                    'level'     => Logger::LOGLEVEL_INFO,
-                    ],
-                'App'       => ['base_uri' => '/'],
-                );
+        return [
+            'Router'    => [],
+            'Session'   => ['type' => 'native'],
+            'Logger'    => [
+                'enabled'   => true,
+            ],
+            'App'       => ['base_uri' => '/'],
+        ];
     }
 
     public function run()
