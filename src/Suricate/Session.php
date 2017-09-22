@@ -22,6 +22,8 @@ class Session extends Service implements Interfaces\ISession
                 case 'memcache':
                     self::$container = Suricate::SessionMemcache(true);
                     break;
+                case 'none':
+                    break;
                 default:
                     throw new Exception("Unknown session type " . $this->type);
                     break;
