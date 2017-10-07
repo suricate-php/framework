@@ -11,8 +11,6 @@ class AutoLoader
 
         if (is_file($filename)) {
             include $filename;
-        } else {
-            //throw new \Exception("Object '$class' not found", 2);
         }
     }
 
