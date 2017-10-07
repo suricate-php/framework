@@ -1,10 +1,10 @@
 <?php
 /**
- * Fwk - Another micro PHP 5 framework
+ * Suricate - Another micro PHP 5 framework
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
- * @copyright   2013-2014 Mathieu LESNIAK
- * @version     0.1
+ * @copyright   2013-2017 Mathieu LESNIAK
+ * @version     0.1.9
  * @package     Suricate
  *
  * @method App          App() App() Get instance of App service
@@ -18,7 +18,7 @@ namespace Suricate;
 class Suricate
 {
 
-    const VERSION = '0.1.7';
+    const VERSION = '0.1.9';
 
     const CONF_DIR = '/conf/';
 
