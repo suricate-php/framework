@@ -17,6 +17,7 @@ namespace Suricate;
  * @property mixed $postFields
  * @property string $login
  * @property string $password
+ * @property array $headers
  */
 
 class Curl extends Service
@@ -31,7 +32,8 @@ class Curl extends Service
                                     'userAgent',
                                     'postFields',
                                     'login',
-                                    'password'
+                                    'password',
+                                    'headers',
                                 );
 
     private $request;
@@ -44,6 +46,7 @@ class Curl extends Service
     {
         $this->request  = new Request();
         $this->response = new Request();
+        $this->headers = [];
     }
 
     public function setUrl($url)
@@ -71,13 +74,22 @@ class Curl extends Service
 
         return $this;
     }
+
+    public function addHeader($headerLine)
+    {
+        $headers = $this->headers;
+        $headers[] = $headerLine;
+
+        $this->headers = $headers;
+
+        return $this;
+    }
     
     public function send()
     {
         $ch     = curl_init($this->request->getUrl());
-        
-        $curlOptions = $this->generateCurlOptions();
-        curl_setopt_array($ch, $curlOptions);
+
+        curl_setopt_array($ch, $this->generateCurlOptions());
 
         $curlResponse       = curl_exec($ch);
         if ($curlResponse === false) {
@@ -129,11 +141,12 @@ class Curl extends Service
             CURLOPT_PROXYPORT       => 'proxyPort',
             CURLOPT_REFERER         => 'referer',
             CURLOPT_COOKIE          => 'cookie',
-            CURLOPT_USERAGENT       => 'userAgent'
+            CURLOPT_USERAGENT       => 'userAgent',
+            CURLOPT_HTTPHEADER      => 'headers',
         );
 
         foreach ($parametersMapping as $curlKey => $optionKey) {
-            if ($value = $this->getParameter($optionKey) !== null) {
+            if (($value = $this->getParameter($optionKey)) !== null) {
                 $curlOptions[$curlKey] = $value;
             }
         }
