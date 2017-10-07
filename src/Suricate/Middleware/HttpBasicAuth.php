@@ -37,10 +37,8 @@ class HttpBasicAuth implements \Suricate\Interfaces\IMiddleware
         switch ($this->options['type']) {
             case self::AUTHTYPE_ARRAY:
                 return $this->authenticateAgainstArray($user, $password);
-                break;
             case self::AUTHTYPE_DB:
                 return $this->authenticateAgainstDatabase($user, $password);
-                break;
         }
     }
 

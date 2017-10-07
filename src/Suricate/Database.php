@@ -88,7 +88,6 @@ class Database extends Service
                 break;
             default:
                 throw new \Exception('Unsupported PDO DB handler');
-                break;
         }
 
         try {
