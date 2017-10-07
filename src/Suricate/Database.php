@@ -84,7 +84,7 @@ class Database extends Service
                 $this->configurePDOMySQL($params, $pdoDsn, $pdoUsername, $pdoPassword, $pdoAttributes);
                 break;
             case 'sqlite':
-                $this->configurePDOSQLite($params, $pdoDsn, $pdoUsername, $pdoPassword, $pdoAttributes);
+                $this->configurePDOSQLite($params, $pdoDsn, $pdoUsername, $pdoPassword);
                 break;
             default:
                 throw new \Exception('Unsupported PDO DB handler');
