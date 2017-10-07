@@ -96,30 +96,6 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
     {
         return new \ArrayIterator($this->items);
     }
-    /*public function current()
-    {
-        return $this->offsetGet($this->iteratorPosition);
-    }
-
-    public function next()
-    {
-        ++$this->iteratorPosition;
-    }
-
-    public function key()
-    {
-        return $this->iteratorPosition;
-    }
-
-    public function valid()
-    {
-        return isset($this->items[$this->iteratorPosition]);
-    }
-
-    public function rewind()
-    {
-        $this->iteratorPosition = 0;
-    }*/
 
     // Implementation of ArrayAccess Interface
     public function offsetExists($offset)
