@@ -7,7 +7,7 @@ namespace Suricate;
  * @package Suricate
  * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
  *
- * @property \string $userAgent
+ * @property string $userAgent
  * @property int $timeout
  * @property string $proxyHost
  * @property int $proxyPort
