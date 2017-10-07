@@ -78,13 +78,13 @@ class Database extends Service
             $params = array_shift($confs);
         }
 
-        $PDOAttributes = array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION);
+        $pdoAttributes = array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION);
         switch ($params['type']) {
             case 'mysql':
-                $this->configurePDOMySQL($params, $PDODsn, $PDOUsername, $PDOPassword, $PDOAttributes);
+                $this->configurePDOMySQL($params, $pdoDsn, $pdoUsername, $pdoPassword, $pdoAttributes);
                 break;
             case 'sqlite':
-                $this->configurePDOSQLite($params, $PDODsn, $PDOUsername, $PDOPassword, $PDOAttributes);
+                $this->configurePDOSQLite($params, $pdoDsn, $pdoUsername, $pdoPassword, $pdoAttributes);
                 break;
             default:
                 throw new \Exception('Unsupported PDO DB handler');
@@ -92,8 +92,8 @@ class Database extends Service
         }
 
         try {
-            $this->handler = new \PDO($PDODsn, $PDOUsername, $PDOPassword);
-            foreach ($PDOAttributes as $attributeKey => $attributeValue) {
+            $this->handler = new \PDO($pdoDsn, $pdoUsername, $pdoPassword);
+            foreach ($pdoAttributes as $attributeKey => $attributeValue) {
                 $this->handler->setAttribute($attributeKey, $attributeValue);
             }
         } catch (\Exception $e) {
@@ -167,7 +167,7 @@ class Database extends Service
         return $this->statement->columnCount();
     }
 
-    private function configurePDOMySQL($params, &$PDODsn, &$PDOUsername, &$PDOPassword, &$PDOAttributes)
+    private function configurePDOMySQL($params, &$pdoDsn, &$pdoUsername, &$pdoPassword, &$pdoAttributes)
     {
         $defaultParams = array(
             'hostname' => null,
@@ -179,15 +179,15 @@ class Database extends Service
 
         $params = array_merge($defaultParams, $params);
 
-        $PDODsn         = 'mysql:host=' . $params['hostname'] . ';dbname=' . $params['database'];
-        $PDOUsername    = $params['username'];
-        $PDOPassword    = $params['password'];
+        $pdoDsn         = 'mysql:host=' . $params['hostname'] . ';dbname=' . $params['database'];
+        $pdoUsername    = $params['username'];
+        $pdoPassword    = $params['password'];
         if ($params['encoding'] != null) {
-            $PDOAttributes[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES " . $params['encoding'];
+            $pdoAttributes[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES " . $params['encoding'];
         }
     }
 
-    private function configurePDOSQLite($params, &$PDODsn, &$PDOUsername, &$PDOPassword)
+    private function configurePDOSQLite($params, &$pdoDsn, &$pdoUsername, &$pdoPassword)
     {
         $defaultParams = array(
             'username'  => null,
@@ -198,15 +198,15 @@ class Database extends Service
 
         $params = array_merge($defaultParams, $params);
         
-        $PDODsn         = 'sqlite';
+        $pdoDsn         = 'sqlite';
 
         if ($params['memory']) {
-            $PDODsn .= '::memory:';
+            $pdoDsn .= '::memory:';
         } else {
-            $PDODsn .= ':' . $params['file'];
+            $pdoDsn .= ':' . $params['file'];
         }
         
-        $PDOUsername    = $params['username'];
-        $PDOPassword    = $params['password'];
+        $pdoUsername    = $params['username'];
+        $pdoPassword    = $params['password'];
     }
 }

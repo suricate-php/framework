@@ -68,9 +68,9 @@ class Curl extends Service
         return $this;
     }
 
-    public function setUserAgent($user_agent)
+    public function setUserAgent($userAgent)
     {
-        $this->userAgent = $user_agent;
+        $this->userAgent = $userAgent;
 
         return $this;
     }

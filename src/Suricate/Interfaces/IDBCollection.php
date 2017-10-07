@@ -25,7 +25,7 @@ interface IDBCollection
 
     public function save();
 
-    public function addItemLink($link_id);
+    public function addItemLink($linkId);
 
     public function addItem(IDBObject $item);
 

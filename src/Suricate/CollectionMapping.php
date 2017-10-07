@@ -8,13 +8,13 @@ class CollectionMapping extends Collection
 
     protected $additionalMappingFieldList = array();
 
-    public static function loadForParentId($parent_id)
+    public static function loadForParentId($parentId)
     {
 
-        $called_class   = get_called_class();
-        $collection     = new $called_class;
+        $calledClass   = get_called_class();
+        $collection     = new $calledClass;
 
-        $item_name = $collection::ITEM_TYPE;
+        $itemName = $collection::ITEM_TYPE;
 
         $sql            = '';
         $sqlParams      = array();
@@ -25,33 +25,33 @@ class CollectionMapping extends Collection
         }
         $sql .= " FROM `" . $collection::TABLE_NAME . "` a";
         $sql .= " RIGHT JOIN `" . $collection::SQL_RELATION_TABLE_NAME . "` b";
-        $sql .= "   ON b." . $collection::MAPPING_ID_NAME . "=a." . $item_name::TABLE_INDEX;
+        $sql .= "   ON b." . $collection::MAPPING_ID_NAME . "=a." . $itemName::TABLE_INDEX;
         $sql .= " WHERE";
         $sql .= "   " . $collection::PARENT_ID_NAME . "=:parent_id";
 
-        $sqlParams['parent_id'] = $parent_id;
+        $sqlParams['parent_id'] = $parentId;
 
         $results = Suricate::Database()->query($sql, $sqlParams)->fetchAll();
 
         if ($results !== false) {
             foreach ($results as $currentResult) {
-                $item_name = $collection::ITEM_TYPE;
-                $collection->addItem($item_name::buildFromArray($currentResult));
+                $itemName = $collection::ITEM_TYPE;
+                $collection->addItem($itemName::buildFromArray($currentResult));
             }
         }
-        $collection->parent_id = $parent_id;
+        $collection->parent_id = $parentId;
 
         return $collection;
     }
 
-    public function setParentIdForAll($parent_id)
+    public function setParentIdForAll($parentId)
     {
-        $this->parent_id = $parent_id;
+        $this->parent_id = $parentId;
     }
 
     public function save()
     {
-        $db_handler     = Suricate::Database(true);
+        $dbHandler     = Suricate::Database(true);
 
         if ($this->parent_id != '') {
             // 1st step : delete all records for current parent_id
@@ -62,18 +62,12 @@ class CollectionMapping extends Collection
             $sqlParams      = array();
             $sqlParams['parent_id'] = $this->parent_id;
 
-            //echo "--> delete old items with : $sql<br/>";
-            $db_handler->query($sql, $sqlParams);
+            $dbHandler->query($sql, $sqlParams);
 
             // 2nd step : create items that are not saved in db
-            foreach ($this->items as &$current_item) {
-                if ($current_item->{$current_item::TABLE_INDEX} == '') {
-                    // 2nd step : create items that are not saved in db
-                    //echo "Item missing id, saving id<br/>";
-                    /*foreach ($this->additionalMappingFieldList as $additionalField) {
-                        $current_item->$additionalField
-                    }*/
-                    $current_item->save();
+            foreach ($this->items as &$currentItem) {
+                if ($currentItem->{$currentItem::TABLE_INDEX} == '') {
+                    $currentItem->save();
                 }
 
                 //3rd step : create the mapping
@@ -99,7 +93,7 @@ class CollectionMapping extends Collection
                 if (count($this->additionalMappingFieldList)) {
                     foreach ($this->additionalMappingFieldList as $additionalField) {
                         $sql .= ',:' . $additionalField;
-                        $sqlParams[$additionalField] = $current_item->$additionalField;
+                        $sqlParams[$additionalField] = $currentItem->$additionalField;
                     }
                 }
                 
@@ -107,50 +101,50 @@ class CollectionMapping extends Collection
 
                 
                 $sqlParams['parent_id'] = $this->parent_id;
-                $sqlParams['id']        = $current_item->id;
+                $sqlParams['id']        = $currentItem->id;
 
-                $db_handler->query($sql, $sqlParams);
+                $dbHandler->query($sql, $sqlParams);
             }
         }
     }
 
-    public function craftItem($item_data)
+    public function craftItem($itemData)
     {
-        $item_name = static::ITEM_TYPE;
+        $itemName = static::ITEM_TYPE;
         
-        foreach ($item_data as $data) {
-            $new_item       = new $item_name();
-            $has_data       = false;
+        foreach ($itemData as $data) {
+            $newItem       = new $itemName();
+            $hasData       = false;
 
             // One field contains item unique index, load from it
-            if (isset($data[$new_item::TABLE_INDEX]) && $data[$new_item::TABLE_INDEX] != '') {
-                $new_item->load($data[$new_item::TABLE_INDEX]);
+            if (isset($data[$newItem::TABLE_INDEX]) && $data[$newItem::TABLE_INDEX] != '') {
+                $newItem->load($data[$newItem::TABLE_INDEX]);
             } else {
                 // Build SQL query to load corresponding item
                 $sqlData = array();
                 
 
                 $sql  = "SELECT *";
-                $sql .= " FROM `" . $new_item::TABLE_NAME . "`";
+                $sql .= " FROM `" . $newItem::TABLE_NAME . "`";
                 $sql .= " WHERE";
                 foreach ($data as $field => $value) {
-                    if ($new_item->isDBVariable($field)) {
+                    if ($newItem->isDBVariable($field)) {
                         $sqlData[$field] = $value;
                         $sql .= "   `" . $field . "`=:$field";
                     }
                 }
 
-                $new_item->loadFromSql($sql, $sqlData);
+                $newItem->loadFromSql($sql, $sqlData);
             }
 
             // Assign properties to object
             foreach ($data as $field => $value) {
-                $new_item->$field = $value;
-                $has_data = $has_data || ($value != '');
+                $newItem->$field = $value;
+                $hasData = $hasData || ($value != '');
             }
             // Object is not empty, adding it to collection
-            if ($has_data) {
-                $this->addItem($new_item);
+            if ($hasData) {
+                $this->addItem($newItem);
             }
         }
     }
