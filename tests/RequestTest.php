@@ -127,4 +127,12 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $method->setAccessible(true);
         $this->assertEquals(null, $method->invoke($request));
     }
+
+    public function testUrl()
+    {
+        $request = new Suricate\Request();
+        $request->setUrl('https://www.google.fr');
+        $this->assertEquals('https://www.google.fr', $request->getUrl());
+        $this->assertNotEquals('https://www.yahoo.fr', $request->getUrl());   
+    }
 }
