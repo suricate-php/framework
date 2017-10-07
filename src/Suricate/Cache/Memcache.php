@@ -109,11 +109,11 @@ class Memcache extends Suricate\Cache
     {
         $this->connect();
 
-        if ($expiry == null) {
+        if ($expiry === null) {
             $expiry = $this->defaultExpiry;
         }
 
-        if ($this->useCompression) {
+        if ($this->useCompression !== false) {
             $flag = MEMCACHE_COMPRESSED;
         } else {
             $flag = null;

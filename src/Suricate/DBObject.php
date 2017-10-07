@@ -137,8 +137,8 @@ class DBObject implements Interfaces\IDBObject
      *     <li>$dbVariable</li>
      *     <li>$protectedVariable</li>
      *  </ul>
-     * @param [type] $name  [description]
-     * @param [type] $value [description]
+     * @param string $name  variable name to set
+     * @param mixed $value Value to set
      */
     public function __set($name, $value)
     {
