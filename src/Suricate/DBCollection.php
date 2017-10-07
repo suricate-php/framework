@@ -5,8 +5,10 @@ class DBCollection extends Collection
 {
     const TABLE_NAME            = '';           // Name of SQL table containing items
     const ITEM_TYPE             = '';           // Class of items in collection
+    const DB_CONFIG             = '';           // Database configuration identifier
     const PARENT_ID_NAME        = 'parent_id';  // Name of the field referencing to parent_id
     const PARENT_OBJECT_TYPE    = '';           // Parent object type
+
 
     protected $lazyLoad = false;
     protected $parentId;                       // Id of the parent
@@ -51,8 +53,11 @@ class DBCollection extends Collection
             $sql .= "WHERE " . $collection->parentFilterName . "=:type";
             $sqlParams['type'] = $collection->parentFilterType;
         }
-
-        $results = Suricate::Database()->query($sql, $sqlParams)->fetchAll();
+        $dbLink = Suricate::Database();
+        if (static::DB_CONFIG != '') {
+            $dbLink->setConfig(static::DB_CONFIG);
+        }
+        $results = $dbLink->query($sql, $sqlParams)->fetchAll();
 
         if ($results !== false) {
             foreach ($results as $currentResult) {
@@ -82,6 +87,11 @@ class DBCollection extends Collection
 
     public function loadFromSql($sql, $sqlParams = array())
     {
+        $dbLink = Suricate::Database();
+        if (static::DB_CONFIG != '') {
+            $dbLink->setConfig(static::DB_CONFIG);
+        }
+
         $results = Suricate::Database()->query($sql, $sqlParams)->fetchAll();
 
         if ($results !== false) {
@@ -96,8 +106,12 @@ class DBCollection extends Collection
 
     public function lazyLoadFromSql($sql, $sqlParams = array())
     {
-        $results = Suricate::Database()
-            ->query($sql, $sqlParams)
+        $dbLink = Suricate::Database();
+        if (static::DB_CONFIG != '') {
+            $dbLink->setConfig(static::DB_CONFIG);
+        }
+
+        $results = $dbLink->query($sql, $sqlParams)
             ->fetchAll();
 
         if ($results !== false) {
@@ -123,6 +137,10 @@ class DBCollection extends Collection
         if ($parentId != '') {
             $sqlParams     = array();
             $dbHandler     = Suricate::Database(true);
+
+            if (static::DB_CONFIG != '') {
+                $dbHandler->setConfig(static::DB_CONFIG);
+            }
 
             $sql  = "SELECT *";
             $sql .= " FROM `" . $collection::TABLE_NAME . "`";
@@ -221,7 +239,12 @@ class DBCollection extends Collection
             $sqlParams = array();
         }
 
-        Suricate::Database()->query($sql, $sqlParams);
+        $dbLink = Suricate::Database();
+        if (static::DB_CONFIG != '') {
+            $dbLink->setConfig(static::DB_CONFIG);
+        }
+        
+        $dbLink->query($sql, $sqlParams);
 
         // 2nd step : save all current items
         foreach ($this->items as $currentItem) {
