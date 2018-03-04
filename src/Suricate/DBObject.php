@@ -505,7 +505,7 @@ class DBObject implements Interfaces\IDBObject
         return $orm;
     }
 
-    public static function create($data = []
+    public static function create($data = [])
     {
         $obj = static::instanciate($data);
         $obj->save();
