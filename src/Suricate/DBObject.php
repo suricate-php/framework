@@ -168,6 +168,9 @@ class DBObject implements Interfaces\IDBObject
         $this->setRelations();
     }
     
+    /**
+     * @param string $name
+     */
     private function getDBVariable($name)
     {
         if (isset($this->dbValues[$name])) {
@@ -187,6 +190,9 @@ class DBObject implements Interfaces\IDBObject
         return in_array($name, $this->dbVariables);
     }
 
+    /**
+     * @param string $name
+     */
     private function getProtectedVariable($name)
     {
         // Variable exists, and is already loaded
@@ -207,6 +213,9 @@ class DBObject implements Interfaces\IDBObject
         return null;
     }
 
+    /**
+     * @param string $name
+     */
     private function getRelation($name)
     {
         if (isset($this->relationValues[$name]) && $this->isRelationLoaded($name)) {
@@ -238,7 +247,7 @@ class DBObject implements Interfaces\IDBObject
     /**
      * Define object relations
      *
-     * @return object
+     * @return DBObject
      */
     protected function setRelations()
     {
@@ -468,6 +477,9 @@ class DBObject implements Interfaces\IDBObject
         return $obj;
     }
     
+    /**
+     * @param string $sql
+     */
     public function loadFromSql($sql, $sql_params = [])
     {
         $this->connectDB();
