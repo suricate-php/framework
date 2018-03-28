@@ -87,40 +87,41 @@ class Curl extends Service
     
     public function send()
     {
-        $ch     = curl_init($this->request->getUrl());
+        $curlHandler     = curl_init($this->request->getUrl());
 
-        curl_setopt_array($ch, $this->generateCurlOptions());
+        curl_setopt_array($curlHandler, $this->generateCurlOptions());
 
-        $curlResponse       = curl_exec($ch);
+        $curlResponse       = curl_exec($curlHandler);
         if ($curlResponse === false) {
-            $this->errorMsg     = curl_error($ch);
-            $this->errorCode    = curl_errno($ch);
+            $this->errorMsg     = curl_error($curlHandler);
+            $this->errorCode    = curl_errno($curlHandler);
 
             return false;
-        } else {
-            $this->responseData = curl_getinfo($ch);
-            $this->response->setUrl($this->responseData['url']);
-            $redirectCount      = curl_getinfo($ch, CURLINFO_REDIRECT_COUNT);
-
-            $splittedResponse   = explode("\r\n\r\n", $curlResponse, $redirectCount + 2);
-            $lastHeader         = $splittedResponse[$redirectCount];
-        
-            // get headers out of response
-            $headers = explode("\n", trim($lastHeader));
-            array_shift($headers);
-        
-            foreach ($headers as $headerLine) {
-                preg_match('|^([\d\w\s_-]*):(.*)|', $headerLine, $matches);
-                if (isset($matches[1])) {
-                    $this->response->addHeader($matches[1], trim($matches[2]));
-                }
-            }
-    
-
-            // Reponse data
-            $this->response->setHttpCode($this->responseData['http_code']);
-            $this->response->setBody(substr($curlResponse, $this->responseData['header_size']));
         }
+
+        $this->responseData = curl_getinfo($curlHandler);
+        $this->response->setUrl($this->responseData['url']);
+        $redirectCount      = curl_getinfo($curlHandler, CURLINFO_REDIRECT_COUNT);
+
+        $splittedResponse   = explode("\r\n\r\n", $curlResponse, $redirectCount + 2);
+        $lastHeader         = $splittedResponse[$redirectCount];
+    
+        // get headers out of response
+        $headers = explode("\n", trim($lastHeader));
+        array_shift($headers);
+    
+        foreach ($headers as $headerLine) {
+            preg_match('|^([\d\w\s_-]*):(.*)|', $headerLine, $matches);
+            if (isset($matches[1])) {
+                $this->response->addHeader($matches[1], trim($matches[2]));
+            }
+        }
+
+
+        // Reponse data
+        $this->response->setHttpCode($this->responseData['http_code']);
+        $this->response->setBody(substr($curlResponse, $this->responseData['header_size']));
+
         return $this;
     }
 

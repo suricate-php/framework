@@ -61,6 +61,5 @@ class Service implements Interfaces\IService
 
     protected function init()
     {
-        
     }
 }

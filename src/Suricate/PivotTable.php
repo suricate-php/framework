@@ -66,17 +66,17 @@ class PivotTable extends DBObject
     {
         if (isset($this->relations[$relationName])) {
             return $this->relations[$relationName]['source'];
-        } else {
-            throw new \InvalidArgumentException('Cannot get field for relation "' . $relationName . '" : Unknown relation');
         }
+
+        throw new \InvalidArgumentException('Cannot get field for relation "' . $relationName . '" : Unknown relation');
     }
 
     private function getTargetForRelation($relationName)
     {
         if (isset($this->relations[$relationName])) {
             return $this->relations[$relationName]['target'];
-        } else {
-            throw new \InvalidArgumentException('Cannot get target for relation "' . $relationName . '" : Unknown relation');
         }
+
+        throw new \InvalidArgumentException('Cannot get target for relation "' . $relationName . '" : Unknown relation');
     }
 }

@@ -200,23 +200,19 @@ class Image
 
     public function rotate()
     {
-
     }
 
     public function mirror()
     {
-
     }
 
     public function flip()
     {
-
     }
 
     public function merge($source, $position = null, $x = null, $y = null, $percent = 100)
     {
         if ($source instanceof \Suricate\Image) {
-
         } else {
             $source = with(new Image())->load($source);
         }

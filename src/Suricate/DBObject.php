@@ -88,9 +88,9 @@ class DBObject implements Interfaces\IDBObject
             return $this->getRelation($name);
         } elseif (!empty($this->$name)) {
             return $this->$name;
-        } else {
-            throw new \InvalidArgumentException('Undefined property ' . $name);
         }
+
+        throw new \InvalidArgumentException('Undefined property ' . $name);
     }
 
         /**
@@ -457,7 +457,7 @@ class DBObject implements Interfaces\IDBObject
             if (is_null($val)) {
                 $sqlArray[] = '`' . $key . '` IS :arg' . $i;
             } else {
-                $sqlArray[] = '`' . $key . '`=:arg' . $i;    
+                $sqlArray[] = '`' . $key . '`=:arg' . $i;
             }
             $params['arg' .$i] = $val;
             $i++;
@@ -469,7 +469,7 @@ class DBObject implements Interfaces\IDBObject
         $calledClass = get_called_class();
         $obj = new $calledClass;
         if (!$obj->loadFromSql($sql, $params)) {
-            foreach($arg as $property => $value) {
+            foreach ($arg as $property => $value) {
                 $obj->$property = $value;
             }
         }
@@ -480,12 +480,12 @@ class DBObject implements Interfaces\IDBObject
     /**
      * @param string $sql
      */
-    public function loadFromSql($sql, $sql_params = [])
+    public function loadFromSql($sql, $sqlParams = [])
     {
         $this->connectDB();
         $this->resetLoadedVariables();
         
-        $results = $this->dbLink->query($sql, $sql_params)->fetch();
+        $results = $this->dbLink->query($sql, $sqlParams)->fetch();
 
         if ($results !== false) {
             foreach ($results as $key => $value) {

@@ -143,22 +143,18 @@ class Database extends Service
 
     public function beginTransaction()
     {
-
     }
 
     public function commit()
     {
-
     }
 
     public function rollback()
     {
-
     }
 
     public function inTransaction()
     {
-
     }
 
     public function getColumnCount()
