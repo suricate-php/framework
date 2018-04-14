@@ -140,9 +140,9 @@ class DBObject implements Interfaces\IDBObject
                 }
             }
             return isset($this->relationValues[$name]);
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -164,6 +164,7 @@ class DBObject implements Interfaces\IDBObject
 
     public function __wakeup()
     {
+        $this->dbLink = false;
         $this->setRelations();
     }
     
