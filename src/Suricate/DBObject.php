@@ -151,16 +151,15 @@ class DBObject implements Interfaces\IDBObject
      */
     public function __sleep()
     {
-        $this->dbLink   = false;
-        $this->relations= [];
+        $discardedProps = ['dbLink', 'relations'];
         $reflection     = new \ReflectionClass($this);
         $props          = $reflection->getProperties();
         $result         = [];
         foreach ($props as $currentProperty) {
             $result[] = $currentProperty->name;
         }
-
-        return $result;
+        
+        return array_diff($result, $discardedProps);
     }
 
     public function __wakeup()
