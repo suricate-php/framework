@@ -22,19 +22,19 @@ namespace Suricate;
 
 class Curl extends Service
 {
-    protected $parametersList   = array(
-                                    'userAgent',
-                                    'timeout',
-                                    'proxyHost',
-                                    'proxyPort',
-                                    'referer',
-                                    'cookie',
-                                    'userAgent',
-                                    'postFields',
-                                    'login',
-                                    'password',
-                                    'headers',
-                                );
+    protected $parametersList   = [
+        'userAgent',
+        'timeout',
+        'proxyHost',
+        'proxyPort',
+        'referer',
+        'cookie',
+        'userAgent',
+        'postFields',
+        'login',
+        'password',
+        'headers',
+    ];
 
     private $request;
     private $response;
@@ -46,7 +46,7 @@ class Curl extends Service
     {
         $this->request  = new Request();
         $this->response = new Request();
-        $this->headers = [];
+        $this->headers  = [];
     }
 
     public function setUrl($url)

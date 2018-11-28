@@ -13,9 +13,9 @@ namespace Suricate;
 
 class Database extends Service
 {
-    protected $parametersList = array(
-                                    'configs'
-                                );
+    protected $parametersList = [
+        'configs'
+    ];
 
     private $config;
     private $handler;

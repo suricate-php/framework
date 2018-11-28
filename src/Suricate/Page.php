@@ -6,17 +6,16 @@ class Page
     protected $title;
     protected $encoding       = 'utf-8';
     protected $language       = 'en_US';
-    protected $stylesheets    = array();
-    protected $metas          = array();
-    protected $scripts        = array();
-    protected $rss            = array();
-    protected $htmlClass      = array();
+    protected $stylesheets    = [];
+    protected $metas          = [];
+    protected $scripts        = [];
+    protected $rss            = [];
+    protected $htmlClass      = [];
 
     public function __construct()
     {
 
     }
-
 
     public function setLanguage($language)
     {
@@ -49,9 +48,12 @@ class Page
      * @param string $url Stylesheet URL
      * @param string $media Stylesheet media (default: all)
      */
-    public function addStylesheet($id, $url, $media = 'all')
+    public function addStylesheet($identifier, $url, $media = 'all')
     {
-        $this->stylesheets[$id] = array('url' => $url, 'media' => $media);
+        $this->stylesheets[$identifier] = [
+            'url' => $url,
+            'media' => $media
+        ];
 
         return $this;
     }

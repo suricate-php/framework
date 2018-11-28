@@ -38,7 +38,7 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
         }
 
         $values = array();
-        foreach ($this->items as $itemKey => $item) {
+        foreach ($this->items as $item) {
             $itemValues = array();
             foreach ($args['data'] as $arg) {
                 $itemValues[] = dataGet($item, $arg);
@@ -108,16 +108,15 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
         $item =isset($this->items[$offset]) ? $this->items[$offset] : null;
         if (gettype($item) == 'object' || $item == null) {
             return $item;
-        } else {
-            // Lazy load
-            $itemType = $this::ITEM_TYPE;
-            $itemToLoad = new $itemType;
-            $itemToLoad->load($this->items[$offset]);
-
-            $this->items[$offset] = $itemToLoad;
-
-            return $this->items[$offset];
         }
+        // Lazy load
+        $itemType = $this::ITEM_TYPE;
+        $itemToLoad = new $itemType;
+        $itemToLoad->load($this->items[$offset]);
+
+        $this->items[$offset] = $itemToLoad;
+
+        return $this->items[$offset];
     }
 
     public function offsetSet($offset, $value)
