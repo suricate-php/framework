@@ -285,6 +285,7 @@ class DBObject implements Interfaces\IDBObject
      */
     public function toArray()
     {
+        $this->setExportedVariables();
         $result = [];
         foreach ($this->exportedVariables as $sourceName => $destinationName) {
             $omitEmpty  = false;
