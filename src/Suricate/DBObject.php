@@ -56,6 +56,8 @@ class DBObject implements Interfaces\IDBObject
     protected $relationValues               = [];
     protected $loadedRelations              = [];
 
+    protected $exportedVariables            = [];
+
     protected $dbLink                       = false;
 
     protected $validatorMessages            = [];
@@ -254,6 +256,67 @@ class DBObject implements Interfaces\IDBObject
         $this->relations = [];
 
         return $this;
+    }
+
+    /**
+     * Define object exported variables
+     *
+     * @return DBObject
+     */
+    protected function setExportedVariables()
+    {
+        if (count($this->exportedVariables)) {
+            return $this;
+        }
+
+        $dbMappingExport = [];
+        foreach ($this->dbVariables as $field) {
+            $dbMappingExport[$field] = $field;
+        }
+        $this->exportedVariables = $dbMappingExport;
+
+        return $this;
+    }
+
+    /**
+     * Export DBObject to array
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $result = [];
+        foreach ($this->exportedVariables as $sourceName => $destinationName) {
+            $omitEmpty  = false;
+
+            if (strpos($destinationName, ',') !== false) {
+                $splitted   = explode(',', $destinationName);
+                $omitEmpty  = in_array('omitempty', $splitted);
+                $destinationName = $splitted[0];
+            }
+
+            if ($destinationName === '-') {
+                continue;
+            }
+
+            if ($omitEmpty && empty($this->$sourceName)) {
+                continue;
+            }
+
+            $result[$destinationName] = $this->$sourceName;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Export DBObject to JSON format
+     *
+     * @return string
+     */
+    public function toJson()
+    {
+        return array_map('json_encode', $this->toArray());
     }
 
     /**
