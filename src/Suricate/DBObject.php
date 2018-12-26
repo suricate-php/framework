@@ -289,10 +289,19 @@ class DBObject implements Interfaces\IDBObject
         $result = [];
         foreach ($this->exportedVariables as $sourceName => $destinationName) {
             $omitEmpty  = false;
-
+            $castType   = null;
             if (strpos($destinationName, ',') !== false) {
                 $splitted   = explode(',', $destinationName);
-                $omitEmpty  = in_array('omitempty', $splitted);
+                array_map(function ($item) use (&$castType, &$omitEmpty) {
+                    if ($item === 'omitempty') {
+                        $omitEmpty = true;
+                        return;
+                    }
+                    if (substr($item, 0, 5) === 'type:') {
+                        $castType = substr($item, 5);
+                    }
+                }, $splitted);
+
                 $destinationName = $splitted[0];
             }
 
@@ -303,8 +312,11 @@ class DBObject implements Interfaces\IDBObject
             if ($omitEmpty && empty($this->$sourceName)) {
                 continue;
             }
-
-            $result[$destinationName] = $this->$sourceName;
+            $value = $this->$sourceName;
+            if ($castType !== null) {
+                settype($value, $castType);
+            }
+            $result[$destinationName] = $value;
         }
 
         return $result;
