@@ -4,7 +4,7 @@ namespace Suricate;
 class Route
 {
     private $name;
-    private $method;
+    private $method = [];
     private $path;
     private $computedPath;
 
@@ -19,7 +19,7 @@ class Route
     {
         $this->isMatched                = false;
         $this->name                     = $name;
-        $this->method                   = $method;
+        $this->method                   = array_map('strtolower', (array)$method);
         $this->path                     = $path;
         $this->target                   = $routeTarget;
         $this->parametersDefinitions    = $parametersDefinitions;
@@ -48,7 +48,8 @@ class Route
             $requestUri = substr($requestUri, 0, $pos);
         }
 
-        if ($this->method == 'any' || strtolower($this->method) == strtolower($request->getMethod())) {
+        if ($this->method === ['any']
+            || in_array(strtolower($request->getMethod()), $this->method)) {
             // requestUri is matching pattern, set as matched route
             if (preg_match('#^' . $this->computedPath . '$#', $requestUri, $matching)) {
                 foreach (array_keys($this->parametersDefinitions) as $currentParameter) {
