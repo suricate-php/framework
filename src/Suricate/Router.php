@@ -40,19 +40,18 @@ class Router extends Service
 
     private function buildRoute($routeName, $routeData)
     {
+        $routeTarget = null;
         if (isset($routeData['target'])) {
             $routeTarget = explode('::', $routeData['target']);
-        } else {
-            $routeTarget = null;
         }
+        
         $routeMethod    = isset($routeData['method']) ? $routeData['method'] : 'any';
         $parameters     = isset($routeData['parameters']) ? $routeData['parameters'] : array();
         
 
+        $middleware = [];
         if (isset($routeData['middleware'])) {
             $middleware = (array)$routeData['middleware'];
-        } else {
-            $middleware = array();
         }
 
         $this->addRoute(
@@ -87,13 +86,13 @@ class Router extends Service
         }
         
         $resources = [
-            'index'     => ['method' => 'GET',      'append' => ''],
-            'create'    => ['method' => 'GET',      'append' => '/create'],
-            'store'     => ['method' => 'POST',     'append' => ''],
-            'show'      => ['method' => 'GET',      'append' => '/:' . $primaryParameterName],
-            'edit'      => ['method' => 'GET',      'append' => '/:' . $primaryParameterName . '/edit'],
-            'update'    => ['method' => 'PUT',      'append' => '/:' . $primaryParameterName],
-            'destroy'   => ['method' => 'DELETE',   'append' => '/:' . $primaryParameterName],
+            'index'     => ['method' => ['GET'],                'append' => ''],
+            'create'    => ['method' => ['GET'],                'append' => '/create'],
+            'store'     => ['method' => ['POST', 'OPTIONS'],    'append' => ''],
+            'show'      => ['method' => ['GET'],                'append' => '/:' . $primaryParameterName],
+            'edit'      => ['method' => ['GET'],                'append' => '/:' . $primaryParameterName . '/edit'],
+            'update'    => ['method' => ['PUT', 'OPTIONS'],     'append' => '/:' . $primaryParameterName],
+            'destroy'   => ['method' => ['DELETE', 'OPTIONS'],  'append' => '/:' . $primaryParameterName],
         ];
 
         foreach ($resources as $name => $definition) {
