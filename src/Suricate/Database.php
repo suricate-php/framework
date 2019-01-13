@@ -23,6 +23,8 @@ class Database extends Service
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->configs = array();
         $this->handler = false;
     }
