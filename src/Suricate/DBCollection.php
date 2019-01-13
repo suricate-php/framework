@@ -75,7 +75,7 @@ class DBCollection extends Collection
      * @param  array      $sqlParams SQL Parameters
      * @return Suricate\Collection Loaded collection
      */
-    public static function buildFromSql($sql, $sqlParams = array())
+    public static function buildFromSql($sql, $sqlParams = [])
     {
         $calledClass = get_called_class();
         $collection = new $calledClass;
@@ -125,9 +125,9 @@ class DBCollection extends Collection
 
     /**
      * Load items linked to a parentId
-     * @param mixed     $parentId       Parent id description
-     * @param string    $parentIdField  Name of parent id referencing field
-     * @param closure   $validate       Callback use to validate add to items collection
+     * @param mixed        $parentId       Parent id description
+     * @param string       $parentIdField  Name of parent id referencing field
+     * @param \closure|null $validate       Callback use to validate add to items collection
      */
     public static function loadForParentId($parentId, $parentIdField = null, $validate = null)
     {
