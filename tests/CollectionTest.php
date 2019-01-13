@@ -1,5 +1,6 @@
 <?php
-class CollectionTest extends PHPUnit_Framework_TestCase {
+class CollectionTest extends PHPUnit_Framework_TestCase
+{
     public function testConstruct()
     {
         $arr = array(1,2,3);
@@ -16,9 +17,9 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
 
     public function testUnique()
     {
-       $arr = array(1, 2, 1,3);
-       $collection = new \Suricate\Collection($arr);
-        $this->assertEquals([0 => 1, 1 => 2,3 => 3], $collection->unique()->getItems()); 
+        $arr = array(1, 2, 1, 3);
+        $collection = new \Suricate\Collection($arr);
+        $this->assertEquals([0 => 1, 1 => 2, 3 => 3], $collection->unique()->getItems());
     }
 
     public function testCount()
@@ -61,81 +62,121 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(false, $collection->has('d'));
     }
 
-	public function testKeys()
-	{
-		$arr = array('a' => 1, 'b' => 2, 'c' => 3);
+    public function testKeys()
+    {
+        $arr = array('a' => 1, 'b' => 2, 'c' => 3);
         $collection = new \Suricate\Collection($arr);
-		$this->assertEquals(['a', 'b', 'c'], $collection->keys());
-	}
+        $this->assertEquals(['a', 'b', 'c'], $collection->keys());
+    }
 
-	public function testPrepend()
-	{
-		$arr = [4, 5, 6];
+    public function testPrepend()
+    {
+        $arr = [4, 5, 6];
         $collection = new \Suricate\Collection($arr);
-		$collection->prepend(99);
-		$this->assertEquals([99, 4, 5, 6], $collection->getItems());
-	}
-	
-	public function testPut()
-	{
-		$arr = array('a' => 1, 'b' => 2, 'c' => 3);
+        $collection->prepend(99);
+        $this->assertEquals([99, 4, 5, 6], $collection->getItems());
+    }
+    
+    public function testPut()
+    {
+        $arr = array('a' => 1, 'b' => 2, 'c' => 3);
         $collection = new \Suricate\Collection($arr);
-		$collection->put('z', 99);
-		$this->assertEquals(['a' => 1, 'b' => 2, 'c' => 3, 'z' => 99], $collection->getItems());
-	}
+        $collection->put('z', 99);
+        $this->assertEquals(['a' => 1, 'b' => 2, 'c' => 3, 'z' => 99], $collection->getItems());
+    }
 
-	public function testShift()
-	{
-		$arr = array('a' => 1, 'b' => 2, 'c' => 3);
+    public function testShift()
+    {
+        $arr = array('a' => 1, 'b' => 2, 'c' => 3);
         $collection = new \Suricate\Collection($arr);
-		$t = $collection->shift();
-		$this->assertEquals(1, $t);
-		$this->assertEquals(['b' => 2, 'c' => 3], $collection->getItems());
-	}
+        $shifted = $collection->shift();
+        $this->assertEquals(1, $shifted);
+        $this->assertEquals(['b' => 2, 'c' => 3], $collection->getItems());
+    }
 
-	public function testPop()
-	{
-		$arr = array('a' => 1, 'b' => 2, 'c' => 3);
+    public function testPop()
+    {
+        $arr = array('a' => 1, 'b' => 2, 'c' => 3);
         $collection = new \Suricate\Collection($arr);
-		$t = $collection->pop();
-		$this->assertEquals(3, $t);
-		$this->assertEquals(['a' => 1, 'b' => 2], $collection->getItems());
-	}
+        $popped = $collection->pop();
+        $this->assertEquals(3, $popped);
+        $this->assertEquals(['a' => 1, 'b' => 2], $collection->getItems());
+    }
 
-	public function testReverse()
-	{
-		$arr = array('a' => 1, 'b' => 2, 'c' => 3);
+    public function testReverse()
+    {
+        $arr = array('a' => 1, 'b' => 2, 'c' => 3);
         $collection = new \Suricate\Collection($arr);
-		$t = $collection->reverse();
-		$this->assertEquals(['c' => 3, 'b' => 2, 'a' => 1], $t->getItems());
-	}
+        $reversed = $collection->reverse();
+        $this->assertEquals(['c' => 3, 'b' => 2, 'a' => 1], $reversed->getItems());
+    }
 
-	public function testReduce()
-	{
-
-	}
-
-	public function testSlice()
-	{
-
-	}
-	
-	public function testTake()
-	{
-		$arr = array('a' => 1, 'b' => 2, 'c' => 3);
+    public function testReduce()
+    {
+        // Basic reduce
+        $arr = ['a' => 1, 'b' => 2, 'c' => 3];
         $collection = new \Suricate\Collection($arr);
-		$t = $collection->take(2);
-		$this->assertEquals(['a' => 1, 'b' => 2], $t->getItems());
-		
-	}
+        $callback = function ($carry, $item) {
+            $carry += $item;
 
+            return $carry;
+        };
+        $reduced = $collection->reduce($callback);
+    
+        $this->assertEquals(6, $reduced);
+
+        // reduce with initial value
+        $arr = ['a' => 1, 'b' => 2, 'c' => 3];
+        $collection = new \Suricate\Collection($arr);
+        $callback = function ($carry, $item) {
+            $carry += $item;
+
+            return $carry;
+        };
+        $reduced = $collection->reduce($callback, 100);
+    
+        $this->assertEquals(106, $reduced);
+    }
+
+    public function testSlice()
+    {
+        // Basic slice
+        $arr = ['a' => 1, 'b' => 2, 'c' => 3];
+        $collection = new \Suricate\Collection($arr);
+        $sliced = $collection->slice(1, 2);
+    
+        $this->assertEquals(['b' => 2, 'c' => 3], $sliced->getItems());
+
+        // Slice with numeric keys
+        $arr = [1, 2, 3];
+        $collection = new \Suricate\Collection($arr);
+        $sliced = $collection->slice(1, 2);
+    
+        $this->assertEquals([2, 3], $sliced->getItems());
+
+        // Slice preserve keys
+        $arr = [1, 2, 3];
+        $collection = new \Suricate\Collection($arr);
+        $sliced = $collection->slice(1, 2, true);
+    
+        $this->assertEquals([1 => 2, 2 => 3], $sliced->getItems());
+    }
+    
+    public function testTake()
+    {
+        $arr = array('a' => 1, 'b' => 2, 'c' => 3);
+        $collection = new \Suricate\Collection($arr);
+        $taken = $collection->take(2);
+        $this->assertEquals(['a' => 1, 'b' => 2], $taken->getItems());
+    }
 
     public function testFilter()
     {
         $arr = array('a' => 1, 'b' => 2, 'c' => 3);
         $collection = new \Suricate\Collection($arr);
-        $this->assertEquals(['b' => 2],  $collection->filter(
-            function($value) {
+        $this->assertEquals(
+            ['b' => 2],
+            $collection->filter(function ($value) {
                 return ($value % 2) === 0;
             })->getItems()
         );
