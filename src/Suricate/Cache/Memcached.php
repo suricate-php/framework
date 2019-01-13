@@ -10,7 +10,7 @@ use Suricate;
  * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
  *
  * @property string $host           Memcache host (default: localhost)
- * @property string $port           Memcache port (default: 11211)
+ * @property int    $port           Memcache port (default: 11211)
  * @property int    $defaultExpiry  Key default expiry
  */
 
