@@ -14,26 +14,21 @@ class Cache extends Service implements Interfaces\ICache
 {
     protected $parametersList = array('type');
     public static $container;
+    protected $cacheTypes = [
+        'memcache'  => 'Suricate\Suricate::CacheMemcache',
+        'memcached' => 'Suricate\Suricate::CacheMemcached',
+        'apc'       => 'Suricate\Suricate::CacheApc',
+        'file'      => 'Suricate\Suricate::CacheFile',
+    ];
 
     protected function init()
     {
         if (static::$container === null) {
-            switch ($this->type) {
-                case 'memcache':
-                    static::$container = Suricate::CacheMemcache(true);
-                    break;
-                case 'memcached':
-                    static::$container = Suricate::CacheMemcached(true);
-                    break;
-                case 'apc':
-                    static::$container = Suricate::CacheApc(true);
-                    break;
-                case 'file':
-                    static::$container = Suricate::CacheFile(true);
-                    break;
-                default:
-                    throw new \Exception("Unknown cache type " . $this->type);
+            if (isset($this->cacheTypes[$this->type])) {
+                static::$container = $this->cacheTypes[$this->type](true);
+                return;
             }
+            throw new \Exception("Unknown cache type " . $this->type);
         }
     }
 
