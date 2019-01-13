@@ -25,6 +25,8 @@ class Memcached extends Suricate\Cache
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->handler          = false;
         $this->host             = 'localhost';
         $this->port             = '11211';
