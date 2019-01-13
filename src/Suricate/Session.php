@@ -5,7 +5,7 @@ use Exception;
 
 class Session extends Service implements Interfaces\ISession
 {
-    protected $parametersList = array('type');
+    protected $parametersList = ['type'];
     private static $container;
 
     
@@ -26,7 +26,6 @@ class Session extends Service implements Interfaces\ISession
                     break;
                 default:
                     throw new Exception("Unknown session type " . $this->type);
-                    break;
             }
         }
     }
