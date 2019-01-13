@@ -18,6 +18,8 @@ class Router extends Service
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->routes   = array();
         $this->response = Suricate::Response();
         $this->parseRequest();
