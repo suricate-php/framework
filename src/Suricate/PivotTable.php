@@ -7,6 +7,8 @@ class PivotTable extends DBObject
 
     public function __construct()
     {
+        parent::__construct();
+
         foreach ($this->references as $referenceName => $referenceData) {
             $this->relations[$referenceName] = array(
                 'type' => self::RELATION_ONE_ONE, 'source' => $referenceData['key'], 'target' => $referenceData['type']
