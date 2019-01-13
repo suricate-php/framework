@@ -8,7 +8,7 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
     protected $mapping          = []; // to be deprecated ?
 
     const ITEM_TYPE             = '';
-    
+
     public $pagination = [
         'nbPages'   => 0,
         'page'      => 1,
@@ -246,9 +246,9 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
      * Return the sum of the collection
      *
      * @param mixed $field Field to use for sum
-     * @return int
+     * @return number
      */
-    public function sum($field = null): int
+    public function sum($field = null): number
     {
         if ($field === null) {
             return array_sum($this->items);

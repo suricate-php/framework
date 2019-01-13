@@ -10,7 +10,7 @@ use Suricate;
  * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
  *
  * @property string $host           Memcache host (default: localhost)
- * @property string $port           Memcache port (default: 11211)
+ * @property int    $port           Memcache port (default: 11211)
  * @property int    $defaultExpiry  Key default expiry
  * @property bool   $useCompression Use memcache compression (default: false)
  */
@@ -31,7 +31,7 @@ class Memcache extends Suricate\Cache
 
         $this->handler          = false;
         $this->host             = 'localhost';
-        $this->port             = '11211';
+        $this->port             = 11211;
         $this->useCompression   = false;
     }
     

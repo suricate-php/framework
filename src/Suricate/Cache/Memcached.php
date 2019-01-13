@@ -16,11 +16,12 @@ use Suricate;
 
 class Memcached extends Suricate\Cache
 {
-    protected $parametersList = array(
-                                    'host',
-                                    'port',
-                                    'defaultExpiry',
-                                );
+    protected $parametersList = [
+        'host',
+        'port',
+        'defaultExpiry',
+    ];
+
     private $handler;
 
     public function __construct()
@@ -29,7 +30,7 @@ class Memcached extends Suricate\Cache
 
         $this->handler          = false;
         $this->host             = 'localhost';
-        $this->port             = '11211';
+        $this->port             = 11211;
     }
     
     public function getHost()

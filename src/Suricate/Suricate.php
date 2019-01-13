@@ -7,11 +7,11 @@
  * @version     0.1.16
  * @package     Suricate
  *
- * @method App          App() App() Get instance of App service
- * @method Database     Database() Database() Get instance of Database service
- * @method Error        Error() Error() Get instance of Error service
- * @method I18n         I18n() I18n() Get instance of I18n service
- * @method Request      Request() Request() Get instance of Request service
+ * @method static App      App()      App() Get instance of App service
+ * @method static Database Database() Database() Get instance of Database service
+ * @method static Error    Error()    Error() Get instance of Error service
+ * @method static I18n     I18n()     I18n() Get instance of I18n service
+ * @method static Request  Request()  Request() Get instance of Request service
  */
 namespace Suricate;
 

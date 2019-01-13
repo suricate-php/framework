@@ -58,6 +58,10 @@ class File extends Suricate\Cache
         fclose($fp);
         if ($expiry !== null) {
             $fp = fopen($this->path . $variable .'.expiry', 'w');
+            if ($fp === false) {
+                throw new \Exception("Cannot open cache file " . $this->path . $variable .'.expiry');
+                return;
+            }
             fputs($fp, (string) (time() + $expiry));
             fclose($fp);
         }
