@@ -12,7 +12,7 @@ namespace Suricate;
  * @property string $proxyHost
  * @property int $proxyPort
  * @property string $referer
- * @property string @cookie
+ * @property string $cookie
  * @property string $userAgent
  * @property mixed $postFields
  * @property string $login
@@ -44,6 +44,8 @@ class Curl extends Service
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->request  = new Request();
         $this->response = new Request();
         $this->headers  = [];
