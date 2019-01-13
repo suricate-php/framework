@@ -246,7 +246,7 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
      * Return the sum of the collection
      *
      * @param mixed $field Field to use for sum
-     * @return number
+     * @return double|integer
      */
     public function sum($field = null): number
     {
