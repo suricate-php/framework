@@ -1,8 +1,5 @@
 <?php
-use PHPUnit\Framework\Assert;
-use PHPUnit\Framework\TestCase;
-
-class PageTest extends TestCase
+class PageTest extends PHPUnit_Framework_TestCase
 {
     public function testLanguage()
     {
@@ -30,18 +27,21 @@ class PageTest extends TestCase
         $page = new \Suricate\Page();
         $page->addStylesheet('stylesheet-ref', '/my.css');
 
-        $stylesheets = Assert::readAttribute($page, 'stylesheets');
-        
+        $reflector = new ReflectionClass(get_class($page));
+        $property = $reflector->getProperty('stylesheets');
+        $stylesheets = $property->setAccessible(true);
 
         $this->assertEquals(
-            $stylesheets, 
+            $property->getValue($page),
             [
                 'stylesheet-ref' => ['url' => '/my.css', 'media' => 'all'],
-            ]);
+            ]
+        );
         $this->assertNotEquals(
-            $stylesheets, [
+            $property->getValue($page),
+            [
                 'another-stylesheet' => ['url' => '/my-2.css', 'media' => 'all'],
-            ]);
+            ]
+        );
     }
-
 }
