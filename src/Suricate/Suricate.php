@@ -1,10 +1,10 @@
 <?php
 /**
- * Suricate - Another micro PHP 5 framework
+ * Suricate - Another micro PHP framework
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
- * @copyright   2013-2017 Mathieu LESNIAK
- * @version     0.1.9
+ * @copyright   2013-2019 Mathieu LESNIAK
+ * @version     0.1.16
  * @package     Suricate
  *
  * @method App          App() App() Get instance of App service
@@ -18,7 +18,7 @@ namespace Suricate;
 class Suricate
 {
 
-    const VERSION = '0.1.9';
+    const VERSION = '0.1.16';
 
     const CONF_DIR = '/conf/';
 
@@ -42,6 +42,7 @@ class Suricate
         'Database'          => '\Suricate\Database',
         'Cache'             => '\Suricate\Cache',
         'CacheMemcache'     => '\Suricate\Cache\Memcache',
+        'CacheMemcached'    => '\Suricate\Cache\Memcached',
         'CacheApc'          => '\Suricate\Cache\Apc',
         'CacheFile'         => '\Suricate\Cache\File',
         'Curl'              => '\Suricate\Curl',

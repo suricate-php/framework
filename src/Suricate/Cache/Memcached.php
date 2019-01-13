@@ -12,16 +12,14 @@ use Suricate;
  * @property string $host           Memcache host (default: localhost)
  * @property string $port           Memcache port (default: 11211)
  * @property int    $defaultExpiry  Key default expiry
- * @property string $useCompression Use memcache compression (default: false)
  */
 
-class Memcache extends Suricate\Cache
+class Memcached extends Suricate\Cache
 {
     protected $parametersList = array(
                                     'host',
                                     'port',
                                     'defaultExpiry',
-                                    'useCompression'
                                 );
     private $handler;
 
@@ -30,7 +28,6 @@ class Memcache extends Suricate\Cache
         $this->handler          = false;
         $this->host             = 'localhost';
         $this->port             = '11211';
-        $this->useCompression   = false;
     }
     
     public function getHost()
@@ -69,30 +66,18 @@ class Memcache extends Suricate\Cache
         return $this;
     }
     
-    public function getUseCompression()
-    {
-        return $this->useCompression;
-    }
-
-    public function setUseCompression($useCompression)
-    {
-        $this->useCompression = $useCompression;
-
-        return $this;
-    }
-
     private function connect()
     {
         if ($this->handler === false) {
-            if (class_exists('Memcache')) {
+            if (class_exists('Memcached')) {
                 try {
-                    $this->handler = new \Memcache();
-                    $this->handler->connect($this->host, $this->port);
+                    $this->handler = new \Memcached();
+                    $this->handler->addServer($this->host, $this->port);
                 } catch (\Exception $e) {
                     throw new \Exception('Can\'t connect to memcache server');
                 }
             } else {
-                throw new \BadMethodCallException('Can\'t find Memcache extension');
+                throw new \BadMethodCallException('Can\'t find Memcached extension');
             }
         } else {
             return $this;
@@ -104,6 +89,8 @@ class Memcache extends Suricate\Cache
      * @param string $variable Variable name
      * @param mixed $value    Value
      * @param int $expiry   Cache expiry
+     *
+     * @return bool
      */
     public function set(string $variable, $value, $expiry = null)
     {
@@ -113,13 +100,7 @@ class Memcache extends Suricate\Cache
             $expiry = $this->defaultExpiry;
         }
 
-        if ($this->useCompression !== false) {
-            $flag = MEMCACHE_COMPRESSED;
-        } else {
-            $flag = null;
-        }
-
-        $this->handler->set($variable, $value, $flag, $expiry);
+        return $this->handler->set($variable, $value, $expiry);
     }
 
     public function get(string $variable)
@@ -128,6 +109,13 @@ class Memcache extends Suricate\Cache
         return $this->handler->get($variable);
     }
 
+    /**
+     * Delete a variable from memcache
+     *
+     * @param string $variable
+     *
+     * @return bool
+     */
     public function delete(string $variable)
     {
         $this->connect();

@@ -5,7 +5,7 @@ interface ICache
 {
     public function getInstance();
 
-    public function set($variable, $value, $expiry = null);
+    public function set(string $variable, $value, $expiry = null);
 
-    public function get($variable);
+    public function get(string $variable);
 }

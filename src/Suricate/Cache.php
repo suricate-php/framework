@@ -22,6 +22,9 @@ class Cache extends Service implements Interfaces\ICache
                 case 'memcache':
                     static::$container = Suricate::CacheMemcache(true);
                     break;
+                case 'memcached':
+                    static::$container = Suricate::CacheMemcached(true);
+                    break;
                 case 'apc':
                     static::$container = Suricate::CacheApc(true);
                     break;
@@ -50,7 +53,7 @@ class Cache extends Service implements Interfaces\ICache
      *                      You can also use Unix timestamp or a number of seconds starting from current time,
      *                      but in the latter case the number of seconds may not exceed 2592000 (30 days).
      */
-    public function set($variable, $value, $expiry = null)
+    public function set(string $variable, $value, $expiry = null)
     {
         $this->init();
         return static::$container->set($variable, $value, $expiry);
@@ -61,7 +64,7 @@ class Cache extends Service implements Interfaces\ICache
      * @param  string $variable The key to fetch
      * @return mixed           Data fetched from cache, false if not found
      */
-    public function get($variable)
+    public function get(string $variable)
     {
         $this->init();
         return static::$container->get($variable);

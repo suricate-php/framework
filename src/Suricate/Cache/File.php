@@ -15,10 +15,10 @@ use Suricate;
 
 class File extends Suricate\Cache
 {
-    protected $parametersList = array(
-                                    'path',
-                                    'defaultExpiry',
-                                );
+    protected $parametersList = [
+        'path',
+        'defaultExpiry',
+    ];
     private $handler;
 
     public function __construct()
@@ -46,7 +46,7 @@ class File extends Suricate\Cache
      * @param mixed $value    Value
      * @param int $expiry   Cache expiry
      */
-    public function set($variable, $value, $expiry = null)
+    public function set(string $variable, $value, $expiry = null)
     {
         if ($expiry === null) {
             $expiry = $this->defaultExpiry;
@@ -61,7 +61,7 @@ class File extends Suricate\Cache
         }
     }
 
-    public function get($variable)
+    public function get(string $variable)
     {
         if (is_readable($this->path . $variable)) {
             if (is_readable($this->path . $variable . '.expiry')) {
@@ -80,13 +80,15 @@ class File extends Suricate\Cache
         return null;
     }
 
-    public function delete($variable)
+    public function delete(string $variable)
     {
         if (is_file($this->path . $variable)) {
-            unlink($this->path . $variable);
+            return unlink($this->path . $variable);
         }
         if (is_file($this->path . $variable . '.expiry')) {
-            unlink($this->path . $variable . '.expiry');
+            return unlink($this->path . $variable . '.expiry');
         }
+
+        return false;
     }
 }
