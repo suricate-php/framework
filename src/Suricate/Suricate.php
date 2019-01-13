@@ -1,6 +1,6 @@
 <?php
 /**
- * Suricate - Another micro PHP framework
+ * Suricate - Another micro PHP 5 framework
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
  * @copyright   2013-2019 Mathieu LESNIAK
