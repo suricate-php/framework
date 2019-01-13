@@ -7,7 +7,7 @@ class HttpBasicAuth implements \Suricate\Interfaces\IMiddleware
 {
     const AUTHTYPE_ARRAY    = 'array';
     const AUTHTYPE_DB       = 'database';
-    protected $realm;
+    protected $options;
 
     public function __construct($options = null)
     {
@@ -32,7 +32,14 @@ class HttpBasicAuth implements \Suricate\Interfaces\IMiddleware
         return preg_match($regex, $request->getRequestUri());
     }
 
-    private function authenticate($user, $password)
+    /**
+     * Authenticate against backend dispatcher
+     *
+     * @param string $user     username
+     * @param string $password password
+     * @return bool
+     */
+    private function authenticate(string $user, string $password): bool
     {
         switch ($this->options['type']) {
             case self::AUTHTYPE_ARRAY:
@@ -40,8 +47,17 @@ class HttpBasicAuth implements \Suricate\Interfaces\IMiddleware
             case self::AUTHTYPE_DB:
                 return $this->authenticateAgainstDatabase($user, $password);
         }
+
+        return false;
     }
 
+    /**
+     * Authenticate against array of usernames / passwords
+     *
+     * @param string $user     username
+     * @param string $password password
+     * @return bool
+     */
     private function authenticateAgainstArray($user, $password)
     {
         if (isset($this->options['users'][$user]) && $this->options['users'][$user] == $password) {
@@ -53,7 +69,7 @@ class HttpBasicAuth implements \Suricate\Interfaces\IMiddleware
 
     private function authenticateAgainstDatabase($user, $password)
     {
-
+        return false;
     }
 
 
