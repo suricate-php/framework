@@ -7,12 +7,12 @@
  * @version     0.1.16
  * @package     Suricate
  *
- * @method \Suricate\Suricate\App      App()      Get instance of App service
- * @method \Suricate\Suricate\Database Database() Get instance of Database service
- * @method \Suricate\Suricate\Error    Error()    Get instance of Error service
- * @method \Suricate\Suricate\I18n     I18n()     Get instance of I18n service
- * @method \Suricate\Suricate\Request  Request()  Get instance of Request service
- * @method \Suricate\Suricate\Logger   Logger()    Get instance of Logger service
+ * @method static \Suricate\Suricate\App      App()      Get instance of App service
+ * @method static \Suricate\Suricate\Database Database() Get instance of Database service
+ * @method static \Suricate\Suricate\Error    Error()    Get instance of Error service
+ * @method static \Suricate\Suricate\I18n     I18n()     Get instance of I18n service
+ * @method static \Suricate\Suricate\Request  Request()  Get instance of Request service
+ * @method static \Suricate\Suricate\Logger   Logger()    Get instance of Logger service
  */
 namespace Suricate;
 
