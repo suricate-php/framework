@@ -23,6 +23,8 @@ class File extends Suricate\Cache
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->handler          = false;
         $this->path             = app_path() . '/storage/app/';
         $this->defaultExpiry    = 3600;
@@ -56,7 +58,7 @@ class File extends Suricate\Cache
         fclose($fp);
         if ($expiry !== null) {
             $fp = fopen($this->path . $variable .'.expiry', 'w');
-            fputs($fp, time() + $expiry);
+            fputs($fp, (string) (time() + $expiry));
             fclose($fp);
         }
     }
