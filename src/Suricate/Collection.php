@@ -4,18 +4,20 @@ namespace Suricate;
 class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interfaces\ICollection
 {
     
-    protected $items            = array();
-    protected $mapping          = array(); // to be deprecated ?
+    protected $items            = [];
+    protected $mapping          = []; // to be deprecated ?
 
-    public $pagination = array(
+    const ITEM_TYPE             = '';
+    
+    public $pagination = [
         'nbPages'   => 0,
         'page'      => 1,
         'nbItems'   => 0,
-        );
+    ];
     
     //protected $iteratorPosition  = 0;
 
-    public function __construct($items = array())
+    public function __construct($items = [])
     {
         $this->items = $items;
     }
@@ -34,12 +36,15 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
     public function getPossibleValuesFor($args, $key = null)
     {
         if (!is_array($args)) {
-            $args = array('format' => '%s', 'data' => array($args));
+            $args = [
+                'format' => '%s',
+                'data' => [$args]
+            ];
         }
 
-        $values = array();
+        $values = [];
         foreach ($this->items as $item) {
-            $itemValues = array();
+            $itemValues = [];
             foreach ($args['data'] as $arg) {
                 $itemValues[] = dataGet($item, $arg);
             }
@@ -52,7 +57,7 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
 
     public function getValuesFor($name)
     {
-        $values = array();
+        $values = [];
         foreach ($this->items as $item) {
             $values[] = dataGet($item, $name);
         }
@@ -85,24 +90,43 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
     }
 
 
-    // Implementation of Countable Interface
-    public function count()
+    /**
+     * Implementation of countable interface
+     *
+     * @return int
+     */
+    public function count(): int
     {
         return count($this->items);
     }
 
-    // Implementation of IteratorAggregate Interface
-    public function getIterator()
+    /**
+     * Implementation of IteratorAggregate Interface
+     *
+     * @return \ArrayIterator
+     */
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->items);
     }
 
-    // Implementation of ArrayAccess Interface
-    public function offsetExists($offset)
+    /**
+     * Implementation of ArrayAccess interface
+     *
+     * @param  mixed $offset Offset to verify
+     * @return bool
+     */
+    public function offsetExists($offset): bool
     {
         return isset($this->items[$offset]);
     }
 
+    /**
+     * Implementation of ArrayAccess Interface
+     *
+     * @param  mixed $offset Offset to get
+     * @return mixed
+     */
     public function offsetGet($offset)
     {
         $item =isset($this->items[$offset]) ? $this->items[$offset] : null;
@@ -119,7 +143,14 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
         return $this->items[$offset];
     }
 
-    public function offsetSet($offset, $value)
+    /**
+     * Implementation of ArrayAccess Interface
+     *
+     * @param mixed $offset Offset to set
+     * @param mixed $value  Value to set
+     * @return void
+     */
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->items[] = $value;
@@ -128,7 +159,13 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
         }
     }
 
-    public function offsetUnset($offset)
+    /**
+     * Implementation of ArrayAccess Interface
+     *
+     * @param mixed $offset Offset to unset
+     * @return void
+     */
+    public function offsetUnset($offset): void
     {
         unset($this->items[$offset]);
     }
@@ -139,9 +176,9 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
         $str = mb_strtolower($str, 'utf-8');
         $str = strtr(
             $str,
-            array(
+            [
                 'à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a', 'å'=>'a', 'æ'=>'a', 'a'=>'a', 'a'=>'a', 'a'=>'a', 'ç'=>'c', 'c'=>'c', 'c'=>'c', 'c'=>'c', 'c'=>'c', 'd'=>'d', 'd'=>'d', 'è'=>'e', 'é'=>'e', 'ê'=>'e', 'ë'=>'e', 'e'=>'e', 'e'=>'e', 'e'=>'e', 'e'=>'e', 'e'=>'e', 'g'=>'g', 'g'=>'g', 'g'=>'g', 'h'=>'h', 'h'=>'h', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'i'=>'i', 'i'=>'i', 'i'=>'i', 'i'=>'i', 'i'=>'i', '?'=>'i', 'j'=>'j', 'k'=>'k', '?'=>'k', 'l'=>'l', 'l'=>'l', 'l'=>'l', '?'=>'l', 'l'=>'l', 'ñ'=>'n', 'n'=>'n', 'n'=>'n', 'n'=>'n', '?'=>'n', '?'=>'n', 'ð'=>'o', 'ò'=>'o', 'ó'=>'o', 'ô'=>'o', 'õ'=>'o', 'ö'=>'o', 'o'=>'o', 'o'=>'o', 'o'=>'o', 'œ'=>'o', 'ø'=>'o', 'r'=>'r', 'r'=>'r', 's'=>'s', 's'=>'s', 's'=>'s', 'š'=>'s', '?'=>'s', 't'=>'t', 't'=>'t', 't'=>'t', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'ü'=>'u', 'u'=>'u', 'u'=>'u', 'u'=>'u', 'u'=>'u', 'u'=>'u', 'u'=>'u', 'w'=>'w', 'ý'=>'y', 'ÿ'=>'y', 'y'=>'y', 'z'=>'z', 'z'=>'z', 'ž'=>'z'
-            )
+            ]
         );
 
         return $str;
@@ -159,7 +196,7 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
     public function getRandom($nb = 1)
     {
         $keys = (array) array_rand($this->items, $nb);
-        $result = array();
+        $result = [];
         foreach ($keys as $currentKey) {
             $result[$currentKey] = $this->items[$currentKey];
         }
@@ -168,6 +205,12 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
     }
 
     // Helpers
+
+    /**
+     * Get first item of the collection
+     *
+     * @return mixed
+     */
     public function first()
     {
         foreach ($this->items as $currentItem) {
@@ -175,23 +218,39 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
         }
     }
 
+    /**
+     * Get last item of the collection
+     *
+     * @return mixed
+     */
     public function last()
     {
         if (count($this->items)) {
             return end($this->items);
-        } else {
-            return null;
         }
+        
+        return null;
     }
 
-    public function isEmpty()
+    /**
+     * Check if collection is empty
+     *
+     * @return bool
+     */
+    public function isEmpty(): bool
     {
         return empty($this->items);
     }
 
-    public function sum($field = null)
+    /**
+     * Return the sum of the collection
+     *
+     * @param mixed $field Field to use for sum
+     * @return int
+     */
+    public function sum($field = null): int
     {
-        if ($field == null) {
+        if ($field === null) {
             return array_sum($this->items);
         }
         $result = 0;
@@ -211,9 +270,9 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
 
         if (is_array($keys)) {
             return array_intersect_key($this->items, array_flip($keys));
-        } else {
-            return $this->items[$keys];
         }
+        
+        return $this->items[$keys];
     }
 
     public function shuffle()
@@ -228,13 +287,25 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
         return new static(array_unique($this->items));
     }
 
-    public function each(\Closure $callback)
+    /**
+     * Apply a closure to each element of the collection
+     *
+     * @param \Closure $callback Closure to apply
+     * @return Collection
+     */
+    public function each(\Closure $callback): Collection
     {
         array_map($callback, $this->items);
         return $this;
     }
 
-    public function sort(\Closure $closure)
+    /**
+     * Sort a collection using a closure
+     *
+     * @param \Closure $closure Closure to apply for sorting, similar to uasort() closure
+     * @return Collection
+     */
+    public function sort(\Closure $closure): Collection
     {
         uasort($this->items, $closure);
 
@@ -338,12 +409,12 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
     {
         if ($limit < 0) {
             return $this->slice(abs($limit), $limit);
-        } else {
-            return $this->slice(0, $limit);
         }
+
+        return $this->slice(0, $limit);
     }
 
-    public function splice($offset, $length = null, $replacement = array())
+    public function splice($offset, $length = null, $replacement = [])
     {
         return new static(array_splice($this->items, $offset, $length, $replacement));
     }
