@@ -248,7 +248,7 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
      * @param mixed $field Field to use for sum
      * @return double|integer
      */
-    public function sum($field = null): number
+    public function sum($field = null)
     {
         if ($field === null) {
             return array_sum($this->items);
