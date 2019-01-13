@@ -20,14 +20,14 @@ class Container implements \ArrayAccess
     {
         if (isset($this->content[$offset])) {
             return $this->content[$offset];
-        } else {
-            if (isset($this->warehouse[$offset])) {
-                $this->content[$offset] = new $this->warehouse[$offset]();
-                return $this->content[$offset];
-            } else {
-                throw new \InvalidArgumentException('Unknown service ' . $offset);
-            }
         }
+
+        if (isset($this->warehouse[$offset])) {
+            $this->content[$offset] = new $this->warehouse[$offset]();
+            return $this->content[$offset];
+        }
+
+        throw new \InvalidArgumentException('Unknown service ' . $offset);
     }
 
     public function offsetSet($offset, $value)
@@ -48,10 +48,4 @@ class Container implements \ArrayAccess
 
         return $this;
     }
-    /*
-    public function getServiceNameList()
-    {
-        return array_keys($this->content);
-    }
-    */
 }
