@@ -329,7 +329,7 @@ class DBObject implements Interfaces\IDBObject
      */
     public function toJson()
     {
-        return array_map('json_encode', $this->toArray());
+        return implode('', array_map('json_encode', $this->toArray()));
     }
 
     /**
@@ -648,7 +648,7 @@ class DBObject implements Interfaces\IDBObject
                 if (isset($this->protectedValues[$variable]) && $this->isProtectedVariableLoaded($variable)) {
                     if ($this->protectedValues[$variable] instanceof Interfaces\ICollection) {
                         if ($insert) {
-                            $this->protectedValues[$variable]->setParentIdForAll($this->id);
+                            $this->protectedValues[$variable]->setParentIdForAll($this->{static::TABLE_INDEX});
                         }
                         $this->protectedValues[$variable]->save();
                     }
