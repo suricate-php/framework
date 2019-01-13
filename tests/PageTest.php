@@ -29,7 +29,7 @@ class PageTest extends PHPUnit_Framework_TestCase
 
         $reflector = new ReflectionClass(get_class($page));
         $property = $reflector->getProperty('stylesheets');
-        $stylesheets = $property->setAccessible(true);
+        $property->setAccessible(true);
 
         $this->assertEquals(
             $property->getValue($page),
