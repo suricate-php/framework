@@ -33,7 +33,6 @@ class Cache extends Service implements Interfaces\ICache
                     break;
                 default:
                     throw new \Exception("Unknown cache type " . $this->type);
-                    break;
             }
         }
     }
