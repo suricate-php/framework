@@ -11,14 +11,14 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
             ->setMethods(array('setRelations'))
             ->getMockForAbstractClass();
 
-      // set expectations for constructor calls
-      $mock->expects($this->once())
-          ->method('setRelations');
+        // set expectations for constructor calls
+        $mock->expects($this->once())
+            ->method('setRelations');
 
-      // now call the constructor
-      $reflectedClass = new ReflectionClass($classname);
-      $constructor = $reflectedClass->getConstructor();
-      $constructor->invoke($mock);
+        // now call the constructor
+        $reflectedClass = new ReflectionClass($classname);
+        $constructor = $reflectedClass->getConstructor();
+        $constructor->invoke($mock);
     }
 
     public function testUndefinedGet()
