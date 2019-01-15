@@ -42,6 +42,10 @@ class DBObjectTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($testDBO->isDBVariable('id'));
         $this->assertFalse($testDBO->isDBVariable('regularProperty'));
+
+        $this->assertTrue($testDBO->propertyExists('regularProperty'));
+        $this->assertTrue($testDBO->propertyExists('id'));
+        $this->assertFalse($testDBO->propertyExists('unknownProperty'));
     }
     
 
