@@ -49,6 +49,9 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $this->assertAttributeEquals([], 'warehouse', $testContainer);
         $this->assertAttributeEquals($payload, 'content', $testContainer);
 
+        $testContainer['new_index'] = 'ttt';
+        $this->assertAttributeEquals($payload, 'content', $testContainer);
+
         $testContainer->setWarehouse($warehouse);
         $this->assertAttributeEquals($warehouse, 'warehouse', $testContainer);
 
