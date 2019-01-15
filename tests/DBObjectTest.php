@@ -1,5 +1,5 @@
 <?php
-class DBObjectTest extends PHPUnit_Framework_TestCase
+class DBObjectTest extends \PHPUnit\Framework\TestCase
 {
     public function testContructor()
     {
