@@ -32,7 +32,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($testContainer[5], 'z');
 
         $this->expectException(\InvalidArgumentException::class);
-        $tmp = $testContainer['zz'];
+        $testContainer['zz'];
     }
 
     public function testContainerSet()
@@ -46,14 +46,25 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $warehouse = ['zz' => 'my_value'];
         
         $testContainer = new \Suricate\Container($payload);
-        $this->assertAttributeEquals([], 'warehouse', $testContainer);
-        $this->assertAttributeEquals($payload, 'content', $testContainer);
+
+        $reflector = new ReflectionClass(get_class($testContainer));
+        $property = $reflector->getProperty('warehouse');
+        $property->setAccessible(true);
+
+        $this->assertEquals([], $property->getValue($testContainer));
+
+        $property = $reflector->getProperty('content');
+        $property->setAccessible(true);
+        $this->assertEquals($payload, $property->getValue($testContainer));
 
         $testContainer['new_index'] = 'ttt';
-        $this->assertAttributeEquals($payload, 'content', $testContainer);
+        $this->assertEquals($payload, $property->getValue($testContainer));
 
         $testContainer->setWarehouse($warehouse);
-        $this->assertAttributeEquals($warehouse, 'warehouse', $testContainer);
+        $property = $reflector->getProperty('warehouse');
+        $property->setAccessible(true);
+
+        $this->assertEquals($warehouse, $property->getValue($testContainer));
 
 
     }
