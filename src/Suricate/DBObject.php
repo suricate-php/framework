@@ -600,7 +600,7 @@ class DBObject implements Interfaces\IDBObject
     {
         foreach ($data as $key => $val) {
             if ($this->propertyExists($key)) {
-                $orm->$key = $val;
+                $this->$key = $val;
             }
         }
 
