@@ -67,7 +67,7 @@ class PivotTable extends DBObject
         return new Collection($items);
     }
 
-    private function getSourceFieldForRelation($relationName)
+    public function getSourceFieldForRelation($relationName)
     {
         if (isset($this->relations[$relationName])) {
             return $this->relations[$relationName]['source'];
@@ -76,7 +76,7 @@ class PivotTable extends DBObject
         throw new \InvalidArgumentException('Cannot get field for relation "' . $relationName . '" : Unknown relation');
     }
 
-    private function getTargetForRelation($relationName)
+    public function getTargetForRelation($relationName)
     {
         if (isset($this->relations[$relationName])) {
             return $this->relations[$relationName]['target'];
