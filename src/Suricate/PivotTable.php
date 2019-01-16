@@ -21,36 +21,39 @@ class PivotTable extends DBObject
         $pivot = new static;
         $pivot->connectDB();
 
-        $items = array();
+        $items = [];
         if ($target !== null) {
-            $targetType     = $pivot->getTargetForRelation($target);
+            $targetClass    = new $pivot->getTargetForRelation($target);
             $sourceField    = $pivot->getSourceFieldForRelation($target);
             
-            $query  = "SELECT t.* FROM " . $targetType::TABLE_NAME . " t";
-            $query .= " LEFT JOIN " . static::TABLE_NAME . " p";
-            $query .= "     ON p.`" . $sourceField . "`=t." . $targetType::TABLE_INDEX;
+            $query  = "SELECT t.* FROM " . $targetClass->getTableName() . " t";
+            $query .= " LEFT JOIN " . $pivot->getTableName. " p";
+            $query .= "     ON p.`" . $sourceField . "`=t." . $targetClass->getTableIndex();
             $query .= " WHERE";
             $query .= "     `" . $pivot->getSourceFieldForRelation($relation) . "` =  :id";
-            $query .= " GROUP BY t." . $targetType::TABLE_INDEX;
+            $query .= " GROUP BY t." . $targetClass->getTableIndex();
             
-            $itemToAddType  = $targetType;
+            
         } else {
             $query  = "SELECT *";
-            $query .= " FROM `" . static::TABLE_NAME ."`";
+            $query .= " FROM `" . $pivot->getTableName() ."`";
             $query .= " WHERE";
             $query .= "     `" . $pivot->getSourceFieldForRelation($relation) . "` =  :id";
 
-            $itemToAddType = get_called_class();
+            $targetClass = $pivot;
         }
-        $params         = array();
+        $params         = [];
         $params['id']   = $parentId;
 
-        $results = $pivot->dbLink->query($query, $params)->fetchAll(\PDO::FETCH_ASSOC);
+        $results = $pivot
+            ->dbLink
+            ->query($query, $params)
+            ->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($results as $result) {
             $add = true;
 
-            $itemToAdd = $itemToAddType::instanciate($result);
+            $itemToAdd = $targetClass->hydrate($result);
             
             if ($validate !== null && is_callable($validate)) {
                 $add = $validate($itemToAdd);
