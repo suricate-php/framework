@@ -21,10 +21,8 @@ class DBObject implements Interfaces\IDBObject
     /** @var string Unique ID of the SQL table */
     protected $tableIndex = '';
     
-    /**
-     * @const DB_CONFIG : Database configuration identifier
-     */
-    const DB_CONFIG     = '';
+    /** @var string Database config name */
+    protected $DBConfig = '';
 
     /**
      * @const RELATION_ONE_ONE : Relation one to one
@@ -151,6 +149,11 @@ class DBObject implements Interfaces\IDBObject
     public function getTableIndex()
     {
         return $this->tableIndex;
+    }
+
+    public function getDBConfig()
+    {
+        return $this->DBConfig;
     }
 
     /**
@@ -731,8 +734,8 @@ class DBObject implements Interfaces\IDBObject
     {
         if (!$this->dbLink) {
             $this->dbLink = Suricate::Database();
-            if (static::DB_CONFIG != '') {
-                $this->dbLink->setConfig(static::DB_CONFIG);
+            if ($this->getDBConfig() !== '') {
+                $this->dbLink->setConfig($this->getDBConfig());
             }
         }
     }

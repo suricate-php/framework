@@ -39,6 +39,15 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($testIndex, $testDBO->getTableIndex());
     }
 
+    public function testGetDBConfig()
+    {
+        $testConfigName = 'my_config';
+
+        $testDBO = new \Suricate\DBObject();
+        self::mockProperty($testDBO, 'DBConfig', $testConfigName);
+        $this->assertEquals($testConfigName, $testDBO->getDBConfig());
+    }
+
     public function testUndefinedGet()
     {
         $testDBO = new \Suricate\DBObject();
