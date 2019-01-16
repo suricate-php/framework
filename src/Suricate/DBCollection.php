@@ -254,7 +254,7 @@ class DBCollection extends Collection
 
     public function addItem(Interfaces\IDBObject $item)
     {
-        $key = $item::TABLE_INDEX;
+        $key = $item->getTableIndex();
         // Add item to items pool
         $this->items[$this->itemOffset] = $item;
 
