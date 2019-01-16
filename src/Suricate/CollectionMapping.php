@@ -25,7 +25,7 @@ class CollectionMapping extends Collection
         }
         $sql .= " FROM `" . $collection::TABLE_NAME . "` a";
         $sql .= " RIGHT JOIN `" . $collection::SQL_RELATION_TABLE_NAME . "` b";
-        $sql .= "   ON b." . $collection::MAPPING_ID_NAME . "=a." . $itemName::TABLE_INDEX;
+        $sql .= "   ON b." . $collection::MAPPING_ID_NAME . "=a." . $itemName->getTableIndex();
         $sql .= " WHERE";
         $sql .= "   " . $collection::PARENT_ID_NAME . "=:parent_id";
 
@@ -66,7 +66,7 @@ class CollectionMapping extends Collection
 
             // 2nd step : create items that are not saved in db
             foreach ($this->items as &$currentItem) {
-                if ($currentItem->{$currentItem::TABLE_INDEX} == '') {
+                if ($currentItem->{$currentItem->getTableIndex()} == '') {
                     $currentItem->save();
                 }
 
@@ -117,8 +117,8 @@ class CollectionMapping extends Collection
             $hasData       = false;
 
             // One field contains item unique index, load from it
-            if (isset($data[$newItem::TABLE_INDEX]) && $data[$newItem::TABLE_INDEX] != '') {
-                $newItem->load($data[$newItem::TABLE_INDEX]);
+            if (isset($data[$newItem->getTableIndex()]) && $data[$newItem->getTableIndex()] != '') {
+                $newItem->load($data[$newItem->getTableIndex()]);
             } else {
                 // Build SQL query to load corresponding item
                 $sqlData = array();
