@@ -15,16 +15,12 @@ namespace Suricate;
 
 class DBObject implements Interfaces\IDBObject
 {
-    /*
-    * @const TABLE_NAME : Linked SQL Table
-    */
-    const TABLE_NAME    = '';
+    /** @var string Linked SQL Table */
+    protected $tableName = '';
 
-    /*
-    * @const TABLE_INDEX : Unique Id of the SQL Table
-    */
-    const TABLE_INDEX   = '';
-
+    /** @var string Unique ID of the SQL table */
+    protected $tableIndex = '';
+    
     /**
      * @const DB_CONFIG : Database configuration identifier
      */
@@ -145,6 +141,16 @@ class DBObject implements Interfaces\IDBObject
         }
 
         return false;
+    }
+
+    public function getTableName()
+    {
+        return $this->tableName;
+    }
+
+    public function getTableIndex()
+    {
+        return $this->tableIndex;
     }
 
     /**
@@ -480,9 +486,9 @@ class DBObject implements Interfaces\IDBObject
 
         if ($id != '') {
             $query  = "SELECT *";
-            $query .= " FROM `" . static::TABLE_NAME ."`";
+            $query .= " FROM `" . $this->getTableName() ."`";
             $query .= " WHERE";
-            $query .= "     `" . static::TABLE_INDEX . "` =  :id";
+            $query .= "     `" . $this->getTableIndex() . "` =  :id";
             
             $params         = [];
             $params['id']   = $id;
@@ -495,17 +501,17 @@ class DBObject implements Interfaces\IDBObject
 
     public function isLoaded()
     {
-        return $this->{static::TABLE_INDEX} !== null;
+        return $this->{$this->getTableIndex()} !== null;
     }
 
     public function loadOrFail($id)
     {
         $this->load($id);
-        if ($id == '' || $this->{static::TABLE_INDEX} != $id) {
+        if ($id == '' || $this->{$this->getTableIndex()} != $id) {
             throw (new Exception\ModelNotFoundException)->setModel(get_called_class());
-        } else {
-            return $this;
         }
+
+        return $this;
     }
 
     public static function loadOrCreate($arg)
@@ -518,12 +524,16 @@ class DBObject implements Interfaces\IDBObject
 
     public static function loadOrInstanciate($arg)
     {
+        $calledClass = get_called_class();
+        $obj = new $calledClass;
+        
         if (!is_array($arg)) {
-            $arg = [static::TABLE_INDEX => $arg];
+            $arg = [$obj->getTableIndex() => $arg];
         }
+        
 
         $sql = "SELECT *";
-        $sql .= " FROM " . static::TABLE_NAME;
+        $sql .= " FROM `" . $calledClass->getTableName() . "`";
         $sql .= " WHERE ";
 
         $sqlArray   = [];
@@ -540,10 +550,6 @@ class DBObject implements Interfaces\IDBObject
         }
         $sql .= implode(' AND ', $sqlArray);
 
-
-
-        $calledClass = get_called_class();
-        $obj = new $calledClass;
         if (!$obj->loadFromSql($sql, $params)) {
             foreach ($arg as $property => $value) {
                 $obj->$property = $value;
@@ -584,13 +590,18 @@ class DBObject implements Interfaces\IDBObject
         $calledClass    = get_called_class();
         $orm            = new $calledClass;
 
+        return $orm->hydrate($data);
+    }
+
+    public function hydrate($data = [])
+    {
         foreach ($data as $key => $val) {
-            if ($orm->propertyExists($key)) {
+            if ($this->propertyExists($key)) {
                 $orm->$key = $val;
             }
         }
-        
-        return $orm;
+
+        return $this;
     }
 
     public static function create($data = [])
@@ -611,12 +622,12 @@ class DBObject implements Interfaces\IDBObject
     {
         $this->connectDB();
 
-        if (static::TABLE_INDEX != '') {
-            $query  = "DELETE FROM `" . static::TABLE_NAME . "`";
-            $query .= " WHERE `" . static::TABLE_INDEX . "` = :id";
+        if ($this->getTableIndex() !== '') {
+            $query  = "DELETE FROM `" . $this->getTableName() . "`";
+            $query .= " WHERE `" . $this->getTableIndex() . "` = :id";
 
             $queryParams = [];
-            $queryParams['id'] = $this->{static::TABLE_INDEX};
+            $queryParams['id'] = $this->{$this->getTableIndex()};
             
             $this->dbLink->query($query, $queryParams);
         }
@@ -634,7 +645,7 @@ class DBObject implements Interfaces\IDBObject
         if (count($this->dbValues)) {
             $this->connectDB();
 
-            if ($this->{static::TABLE_INDEX} != '' && !$forceInsert) {
+            if ($this->{$this->getTableIndex()} != '' && !$forceInsert) {
                 $this->update();
                 $insert = false;
             } else {
@@ -648,7 +659,7 @@ class DBObject implements Interfaces\IDBObject
                 if (isset($this->protectedValues[$variable]) && $this->isProtectedVariableLoaded($variable)) {
                     if ($this->protectedValues[$variable] instanceof Interfaces\ICollection) {
                         if ($insert) {
-                            $this->protectedValues[$variable]->setParentIdForAll($this->{static::TABLE_INDEX});
+                            $this->protectedValues[$variable]->setParentIdForAll($this->{$this->getTableIndex()});
                         }
                         $this->protectedValues[$variable]->save();
                     }
@@ -669,7 +680,7 @@ class DBObject implements Interfaces\IDBObject
 
         $sqlParams = [];
 
-        $sql  = 'UPDATE `' . static::TABLE_NAME . '`';
+        $sql  = 'UPDATE `' . $this->getTableName() . '`';
         $sql .= ' SET ';
         
 
@@ -680,9 +691,9 @@ class DBObject implements Interfaces\IDBObject
             }
         }
         $sql  = substr($sql, 0, -2);
-        $sql .= " WHERE `" . static::TABLE_INDEX . "` = :SuricateTableIndex";
+        $sql .= " WHERE `" . $this->getTableIndex() . "` = :SuricateTableIndex";
 
-        $sqlParams[':SuricateTableIndex'] = $this->{static::TABLE_INDEX};
+        $sqlParams[':SuricateTableIndex'] = $this->{$this->getTableIndex()};
 
         $this->dbLink->query($sql, $sqlParams);
     }
@@ -698,7 +709,7 @@ class DBObject implements Interfaces\IDBObject
         
         $variables = array_diff($this->dbVariables, $this->readOnlyVariables);
 
-        $sql  = 'INSERT INTO `' . static::TABLE_NAME . '`';
+        $sql  = 'INSERT INTO `' . $this->getTableName() . '`';
         $sql .= '(`';
         $sql .= implode('`, `', $variables);
         $sql .= '`)';
@@ -713,7 +724,7 @@ class DBObject implements Interfaces\IDBObject
         
         $this->dbLink->query($sql, $sqlParams);
 
-        $this->{static::TABLE_INDEX} = $this->dbLink->lastInsertId();
+        $this->{$this->getTableIndex()} = $this->dbLink->lastInsertId();
     }
     
     protected function connectDB()
