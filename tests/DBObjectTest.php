@@ -21,6 +21,24 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $constructor->invoke($mock);
     }
 
+    public function testGetTableName()
+    {
+        $testName = 'my_sql_table';
+
+        $testDBO = new \Suricate\DBObject();
+        self::mockProperty($testDBO, 'tableName', $testName);
+        $this->assertEquals($testName, $testDBO->getTableName());
+    }
+
+    public function testGetTableIndex()
+    {
+        $testIndex = 'id';
+
+        $testDBO = new \Suricate\DBObject();
+        self::mockProperty($testDBO, 'tableIndex', $testIndex);
+        $this->assertEquals($testIndex, $testDBO->getTableIndex());
+    }
+
     public function testUndefinedGet()
     {
         $testDBO = new \Suricate\DBObject();
@@ -46,6 +64,29 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($testDBO->propertyExists('regularProperty'));
         $this->assertTrue($testDBO->propertyExists('id'));
         $this->assertFalse($testDBO->propertyExists('unknownProperty'));
+    }
+
+    public function testIsset()
+    {
+        $testDBO = new \Suricate\DBObject();
+        self::mockProperty($testDBO, 'dbVariables', ['id', 'name', 'not_loaded_var']);
+        self::mockProperty($testDBO, 'dbValues', ['id' => 1, 'name' => 'test name']);
+
+        $this->assertTrue(isset($testDBO->id));
+        $this->assertFalse(isset($testDBO->undefVar));
+    }
+
+    public function testIsLoaded()
+    {
+        $testIndex = 'id';
+
+        $testDBO = new \Suricate\DBObject();
+        self::mockProperty($testDBO, 'tableIndex', $testIndex);
+        self::mockProperty($testDBO, 'dbVariables', [$testIndex, 'name', 'not_loaded_var']);
+        $this->assertFalse($testDBO->isLoaded());
+
+        self::mockProperty($testDBO, 'dbValues', [$testIndex => 1, 'name' => 'test name']);
+        $this->assertTrue($testDBO->isLoaded());
     }
     
 
