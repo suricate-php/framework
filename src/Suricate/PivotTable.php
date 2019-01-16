@@ -23,11 +23,12 @@ class PivotTable extends DBObject
 
         $items = [];
         if ($target !== null) {
-            $targetClass    = new $pivot->getTargetForRelation($target);
+            $className = $pivot->getTargetForRelation($target);
+            $targetClass    = new $className;
             $sourceField    = $pivot->getSourceFieldForRelation($target);
             
             $query  = "SELECT t.* FROM " . $targetClass->getTableName() . " t";
-            $query .= " LEFT JOIN " . $pivot->getTableName. " p";
+            $query .= " LEFT JOIN " . $pivot->getTableName() . " p";
             $query .= "     ON p.`" . $sourceField . "`=t." . $targetClass->getTableIndex();
             $query .= " WHERE";
             $query .= "     `" . $pivot->getSourceFieldForRelation($relation) . "` =  :id";

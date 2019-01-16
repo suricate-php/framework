@@ -127,7 +127,7 @@ class DBCollection extends Collection
      * Load items linked to a parentId
      * @param mixed        $parentId       Parent id description
      * @param string       $parentIdField  Name of parent id referencing field
-     * @param \closure|null $validate       Callback use to validate add to items collection
+     * @param \Closure|null $validate       Callback use to validate add to items collection
      */
     public static function loadForParentId($parentId, $parentIdField = null, $validate = null)
     {

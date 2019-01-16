@@ -536,7 +536,7 @@ class DBObject implements Interfaces\IDBObject
         
 
         $sql = "SELECT *";
-        $sql .= " FROM `" . $calledClass->getTableName() . "`";
+        $sql .= " FROM `" . $obj->getTableName() . "`";
         $sql .= " WHERE ";
 
         $sqlArray   = [];
