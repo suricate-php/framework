@@ -97,6 +97,31 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         self::mockProperty($testDBO, 'dbValues', [$testIndex => 1, 'name' => 'test name']);
         $this->assertTrue($testDBO->isLoaded());
     }
+
+    public function testHydrate()
+    {
+        $testDBO = new \Suricate\DBObject();
+        $testDBO->realProperty = '';
+
+        self::mockProperty($testDBO, 'dbVariables', ['id', 'name']);
+        $testDBO->hydrate([
+            'id' => 1,
+            'name' => 'test record',
+            'add_column' => 'test value',
+            'realProperty' => 'my string',
+        ]);
+
+        $this->assertEquals($testDBO->realProperty, 'my string');
+
+        $reflector = new ReflectionClass(get_class($testDBO));
+        $property = $reflector->getProperty('dbValues');
+        $property->setAccessible(true);
+        $this->assertEquals([
+            'id' => 1,
+            'name' => 'test record',
+        ], $property->getValue($testDBO));
+
+    }
     
 
     public static function mockProperty($object, string $propertyName, $value)
