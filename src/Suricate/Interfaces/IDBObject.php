@@ -3,6 +3,12 @@ namespace Suricate\Interfaces;
 
 interface IDBObject
 {
+    public function getTableName();
+
+    public function getTableIndex();
+
+    public function getDBConfig();
+
     public function propertyExists($property);
 
     public function isProtectedVariable($variableName);
