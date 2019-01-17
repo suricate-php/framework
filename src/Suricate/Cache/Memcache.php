@@ -33,6 +33,7 @@ class Memcache extends Suricate\Cache
         $this->host             = 'localhost';
         $this->port             = 11211;
         $this->useCompression   = false;
+        $this->defaultExpiry    = 3600;
     }
     
     public function getHost()
