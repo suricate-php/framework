@@ -11,8 +11,8 @@ namespace Suricate;
  */
 class Validator
 {
-    private $errors = array();
-    private $checks = array();
+    private $errors = [];
+    private $checks = [];
     private $datas;
     private $value;
     private $index;
@@ -160,19 +160,23 @@ class Validator
         if ($index === null) {
             $this->value = $this->datas;
             $this->index = null;
-        } else {
-            if (is_object($this->datas) && isset($this->datas->$index)) {
-                $this->value = $this->datas->$index;
-                $this->index = $index;
-            } elseif (array_key_exists($index, $this->datas)) {
-                $this->value = $this->datas[$index];
-                $this->index = $index;
-            } else {
-                throw new \InvalidArgumentException('Index / Property "' . $index . '" does not exists');
-            }
+            return $this;
         }
 
-        return $this;
+        if (is_object($this->datas) && isset($this->datas->$index)) {
+            $this->value = $this->datas->$index;
+            $this->index = $index;
+
+            return $this;
+        } 
+        if (array_key_exists($index, $this->datas)) {
+            $this->value = $this->datas[$index];
+            $this->index = $index;
+
+            return $this;
+        }
+        
+        throw new \InvalidArgumentException('Index / Property "' . $index . '" does not exists');
     }
 
     public function callValidate()
