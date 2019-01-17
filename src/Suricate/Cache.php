@@ -12,7 +12,7 @@ namespace Suricate;
 
 class Cache extends Service implements Interfaces\ICache
 {
-    protected $parametersList = array('type');
+    protected $parametersList = ['type'];
     public static $container;
     protected $cacheTypes = [
         'memcache'  => 'Suricate\Suricate::CacheMemcache',
