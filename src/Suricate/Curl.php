@@ -91,6 +91,9 @@ class Curl extends Service
     {
         $curlHandler     = curl_init($this->request->getUrl());
 
+        if ($curlHandler === false) {
+            throw new \Exception('Can\'t init curl');
+        }
         curl_setopt_array($curlHandler, $this->generateCurlOptions());
 
         $curlResponse       = curl_exec($curlHandler);
