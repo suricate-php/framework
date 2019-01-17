@@ -29,7 +29,7 @@ class Registry
 
     public static function set($key, $value)
     {
-        $data = &static::getFromContext(null);
+        $data = &static::getFromContext();
         $data[$key] = $value;
     }
 
@@ -47,9 +47,9 @@ class Registry
                 static::$data[static::$context] = array();
             }
             return static::$data[static::$context];
-        } else {
-            return static::$data;
         }
+
+        return static::$data;
     }
 
     public static function clean()

@@ -73,7 +73,7 @@ class DBCollection extends Collection
      * Static wrapper for loadFromSql
      * @param  string     $sql       SQL Statement
      * @param  array      $sqlParams SQL Parameters
-     * @return Suricate\Collection Loaded collection
+     * @return Collection Loaded collection
      */
     public static function buildFromSql($sql, $sqlParams = [])
     {
@@ -185,7 +185,6 @@ class DBCollection extends Collection
 
     /**
      * Load Parent Item, if item type is defined
-     * @return item type Parent Object
      */
     public function loadParent()
     {

@@ -257,7 +257,7 @@ class Image
                 $y = floor(($this->height / 2) - ($offsetHeight / 2));
                 break;
             case 'right':
-                $x = $x = $this->width - $offsetWidth;
+                $x = $this->width - $offsetWidth;
                 $y = floor(($this->height / 2) - ($offsetHeight / 2));
                 break;
             case 'bottom-left':
