@@ -3,43 +3,32 @@ namespace Suricate;
 
 class Image
 {
+    use Traits\ImageFilter;
+
     public $source;
     private $destination;
 
     private $width;
     private $height;
-    private $filters = array(
-        'IMG_FILTER_NEGATE',
-        'IMG_FILTER_GRAYSCALE',
-        'IMG_FILTER_BRIGHTNESS',
-        'IMG_FILTER_CONTRAST',
-        'IMG_FILTER_COLORIZE',
-        'IMG_FILTER_EDGEDETECT',
-        'IMG_FILTER_EMBOSS',
-        'IMG_FILTER_GAUSSIAN_BLUR',
-        'IMG_FILTER_SELECTIVE_BLUR',
-        'IMG_FILTER_MEAN_REMOVAL',
-        'IMG_FILTER_SMOOTH',
-        'IMG_FILTER_PIXELATE'
-        );
-
-    public function __construct()
-    {
-    }
+    
 
     public function load($filename)
     {
-        if (is_file($filename)) {
-            $this->source = imagecreatefromstring(file_get_contents($filename));
-            if ($this->source !== false) {
+        if (is_file($filename) && $imgString = file_get_contents($filename)) {
+            $imgString = imagecreatefromstring($imgString);
+            if ($imgString !== false) {
+                $this->source = $imgString;
                 $this->destination = $this->source;
                 $this->width = imagesx($this->source);
                 $this->height = imagesy($this->source);
+
+                return $this;
             }
-        } else {
-            throw new \InvalidArgumentException('Cannot load ' . $filename);
+
+            throw new \InvalidArgumentException('Cannot load ' . $filename . ', not an image');
         }
-        return $this;
+        
+        throw new \InvalidArgumentException('Cannot load ' . $filename . ', file unreadable');
     }
 
     public function getWidth()
@@ -136,67 +125,7 @@ class Image
         return $this->chain();
     }
 
-    public function asNegative()
-    {
-        return $this->filter('IMG_FILTER_NEGATE');
-    }
-
-    public function asGrayscale()
-    {
-        return $this->filter('IMG_FILTER_GRAYSCALE');
-    }
-
-    public function setBrightness($level)
-    {
-        return $this->filter('IMG_FILTER_BRIGHTNESS', $level);
-    }
-
-    public function setContrast($level)
-    {
-        return $this->filter('IMG_FILTER_CONTRAST', $level);
-    }
-
-    public function colorize($r, $g, $b, $alpha)
-    {
-        $this->filter('IMG_FILTER_COLORIZE', $r, $g, $b, $alpha);
-
-        return $this;
-    }
-
-    public function detectEdge()
-    {
-        return $this->filter('IMG_FILTER_EDGEDETECT');
-    }
-
-    public function emboss()
-    {
-        return $this->filter('IMG_FILTER_EMBOSS');
-    }
-
-    public function blur()
-    {
-        return $this->filter('IMG_FILTER_GAUSSIAN_BLUR');
-    }
-
-    public function selectiveBlur()
-    {
-        return $this->filter('IMG_FILTER_SELECTIVE_BLUR');
-    }
-
-    public function meanRemoval()
-    {
-        return $this->filter('IMG_FILTER_MEAN_REMOVAL');
-    }
-
-    public function smooth($level)
-    {
-        return $this->filter('IMG_FILTER_SMOOTH', $level);
-    }
-
-    public function pixelate($size)
-    {
-        return $this->filter('IMG_FILTER_PIXELATE', $size);
-    }
+    
 
     public function rotate()
     {
@@ -280,25 +209,7 @@ class Image
         return $this;
     }
 
-    protected function filter()
-    {
-        $args = func_get_args();
-        $filterType = array_shift($args);
-        
-        if (in_array($filterType, $this->filters)) {
-            $params = array(
-                $this->source,
-                constant($filterType)
-            );
-            $params = array_merge($params, $args);
-
-            call_user_func_array('imagefilter', $params);
-            
-            return $this;
-        } else {
-            throw new \InvalidArgumentException('Unknown filter type ' . $filterType);
-        }
-    }
+    
 
     public function save($filename, $outputType = null, $quality = 70)
     {
