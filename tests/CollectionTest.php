@@ -29,6 +29,24 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(3, $collection->count());
     }
 
+    public function testGetIterator()
+    {
+        $arr = array(1, 2, 3);
+        $collection = new \Suricate\Collection($arr);
+        $this->assertEquals(new \ArrayIterator($arr), $collection->getIterator());
+    }
+
+    public function testPaginate()
+    {
+        $arr = array(1, 2, 3, 4, 5);
+        $collection = new \Suricate\Collection($arr);
+        
+
+        $collection->paginate(1, 3);
+        $this->assertEquals(['page' => 3, 'nbItems' => 5, 'nbPages' => 5], $collection->pagination);
+        $this->assertEquals([3], $collection->getItems());
+    }
+
     public function testFirst()
     {
         $arr = array(4, 5, 6);
@@ -52,6 +70,15 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $arr = array(1, 2, 3);
         $collection = new \Suricate\Collection($arr);
         $this->assertEquals(6, $collection->sum());
+
+        $arr = [
+            ['id' => 10, 'name' => 'azerty'],
+            ['id' => 2, 'name' => 'qsdfg'],
+            ['id' => 3, 'name' => 'wxcvbn']
+        ];
+        $collection = new \Suricate\Collection($arr);
+        $this->assertEquals(15, $collection->sum('id'));
+
     }
 
     public function testHas()
@@ -187,5 +214,31 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $arr = array(1, 2, 3);
         $collection = new \Suricate\Collection($arr);
         $this->assertEquals([1, 2, 3, 4], $collection->push(4)->getItems());
+    }
+
+    public function testGetValuesFor()
+    {
+        $arr = [
+            ['id' => 1, 'name' => 'azerty'],
+            ['id' => 2, 'name' => 'qsdfg'],
+            ['id' => 3, 'name' => 'wxcvbn']
+        ];
+        $collection = new \Suricate\Collection($arr);
+        $this->assertEquals([
+            'azerty',
+            'qsdfg',
+            'wxcvbn'],
+            $collection->getValuesFor('name')
+        );
+    }
+
+    public function testSearch()
+    {
+        $arr = array('a' => 1, 'b' => 2, 'c' => 3);
+        $collection = new \Suricate\Collection($arr);
+        $this->assertEquals('c', $collection->search('3'));
+        $this->assertEquals('c', $collection->search(3, true));
+        $this->assertFalse($collection->search(22));
+        $this->assertFalse($collection->search('3', true));
     }
 }
