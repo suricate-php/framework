@@ -63,4 +63,10 @@ class Cache extends Service implements Interfaces\ICache
         $this->init();
         return static::$container->get($variable);
     }
+
+    public function delete(string $variable)
+    {
+        $this->init();
+        return static::$container->delete($variable);
+    }
 }
