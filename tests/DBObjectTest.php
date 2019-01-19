@@ -123,7 +123,7 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         ], $property->getValue($testDBO));
     }
 
-    public function testConnect()
+    public function testLoad()
     {
         // Prepare database
         $this->setupData();
@@ -142,9 +142,12 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         self::mockProperty($testDBO, 'tableIndex', 'id');
         self::mockProperty($testDBO, 'dbVariables', ['id', 'name', 'date_added']);
 
-        $testDBO->load(1);
+        $this->assertFalse($testDBO->isLoaded());
+        $retVal = $testDBO->load(1);
+        $this->assertTrue($testDBO->isLoaded());
         $this->assertEquals(1, $testDBO->id);
-
+        $this->assertEquals('John', $testDBO->name);
+        $this->assertInstanceOf('\Suricate\DBObject', $retVal);
     }
     
 
