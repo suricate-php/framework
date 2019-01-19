@@ -99,8 +99,6 @@ class DatabaseTest extends TestCase
 
     protected function tearDown()
     {
-        self::$pdo = null;
-        $this->conn = null;
         if (is_file('/tmp/test.db')) {
             unlink('/tmp/test.db');
         }
