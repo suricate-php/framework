@@ -1,6 +1,7 @@
 <?php
 class DBObjectTest extends \PHPUnit\Framework\TestCase
 {
+    protected $tableName = 'users';
     public function testContructor()
     {
         $classname = '\Suricate\DBObject';
@@ -120,6 +121,29 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
             'id' => 1,
             'name' => 'test record',
         ], $property->getValue($testDBO));
+    }
+
+    public function testConnect()
+    {
+        // Prepare database
+        $this->setupData();
+        $dbLink = $this->getDatabase();
+
+        // Inject database handler
+        $testDBO = new \Suricate\DBObject();
+
+
+        $reflector = new ReflectionClass(get_class($testDBO));
+        $property = $reflector->getProperty('dbLink');
+        $property->setAccessible(true);
+        $property->setValue($testDBO, $dbLink);
+
+        self::mockProperty($testDBO, 'tableName', $this->tableName);
+        self::mockProperty($testDBO, 'tableIndex', 'id');
+        self::mockProperty($testDBO, 'dbVariables', ['id', 'name', 'date_added']);
+
+        $testDBO->load(1);
+        $this->assertEquals(1, $testDBO->id);
 
     }
     
@@ -132,5 +156,32 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $property->setAccessible(true);
         $property->setValue($object, $value);
         $property->setAccessible(false);
+    }
+
+    protected function setupData()
+    {
+        $pdo = new PDO('sqlite:/tmp/test.db');
+        $pdo->exec("DROP TABLE IF EXISTS `" . $this->tableName ."`");
+        $pdo->exec("CREATE TABLE `" .$this->tableName. "` (`id` INTEGER PRIMARY KEY,`name` varchar(50) DEFAULT NULL,`date_added` datetime NOT NULL)");
+        $stmt = $pdo->prepare("INSERT INTO `" . $this->tableName . "` (name, date_added) VALUES (:name, :date)");
+        $values = [
+            ['John', '2019-01-10 00:00:00'],
+            ['Paul', '2019-01-11 00:00:00'],
+            ['Robert', '2019-01-12 00:00:00']
+        ];
+        foreach ($values as $value) {
+            $stmt->execute(['name' => $value[0], 'date' => $value[1]]);
+        }
+    }
+
+    protected function getDatabase()
+    {
+        $database = new \Suricate\Database();
+        $database->configure([
+            'type' => 'sqlite',
+            'file' => '/tmp/test.db',
+        ]);
+
+        return $database;
     }
 }
