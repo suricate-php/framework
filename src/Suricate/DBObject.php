@@ -487,19 +487,15 @@ class DBObject implements Interfaces\IDBObject
         $this->connectDB();
         $this->resetLoadedVariables();
 
-        if ($id != '') {
-            $query  = "SELECT *";
-            $query .= " FROM `" . $this->getTableName() ."`";
-            $query .= " WHERE";
-            $query .= "     `" . $this->getTableIndex() . "` =  :id";
-            
-            $params         = [];
-            $params['id']   = $id;
-
-            return $this->loadFromSql($query, $params);
-        }
+        $query  = "SELECT *";
+        $query .= " FROM `" . $this->getTableName() ."`";
+        $query .= " WHERE";
+        $query .= "     `" . $this->getTableIndex() . "` =  :id";
         
-        return $this;
+        $params         = [];
+        $params['id']   = $id;
+
+        return $this->loadFromSql($query, $params);
     }
 
     public function isLoaded()
