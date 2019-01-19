@@ -164,7 +164,12 @@ class Database extends Service
         return $this->statement->fetch(\PDO::FETCH_OBJ);
     }
 
-    public function lastInsertId()
+    /**
+     * Return the last inserted id
+     *
+     * @return string
+     */
+    public function lastInsertId(): string
     {
         return $this->handler->lastInsertId();
     }
