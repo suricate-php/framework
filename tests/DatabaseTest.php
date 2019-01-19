@@ -20,8 +20,20 @@ class DatabaseTest extends TestCase
             ['Robert', '2019-01-12 00:00:00']
         ];
         foreach ($values as $value) {
-            $res = $stmt->execute(['name' => $value[0], 'date' => $value[1]]);
+            $stmt->execute(['name' => $value[0], 'date' => $value[1]]);
         }
+    }
+
+    protected function getDatabase()
+    {
+        $className = $this->className;
+        $database = new $className();
+        $database->configure([
+            'type' => 'sqlite',
+            'file' => '/tmp/test.db',
+        ]);
+
+        return $database;
     }
 
     public function setUp()
@@ -56,12 +68,7 @@ class DatabaseTest extends TestCase
 
     public function testConnect()
     {
-        $className = $this->className;
-        $database = new $className();
-        $database->configure([
-            'type' => 'sqlite',
-            'file' => '/tmp/test.db',
-        ]);
+        $database = $this->getDatabase();
         $database->query("SELECT * FROM users");
         $reflection = new \ReflectionClass(get_class($database));
         $property = $reflection->getProperty('handler');
@@ -83,18 +90,65 @@ class DatabaseTest extends TestCase
 
     public function testFetchAll()
     {
-        $className = $this->className;
-        $database = new $className();
-        $database->configure([
-            'type' => 'sqlite',
-            'file' => '/tmp/test.db',
-        ]);
+        $database = $this->getDatabase();
         $queryResult = $database->query("SELECT * FROM `" . $this->tableName . "`");
         $this->assertEquals($queryResult->fetchAll(), [
             ['id' => '1', 'name' => 'John', 'date_added' => '2019-01-10 00:00:00'],
             ['id' => '2', 'name' => 'Paul', 'date_added' => '2019-01-11 00:00:00'],
             ['id' => '3', 'name' => 'Robert', 'date_added' => '2019-01-12 00:00:00'],
         ]);
+    }
+
+    public function testFetch()
+    {
+        $database = $this->getDatabase();
+        $database->query("SELECT * FROM `" . $this->tableName . "`");
+        // Record 1
+        $this->assertSame(['id' => '1', 'name' => 'John', 'date_added' => '2019-01-10 00:00:00'], $database->fetch());
+        // Record 2
+        $this->assertSame(['id' => '2', 'name' => 'Paul', 'date_added' => '2019-01-11 00:00:00'], $database->fetch());
+        // Record 3
+        $this->assertSame(['id' => '3', 'name' => 'Robert', 'date_added' => '2019-01-12 00:00:00'], $database->fetch());
+        // No more records
+        $this->assertFalse($database->fetch());
+    }
+
+    public function testFetchObject()
+    {
+        $database = $this->getDatabase();
+        $database->query("SELECT * FROM `" . $this->tableName . "`");
+        $result = $database->fetchObject();
+        $expected = new \stdClass;
+        $expected->id = '1';
+        $expected->name = 'John';
+        $expected->date_added = '2019-01-10 00:00:00';
+
+        $this->assertEquals($expected, $result);
+        $this->assertSame($expected->id, $result->id);
+    }
+
+    public function testFetchColumn()
+    {
+        $database = $this->getDatabase();
+        $database->query("SELECT * FROM `" . $this->tableName . "` WHERE id=2");
+        $this->assertSame('2', $database->fetchColumn());
+        $database->query("SELECT * FROM `" . $this->tableName . "` WHERE id=2");
+        $this->assertSame('Paul', $database->fetchColumn(1));
+        $this->assertFalse($database->fetchColumn(1));
+    }
+
+    public function testLastInsertId()
+    {
+        $database = $this->getDatabase();
+        $database->query("INSERT INTO `" . $this->tableName . "` (name, date_added) VALUES ('Rodrigo', '2019-01-13 00:00:00')");
+        $this->assertSame('4', $database->lastInsertId(), 'Test last inserted id');
+    }
+
+    public function testGetColumnCount()
+    {
+        $database = $this->getDatabase();
+        $database->query("SELECT * FROM `" . $this->tableName . "`");
+        $this->assertEquals(3, $database->getColumnCount());
     }
 
     protected function tearDown()
