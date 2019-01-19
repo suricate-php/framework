@@ -87,7 +87,7 @@ class Database extends Service
      *
      * @return string|null
      */
-    public function getConfig(): ?string
+    public function getConfig()
     {
         return $this->config;
     }
