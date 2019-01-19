@@ -176,18 +176,22 @@ class Database extends Service
 
     public function beginTransaction()
     {
+        return $this->handler->beginTransaction();
     }
 
-    public function commit()
+    public function commit(): bool
     {
+        return $this->handler->commit();
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
+        return $this->handle->rollback();
     }
 
-    public function inTransaction()
+    public function inTransaction(): bool
     {
+        return $this->handle->inTransaction();
     }
 
     public function getColumnCount()
