@@ -196,7 +196,43 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         
         $this->assertInstanceOf('\Suricate\DBObject', $retVal);
     }
-    
+
+    public function testToArray()
+    {
+        // Prepare database
+        $this->setupData();
+
+        // Inject database handler
+        $testDBO = $this->getDBOject();
+        $testDBO->load(2);
+        
+        $this->assertSame([
+            'id' => '2',
+            'category_id' => '100',
+            'name' => 'Paul',
+            'date_added' => '2019-01-11 00:00:00',
+            ],
+            $testDBO->toArray()
+        );
+
+        $testDBO = $this->getDBOject();
+        $testDBO->load(2);
+        self::mockProperty($testDBO, 'exportedVariables', [
+            'id' => 'id', 
+            'category_id' => 'category_id,type:integer',
+            'name' => 'name',
+            'date_added' => '-']
+        );
+
+        $this->assertSame([
+            'id' => '2',
+            'category_id' => 100,
+            'name' => 'Paul',
+            ],
+            $testDBO->toArray()
+        );
+
+    }
 
     public static function mockProperty($object, string $propertyName, $value)
     {
