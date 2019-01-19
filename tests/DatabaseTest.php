@@ -66,6 +66,22 @@ class DatabaseTest extends TestCase
         $this->assertEquals($configName, $database->getConfig());
     }
 
+    public function testGetSetConfigs()
+    {
+        $className = $this->className;
+        $configs = [
+            'test1' => ['type' => 'sqlite', 'memory' => true],
+            'test2' => ['type' => 'mysql'],
+        ];
+
+        $database = new $className();
+        $this->assertSame([], $database->getConfigs());
+        $retVar = $database->setConfigs($configs);
+
+        $this->assertInstanceOf($className, $retVar);
+        $this->assertEquals($configs, $database->getConfigs());
+    }
+
     public function testConnect()
     {
         $database = $this->getDatabase();
