@@ -13,6 +13,9 @@ namespace Suricate;
 
 class Database extends Service
 {
+    use Traits\DatabaseMySQL;
+    use Traits\DatabaseSQLite;
+
     protected $parametersList = [
         'configs'
     ];
@@ -25,13 +28,13 @@ class Database extends Service
     {
         parent::__construct();
 
-        $this->configs = array();
+        $this->configs = [];
         $this->handler = false;
     }
 
-    public function configure($parameters = array())
+    public function configure($parameters = [])
     {
-        $dbConfs = array();
+        $dbConfs = [];
         foreach ($parameters as $name => $value) {
             if (is_array($value)) {
                 $dbConfs[$name] = $value;
@@ -39,7 +42,7 @@ class Database extends Service
                 $dbConfs['default'][$name] = $value;
             }
         }
-        $parameters = array('configs' => $dbConfs);
+        $parameters = ['configs' => $dbConfs];
         parent::configure($parameters);
     }
 
@@ -164,46 +167,7 @@ class Database extends Service
         return $this->statement->columnCount();
     }
 
-    private function configurePDOMySQL($params, &$pdoDsn, &$pdoUsername, &$pdoPassword, &$pdoAttributes)
-    {
-        $defaultParams = array(
-            'hostname' => null,
-            'database' => null,
-            'username' => null,
-            'password' => null,
-            'encoding' => null
-        );
+    
 
-        $params = array_merge($defaultParams, $params);
-
-        $pdoDsn         = 'mysql:host=' . $params['hostname'] . ';dbname=' . $params['database'];
-        $pdoUsername    = $params['username'];
-        $pdoPassword    = $params['password'];
-        if ($params['encoding'] != null) {
-            $pdoAttributes[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES " . $params['encoding'];
-        }
-    }
-
-    private function configurePDOSQLite($params, &$pdoDsn, &$pdoUsername, &$pdoPassword)
-    {
-        $defaultParams = array(
-            'username'  => null,
-            'password'  => null,
-            'memory'    => null,
-            'file'      => null,
-        );
-
-        $params = array_merge($defaultParams, $params);
-        
-        $pdoDsn         = 'sqlite';
-
-        if ($params['memory']) {
-            $pdoDsn .= '::memory:';
-        } else {
-            $pdoDsn .= ':' . $params['file'];
-        }
-        
-        $pdoUsername    = $params['username'];
-        $pdoPassword    = $params['password'];
-    }
+    
 }
