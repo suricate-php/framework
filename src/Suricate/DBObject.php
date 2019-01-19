@@ -227,7 +227,7 @@ class DBObject implements Interfaces\IDBObject
     /**
      * @param string $name
      */
-    private function getRelation($name)
+    protected function getRelation($name)
     {
         if (isset($this->relationValues[$name]) && $this->isRelationLoaded($name)) {
             return $this->relationValues[$name];
