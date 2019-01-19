@@ -19,9 +19,13 @@ trait DatabaseSQLite
         if ($params['memory']) {
             $pdoDsn .= '::memory:';
         } else {
-            $pdoDsn .= ':' . $params['file'];
+            if ($params['file'] !== null) {
+                $pdoDsn .= ':' . $params['file'];
+            } else {
+                throw new \Exception("Missing SQLite file parameter");
+            }
         }
-        
+
         $pdoUsername    = $params['username'];
         $pdoPassword    = $params['password'];
     }
