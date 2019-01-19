@@ -20,6 +20,7 @@ class Database extends Service
         'configs'
     ];
 
+    /** @var string current configuration name */
     private $config;
     private $handler;
     private $statement;
@@ -46,6 +47,11 @@ class Database extends Service
         parent::configure($parameters);
     }
 
+    /**
+     * Set Configurations list
+     *
+     * @return Database
+     */
     public function setConfigs($configs)
     {
         $this->configs = $configs;
@@ -53,19 +59,35 @@ class Database extends Service
         return $this;
     }
 
-    public function getConfigs()
+    /**
+     * Get configurations list
+     *
+     * @return array
+     */
+    public function getConfigs(): array
     {
         return $this->configs;
     }
 
-    public function setConfig($config)
+    /**
+     * Set current configuration used
+     *
+     * @param string $config configuration name
+     * @return Database
+     */
+    public function setConfig(string $config): Database
     {
         $this->config = $config;
 
         return $this;
     }
 
-    public function getConfig()
+    /**
+     * Get current configuration name used
+     *
+     * @return string|null
+     */
+    public function getConfig(): ?string
     {
         return $this->config;
     }
@@ -83,7 +105,7 @@ class Database extends Service
             $params = array_shift($confs);
         }
 
-        $pdoAttributes = array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION);
+        $pdoAttributes = [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION];
         switch ($params['type']) {
             case 'mysql':
                 $this->configurePDOMySQL($params, $pdoDsn, $pdoUsername, $pdoPassword, $pdoAttributes);
@@ -106,7 +128,8 @@ class Database extends Service
     }
 
     /**
-     * Execute a query against database. Create a connection if not already alvailable
+     * Execute a query against database.
+     * Create a connection if not already alvailable
      * @param  string $sql        Query
      * @param  array  $parameters Parameters used in query
      * @return Database
@@ -166,8 +189,4 @@ class Database extends Service
     {
         return $this->statement->columnCount();
     }
-
-    
-
-    
 }
