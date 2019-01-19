@@ -1,4 +1,6 @@
 <?php
+require_once 'stubs/Category.php';
+
 class DBObjectTest extends \PHPUnit\Framework\TestCase
 {
     protected $tableName = 'users';
@@ -123,30 +125,75 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         ], $property->getValue($testDBO));
     }
 
+    public function testWakeup()
+    {
+        $mock = $this->getMockBuilder(\Suricate\DBObject::class)
+            ->setMethods(['setRelations'])
+            ->getMock();
+
+        $mock
+            ->expects($this->once())
+            ->method('setRelations');
+        
+        $mock->__wakeup();
+    }
+
+    public function testRelations()
+    {
+        $relations = [
+            'category' => [
+                'type' => \Suricate\DBObject::RELATION_ONE_ONE,
+                'source' => 'category_id',
+                'target' => 'Category'
+            ]
+        ];
+        // Prepare database
+        $this->setupData();
+        $mock = $this->getMockBuilder(\Suricate\DBObject::class)
+            ->setMethods(['setRelations', 'getRelation'])
+            ->getMock();
+
+        // Prepare setup DBObject
+        $testDBO = $this->getDBOject();
+        $reflector = new ReflectionClass($mock);
+        $property = $reflector->getProperty('relations');
+        $property->setAccessible(true);
+        $property->setValue($testDBO, $relations);
+
+        // get relation values
+        $property = $reflector->getProperty('relationValues');
+        $property->setAccessible(true);
+
+        // Load
+        $testDBO->load(1);
+        $relationsValues = $property->getValue($testDBO);
+
+        // No relation values at first
+        $this->assertSame([], $relationsValues);
+        $this->assertEquals('Admin', $testDBO->category->name);
+        $this->assertInstanceOf('\Suricate\DBObject', $testDBO->category);
+
+        $relationsValues = $property->getValue($testDBO);
+        $this->assertArrayHasKey('category', $relationsValues);
+        $this->assertInstanceOf('\Suricate\DBObject', $relationsValues['category']);
+
+    }
+
     public function testLoad()
     {
         // Prepare database
         $this->setupData();
-        $dbLink = $this->getDatabase();
 
         // Inject database handler
-        $testDBO = new \Suricate\DBObject();
-
-
-        $reflector = new ReflectionClass(get_class($testDBO));
-        $property = $reflector->getProperty('dbLink');
-        $property->setAccessible(true);
-        $property->setValue($testDBO, $dbLink);
-
-        self::mockProperty($testDBO, 'tableName', $this->tableName);
-        self::mockProperty($testDBO, 'tableIndex', 'id');
-        self::mockProperty($testDBO, 'dbVariables', ['id', 'name', 'date_added']);
+        $testDBO = $this->getDBOject();
 
         $this->assertFalse($testDBO->isLoaded());
         $retVal = $testDBO->load(1);
         $this->assertTrue($testDBO->isLoaded());
         $this->assertEquals(1, $testDBO->id);
+
         $this->assertEquals('John', $testDBO->name);
+        
         $this->assertInstanceOf('\Suricate\DBObject', $retVal);
     }
     
@@ -164,16 +211,28 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
     protected function setupData()
     {
         $pdo = new PDO('sqlite:/tmp/test.db');
-        $pdo->exec("DROP TABLE IF EXISTS `" . $this->tableName ."`");
-        $pdo->exec("CREATE TABLE `" .$this->tableName. "` (`id` INTEGER PRIMARY KEY,`name` varchar(50) DEFAULT NULL,`date_added` datetime NOT NULL)");
-        $stmt = $pdo->prepare("INSERT INTO `" . $this->tableName . "` (name, date_added) VALUES (:name, :date)");
+        $pdo->exec("DROP TABLE IF EXISTS `users`");
+        $pdo->exec("DROP TABLE IF EXISTS `categories`");
+        $pdo->exec("CREATE TABLE `users` (`id` INTEGER PRIMARY KEY,`category_id` INTEGER, `name` varchar(50) DEFAULT NULL,`date_added` datetime NOT NULL)");
+        $pdo->exec("CREATE TABLE `categories` (`id` INTEGER PRIMARY KEY, `name` varchar(50) DEFAULT NULL)");
+        
+        $stmt = $pdo->prepare("INSERT INTO `users` (name, category_id, date_added) VALUES (:name, :categoryid, :date)");
         $values = [
-            ['John', '2019-01-10 00:00:00'],
-            ['Paul', '2019-01-11 00:00:00'],
-            ['Robert', '2019-01-12 00:00:00']
+            ['John', 100, '2019-01-10 00:00:00'],
+            ['Paul', 100, '2019-01-11 00:00:00'],
+            ['Robert', 101, '2019-01-12 00:00:00']
         ];
         foreach ($values as $value) {
-            $stmt->execute(['name' => $value[0], 'date' => $value[1]]);
+            $stmt->execute(['name' => $value[0], 'categoryid' => $value[1], 'date' => $value[2]]);
+        }
+
+        $stmt = $pdo->prepare("INSERT INTO `categories` (id, name) VALUES (:id, :name)");
+        $values = [
+            [100, 'Admin'],
+            [101, 'Employee']
+        ];
+        foreach ($values as $value) {
+            $stmt->execute(['id' => $value[0], 'name' => $value[1]]);
         }
     }
 
@@ -186,5 +245,24 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         ]);
 
         return $database;
+    }
+
+    protected function getDBOject()
+    {
+        $dbLink = $this->getDatabase();
+        // Inject database handler
+        $testDBO = new \Suricate\DBObject();
+
+
+        $reflector = new ReflectionClass(get_class($testDBO));
+        $property = $reflector->getProperty('dbLink');
+        $property->setAccessible(true);
+        $property->setValue($testDBO, $dbLink);
+
+        self::mockProperty($testDBO, 'tableName', $this->tableName);
+        self::mockProperty($testDBO, 'tableIndex', 'id');
+        self::mockProperty($testDBO, 'dbVariables', ['id', 'category_id', 'name', 'date_added']);
+
+        return $testDBO;
     }
 }
