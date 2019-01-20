@@ -338,19 +338,22 @@ class DBObject implements Interfaces\IDBObject
      */
     public function toJson()
     {
-        return implode('', array_map('json_encode', $this->toArray()));
+        return json_encode($this->toArray());
     }
 
     /**
      * Mark a protected variable as loaded
      * @param  string $name varialbe name
-     * @return void
+     *
+     * @return DBObject
      */
     public function markProtectedVariableAsLoaded($name)
     {
         if ($this->isProtectedVariable($name)) {
             $this->loadedProtectedVariables[$name] = true;
         }
+
+        return $this;
     }
 
     /**
