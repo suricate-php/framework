@@ -33,6 +33,16 @@ class Registry
         $data[$key] = $value;
     }
 
+    public static function setContext($context)
+    {
+        static::$context = $context;
+    }
+
+    public static function getContext()
+    {
+        return static::$context;
+    }
+
     public static function exists($key)
     {
         $data = &static::getFromContext();
@@ -55,6 +65,6 @@ class Registry
     public static function clean()
     {
         $data = &static::getFromContext();
-        $data = array();
+        $data = [];
     }
 }
