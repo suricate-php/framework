@@ -252,7 +252,26 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf('\Suricate\DBObject', $retVal);
     }
 
-    public function loadOrFail()
+    public function testLoadFromSQL()
+    {
+        // Prepare database
+        $this->setupData();
+
+        // Inject database handler
+        $testDBO = $this->getDBOject();
+
+        $sql = "SELECT * FROM `users` WHERE id=:id";
+        $params = ['id' => 1];
+        
+        $retVal = $testDBO->loadFromSql($sql, $params);
+        $this->assertInstanceOf('\Suricate\DBObject', $retVal);
+
+        $params = ['id' => 100];
+        $retVal = $testDBO->loadFromSql($sql, $params);
+        $this->assertFalse($retVal);
+    }
+
+    public function testLoadOrFail()
     {
         // Prepare database
         $this->setupData();
@@ -266,7 +285,6 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
 
         $this->expectException(\Suricate\Exception\ModelNotFoundException::class);
         $retVal = $testDBO->loadOrFail(100);
-
     }
 
     public function testToArray()
