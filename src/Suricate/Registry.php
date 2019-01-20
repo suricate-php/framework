@@ -3,7 +3,7 @@ namespace Suricate;
 
 class Registry
 {
-    protected static $data = array();
+    protected static $data = [];
     protected static $context;
 
     public static function get($key, $defaultValue = null)
