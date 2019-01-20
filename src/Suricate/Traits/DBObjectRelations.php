@@ -1,6 +1,8 @@
 <?php
 namespace Suricate\Traits;
 
+use Suricate\DBObject;
+
 trait DBObjectRelations
 {
     protected $relations                    = [];
@@ -82,13 +84,13 @@ trait DBObjectRelations
     {
         if ($this->isRelation($name)) {
             switch ($this->relations[$name]['type']) {
-                case self::RELATION_ONE_ONE:
+                case DBObject::RELATION_ONE_ONE:
                     $this->loadRelationOneOne($name);
                     return;
-                case self::RELATION_ONE_MANY:
+                case DBObject::RELATION_ONE_MANY:
                     $this->loadRelationOneMany($name);
                     return;
-                case self::RELATION_MANY_MANY:
+                case DBObject::RELATION_MANY_MANY:
                     $this->loadRelationManyMany($name);
                     return;
             }
