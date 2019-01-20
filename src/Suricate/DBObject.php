@@ -2,6 +2,7 @@
 namespace Suricate;
 
 use Suricate\Traits\DBObjectRelations;
+use Suricate\Traits\DBObjectProtected;
 /**
  * DBObject, Pseudo ORM Class
  *
@@ -17,6 +18,7 @@ use Suricate\Traits\DBObjectRelations;
 class DBObject implements Interfaces\IDBObject
 {
     use DBObjectRelations;
+    use DBObjectProtected;
 
     /** @var string Linked SQL Table */
     protected $tableName = '';
@@ -42,10 +44,6 @@ class DBObject implements Interfaces\IDBObject
 
     protected $dbVariables                  = [];
     protected $dbValues                     = [];
-    
-    protected $protectedVariables           = [];
-    protected $protectedValues              = [];
-    protected $loadedProtectedVariables     = [];
 
     protected $readOnlyVariables            = [];
 
@@ -207,31 +205,6 @@ class DBObject implements Interfaces\IDBObject
     }
 
     /**
-     * @param string $name
-     */
-    private function getProtectedVariable($name)
-    {
-        // Variable exists, and is already loaded
-        if (isset($this->protectedValues[$name]) && $this->isProtectedVariableLoaded($name)) {
-            return $this->protectedValues[$name];
-        }
-        // Variable has not been loaded
-        if (!$this->isProtectedVariableLoaded($name)) {
-            if ($this->accessToProtectedVariable($name)) {
-                $this->markProtectedVariableAsLoaded($name);
-            }
-        }
-
-        if (isset($this->protectedValues[$name])) {
-            return $this->protectedValues[$name];
-        }
-
-        return null;
-    }
-
-    
-
-    /**
      * Define object exported variables
      *
      * @return DBObject
@@ -305,23 +278,6 @@ class DBObject implements Interfaces\IDBObject
         return json_encode($this->toArray());
     }
 
-    /**
-     * Mark a protected variable as loaded
-     * @param  string $name varialbe name
-     *
-     * @return DBObject
-     */
-    public function markProtectedVariableAsLoaded($name)
-    {
-        if ($this->isProtectedVariable($name)) {
-            $this->loadedProtectedVariables[$name] = true;
-        }
-
-        return $this;
-    }
-
-    
-
     private function resetLoadedVariables()
     {
         $this->loadedProtectedVariables = [];
@@ -350,31 +306,7 @@ class DBObject implements Interfaces\IDBObject
             || $this->isRelation($property)
             || property_exists($this, $property);
     }
-   
-   /**
-    * Check if variable is a protected variable
-    * @param  string  $name variable name
-    * @return boolean
-    */
-    public function isProtectedVariable($name)
-    {
-        return in_array($name, $this->protectedVariables);
-    }
 
-    
-
-    /**
-     * Check if a protected variable already have been loaded
-     * @param  string  $name Variable name
-     * @return boolean
-     */
-    protected function isProtectedVariableLoaded($name)
-    {
-        return isset($this->loadedProtectedVariables[$name]);
-    }
-
-    
-    
     /**
      * Load ORM from Database
      * @param  mixed $id SQL Table Unique id
@@ -632,12 +564,6 @@ class DBObject implements Interfaces\IDBObject
                 $this->dbLink->setConfig($this->getDBConfig());
             }
         }
-    }
-    
-    
-    protected function accessToProtectedVariable($name)
-    {
-        return false;
     }
 
     public function validate()
