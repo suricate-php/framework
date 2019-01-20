@@ -275,14 +275,14 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         self::mockProperty($testDBO, 'exportedVariables', [
             'id' => 'id', 
             'category_id' => 'category_id,type:integer',
-            'name' => 'name',
+            'name' => ',omitempty',
             'date_added' => '-']
         );
+        $testDBO->name = '';
 
         $this->assertSame([
             'id' => '2',
             'category_id' => 100,
-            'name' => 'Paul',
             ],
             $testDBO->toArray()
         );
