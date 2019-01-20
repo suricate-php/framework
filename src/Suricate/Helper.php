@@ -6,7 +6,7 @@ use Suricate\Suricate;
 if (!function_exists('_p')) {
     function _p()
     {
-        echo '<pre>';
+        echo '<pre>' ."\n";
         foreach (func_get_args() as $var) {
             print_r($var);
             echo "\n";
@@ -18,7 +18,7 @@ if (!function_exists('_p')) {
 if (!function_exists('_d')) {
     function _d()
     {
-        echo '<pre>';
+        echo '<pre>' . "\n";
         foreach (func_get_args() as $var) {
             var_dump($var);
             echo "\n";
@@ -53,7 +53,7 @@ if (!function_exists('last')) {
 if (!function_exists('flatten')) {
     function flatten(array $array)
     {
-        $return = array();
+        $return = [];
         array_walk_recursive($array, function ($a) use (&$return) {
             $return[] = $a;
         });
