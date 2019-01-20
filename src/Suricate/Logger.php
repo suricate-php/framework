@@ -20,22 +20,22 @@ class Logger extends Service
     const LOGLEVEL_INFO     = 3;
     const LOGLEVEL_DEBUG    = 4;
 
-    protected $parametersList = array(
+    protected $parametersList = [
         'logfile',
         'enabled',
         'level',
         'timestamp'
-    );
+    ];
 
     private $resource;
 
-    protected $levels = array(
+    protected $levels = [
         self::LOGLEVEL_FATAL    => 'FATAL',
         self::LOGLEVEL_ERROR    => 'ERROR',
         self::LOGLEVEL_WARN     => 'WARN',
         self::LOGLEVEL_INFO     => 'INFO',
         self::LOGLEVEL_DEBUG    => 'DEBUG'
-    );
+    ];
 
     public function __construct()
     {
@@ -54,7 +54,7 @@ class Logger extends Service
             }
             fputs($this->resource, '[' . $this->levels[$level] . '] '. (string) $message . PHP_EOL);
         }
-        
+
         return $this;
     }
 
