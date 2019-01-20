@@ -161,6 +161,7 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $property->setValue($testDBO, $relations);
 
         // get relation values
+        $reflector = new ReflectionClass($testDBO);
         $property = $reflector->getProperty('relationValues');
         $property->setAccessible(true);
 
