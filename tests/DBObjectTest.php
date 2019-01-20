@@ -162,20 +162,33 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
 
         // get relation values
         $reflector = new ReflectionClass($testDBO);
-        $property = $reflector->getProperty('relationValues');
-        $property->setAccessible(true);
+        $relationValuesRef = $reflector->getProperty('relationValues');
+        $relationValuesRef->setAccessible(true);
+
+        $loadedRelationsRef = $reflector->getProperty('loadedRelations');
+        $loadedRelationsRef->setAccessible(true);
 
         // Load
         $testDBO->load(1);
-        $relationsValues = $property->getValue($testDBO);
+        $relationsValues = $relationValuesRef->getValue($testDBO);
+        $loadedRelations = $loadedRelationsRef->getValue($testDBO);
 
         // No relation values at first
         $this->assertSame([], $relationsValues);
+        $this->assertSame([], $loadedRelations);
         $this->assertEquals('Admin', $testDBO->category->name);
         $this->assertInstanceOf('\Suricate\DBObject', $testDBO->category);
 
-        $relationsValues = $property->getValue($testDBO);
+        $relationsValues = $relationValuesRef->getValue($testDBO);
+        $loadedRelations = $loadedRelationsRef->getValue($testDBO);
+
+        // Check relation cache has been set
         $this->assertArrayHasKey('category', $relationsValues);
+
+        // Check relation loaded flag has been set
+        $this->assertArrayHasKey('category', $loadedRelations);
+
+        // Check return type of relation
         $this->assertInstanceOf('\Suricate\DBObject', $relationsValues['category']);
 
     }
@@ -232,7 +245,21 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
             ],
             $testDBO->toArray()
         );
+    }
 
+    public function testToJson()
+    {
+        // Prepare database
+        $this->setupData();
+
+        // Inject database handler
+        $testDBO = $this->getDBOject();
+        $testDBO->load(2);
+
+        $this->assertSame(
+            '{"id":"2","category_id":"100","name":"Paul","date_added":"2019-01-11 00:00:00"}',
+            $testDBO->toJson()
+        );
     }
 
     public static function mockProperty($object, string $propertyName, $value)
