@@ -391,7 +391,7 @@ class DBObject implements Interfaces\IDBObject
     /**
      * @param string $sql
      */
-    public function loadFromSql($sql, $sqlParams = [])
+    public function loadFromSql(string $sql, $sqlParams = [])
     {
         $this->connectDB();
         $this->resetLoadedVariables();

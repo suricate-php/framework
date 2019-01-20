@@ -19,7 +19,7 @@ interface IDBObject
 
     public function load($uniqueId);
 
-    public function loadFromSql($sql, $sqlParameters);
+    public function loadFromSql(string $sql, $sqlParameters);
 
     public function delete();
 
