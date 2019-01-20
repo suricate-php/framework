@@ -252,6 +252,23 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf('\Suricate\DBObject', $retVal);
     }
 
+    public function loadOrFail()
+    {
+        // Prepare database
+        $this->setupData();
+
+        // Inject database handler
+        $testDBO = $this->getDBOject();
+
+        
+        $retVal = $testDBO->loadOrFail(1);
+        $this->assertInstanceOf('\Suricate\DBObject', $retVal);
+
+        $this->expectException(\Suricate\Exception\ModelNotFoundException::class);
+        $retVal = $testDBO->loadOrFail(100);
+
+    }
+
     public function testToArray()
     {
         // Prepare database
