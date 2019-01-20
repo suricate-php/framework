@@ -129,11 +129,8 @@ class DBObject implements Interfaces\IDBObject
             return isset($this->protectedValues[$name]);
         } elseif ($this->isRelation($name)) {
             if (!$this->isRelationLoaded($name)) {
-                $relationResult = $this->loadRelation($name);
-
-                if ($relationResult) {
-                    $this->markRelationAsLoaded($name);
-                }
+                $this->loadRelation($name);
+                $this->markRelationAsLoaded($name);
             }
             return isset($this->relationValues[$name]);
         }
@@ -234,9 +231,8 @@ class DBObject implements Interfaces\IDBObject
         }
 
         if (!$this->isRelationLoaded($name)) {
-            if ($this->loadRelation($name)) {
-                $this->markRelationAsLoaded($name);
-            }
+            $this->loadRelation($name);
+            $this->markRelationAsLoaded($name);
         }
 
         if (isset($this->relationValues[$name])) {
@@ -377,32 +373,49 @@ class DBObject implements Interfaces\IDBObject
         return isset($this->loadedRelations[$name]);
     }
 
+    /**
+     * Load realation according to relation type
+     *
+     * @param string $name
+     * @return void
+     */
     protected function loadRelation($name)
     {
-        if (isset($this->relations[$name])) {
+        if ($this->isRelation($name)) {
             switch ($this->relations[$name]['type']) {
                 case self::RELATION_ONE_ONE:
-                    return $this->loadRelationOneOne($name);
+                    $this->loadRelationOneOne($name);
+                    return;
                 case self::RELATION_ONE_MANY:
-                    return $this->loadRelationOneMany($name);
+                    $this->loadRelationOneMany($name);
+                    return;
                 case self::RELATION_MANY_MANY:
-                    return $this->loadRelationManyMany($name);
+                    $this->loadRelationManyMany($name);
+                    return;
             }
         }
-
-        return false;
     }
 
+    /**
+     * Load one to one relationship
+     *
+     * @param string $name
+     * @return void
+     */
     private function loadRelationOneOne($name)
     {
         $target = $this->relations[$name]['target'];
         $source = $this->relations[$name]['source'];
         $this->relationValues[$name] = new $target();
         $this->relationValues[$name]->load($this->$source);
-        
-        return true;
     }
 
+    /**
+     * Load one to many relationship
+     *
+     * @param string $name
+     * @return void
+     */
     private function loadRelationOneMany($name)
     {
         $target         = $this->relations[$name]['target'];
@@ -411,10 +424,14 @@ class DBObject implements Interfaces\IDBObject
         $validate       = dataGet($this->relations[$name], 'validate', null);
         
         $this->relationValues[$name] = $target::loadForParentId($parentId, $parentIdField, $validate);
-
-        return true;
     }
 
+    /**
+     * Load many to many relationship
+     *
+     * @param string $name
+     * @return void
+     */
     private function loadRelationManyMany($name)
     {
         $pivot      = $this->relations[$name]['pivot'];
@@ -423,8 +440,6 @@ class DBObject implements Interfaces\IDBObject
         $validate   = dataGet($this->relations[$name], 'validate', null);
 
         $this->relationValues[$name] = $pivot::loadFor($sourceType, $this->{$this->relations[$name]['source']}, $target, $validate);
-        
-        return true;
     }
 
     private function resetLoadedVariables()
