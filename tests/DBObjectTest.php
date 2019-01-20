@@ -195,6 +195,7 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('Admin', $testDBO->category->name);
         $this->assertInstanceOf('\Suricate\DBObject', $testDBO->category);
 
+
         $relationsValues = $relationValuesRef->getValue($testDBO);
         $loadedRelations = $loadedRelationsRef->getValue($testDBO);
 
@@ -207,6 +208,30 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         // Check return type of relation
         $this->assertInstanceOf('\Suricate\DBObject', $relationsValues['category']);
 
+        // Load new object
+        $testDBO = $this->getDBOject();
+        $reflector = new ReflectionClass($mock);
+        $property = $reflector->getProperty('relations');
+        $property->setAccessible(true);
+        $property->setValue($testDBO, $relations);
+        $testDBO->load(2);
+        // get relation values
+        $reflector = new ReflectionClass($testDBO);
+        $relationValuesRef = $reflector->getProperty('relationValues');
+        $relationValuesRef->setAccessible(true);
+
+        $loadedRelationsRef = $reflector->getProperty('loadedRelations');
+        $loadedRelationsRef->setAccessible(true);
+
+        $relationsValues = $relationValuesRef->getValue($testDBO);
+        $loadedRelations = $loadedRelationsRef->getValue($testDBO);
+
+        // No relation values at first
+        $this->assertSame([], $relationsValues);
+        $this->assertSame([], $loadedRelations);
+
+        // Isset implicit load relation, check that's been loaded
+        $this->assertTrue(isset($testDBO->category));
     }
 
     public function testLoad()
