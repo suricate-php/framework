@@ -3,10 +3,10 @@ namespace Suricate;
 
 class Event
 {
-    protected $listeners            = array();
-    protected $wildcardListeners    = array();
+    protected $listeners            = [];
+    protected $wildcardListeners    = [];
 
-    private $sortedListeners        = array();
+    private $sortedListeners        = [];
 
     public function listen($events, $listener, $priority = 0)
     {
@@ -19,7 +19,7 @@ class Event
         }
     }
 
-    public function fire($event, $eventData = array())
+    public function fire($event, $eventData = [])
     {
         $impactedListeners = $this->getImpactedListeners($event);
         foreach ($impactedListeners as $listener) {
@@ -49,7 +49,7 @@ class Event
 
     protected function getImpactedWildcardListeners($events)
     {
-        $listeners = array();
+        $listeners = [];
 
         return $listeners;
     }
