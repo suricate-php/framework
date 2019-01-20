@@ -101,6 +101,22 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($testDBO->isLoaded());
     }
 
+    public function testInstanciate()
+    {
+        $testDBO = Category::instanciate([
+            'id' => 1,
+            'name' => 'test record',
+        ]);
+
+        $reflector = new ReflectionClass(Category::class);
+        $property = $reflector->getProperty('dbValues');
+        $property->setAccessible(true);
+        $this->assertEquals([
+            'id' => 1,
+            'name' => 'test record',
+        ], $property->getValue($testDBO));
+    }
+
     public function testHydrate()
     {
         $testDBO = new \Suricate\DBObject();
