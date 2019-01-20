@@ -333,10 +333,10 @@ class DBObject implements Interfaces\IDBObject
         return $this->{$this->getTableIndex()} !== null;
     }
 
-    public function loadOrFail($id)
+    public function loadOrFail($index)
     {
-        $this->load($id);
-        if ($id == '' || $this->{$this->getTableIndex()} != $id) {
+        $this->load($index);
+        if ($this->{$this->getTableIndex()} != $index) {
             throw (new Exception\ModelNotFoundException)->setModel(get_called_class());
         }
 
