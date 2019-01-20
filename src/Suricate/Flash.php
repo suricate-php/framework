@@ -3,14 +3,14 @@ namespace Suricate;
 
 class Flash
 {
-    public static $types = array(
+    public static $types = [
         'success',
         'info',
         'error',
         'data'
-    );
+    ];
 
-    private static $items = array();
+    private static $items = [];
     private static $consumed = false;
 
     public static function read()
@@ -32,7 +32,11 @@ class Flash
          */
         self::read();
         $output = '';
-        $availableTypes = array('success' => 'success', 'info' => 'info', 'error' => 'danger');
+        $availableTypes = [
+            'success'   => 'success',
+            'info'      => 'info',
+            'error'     => 'danger'
+        ];
         
         foreach ($availableTypes as $type => $displayAlias) {
             $currentMessage = dataGet(self::$items, $type, null);
@@ -51,14 +55,13 @@ class Flash
 
         if (isset(self::$items['data']) && array_key_exists($key, self::$items['data'])) {
             return self::$items['data'][$key];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     public static function write($type, $message)
     {
-
         if (in_array($type, static::$types)) {
             $currentSessionData = Suricate::Session()->read('flash');
 
