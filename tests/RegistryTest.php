@@ -1,37 +1,64 @@
 <?php
+use \Suricate\Registry;
+
 class RegistryTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetSet()
     {
-        $retVal = \Suricate\Registry::get('index', 'fallback');
+        $retVal = Registry::get('index', 'fallback');
         $this->assertEquals($retVal, 'fallback');
 
-        $retVal = \Suricate\Registry::exists('index');
+        $retVal = Registry::exists('index');
         $this->assertFalse($retVal);
 
-        \Suricate\Registry::set('index', 'myNewVal');
-        $retVal = \Suricate\Registry::get('index', 'fallback');
+        Registry::set('index', 'myNewVal');
+        $retVal = Registry::get('index', 'fallback');
         $this->assertEquals($retVal, 'myNewVal');
 
-        $retVal = \Suricate\Registry::exists('index');
+        $retVal = Registry::exists('index');
         $this->assertTrue($retVal);
 
-        \Suricate\Registry::clean();
-        $retVal = \Suricate\Registry::exists('index');
+        Registry::clean();
+        $retVal = Registry::exists('index');
         $this->assertFalse($retVal);
     }
 
     public function testGetProperty()
     {
-        $retVal = \Suricate\Registry::getProperty('index', 'property', 'fallback');
+        $retVal = Registry::getProperty('index', 'property', 'fallback');
         $this->assertEquals($retVal, 'fallback');
 
         $testObj = new \stdClass();
         $testObj->property = 'testing';
 
-        \Suricate\Registry::set('index', $testObj);
+        Registry::set('index', $testObj);
 
-        $retVal = \Suricate\Registry::getProperty('index', 'property', 'fallback');
+        $retVal = Registry::getProperty('index', 'property', 'fallback');
         $this->assertEquals($retVal, 'testing');
+    }
+
+    public function testContext()
+    {
+        Registry::set('index', 'myNewVal');
+        $retVal = Registry::get('index', 'fallback');
+        $this->assertEquals($retVal, 'myNewVal');
+
+        Registry::setContext("test-context");
+        $this->assertEquals("test-context", Registry::getContext());
+        $retVal = Registry::get('index', 'fallback');
+        $this->assertEquals($retVal, 'fallback');
+
+        Registry::set('index', 'myNewValInContext');
+        $retVal = Registry::get('index', 'fallback');
+        $this->assertEquals($retVal, 'myNewValInContext');
+
+        Registry::setContext(null);
+        $retVal = Registry::get('index', 'fallback');
+        $this->assertEquals($retVal, 'myNewVal');
+        
+        Registry::setContext("test-context");
+        Registry::clean();
+        $retVal = Registry::get('index', 'fallback');
+        $this->assertEquals($retVal, 'fallback');
     }
 }
