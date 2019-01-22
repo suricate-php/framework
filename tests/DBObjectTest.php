@@ -98,7 +98,15 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($testDBO->isLoaded());
 
         self::mockProperty($testDBO, 'dbValues', [$testIndex => 1, 'name' => 'test name']);
-        $this->assertTrue($testDBO->isLoaded());
+        $this->assertFalse($testDBO->isLoaded());
+
+        $this->setupData();
+        $dbo = $this->getDBOject();
+        $this->assertFalse($dbo->isLoaded());
+        $dbo->load(1);
+        $this->assertTrue($dbo->isLoaded());
+        $dbo->load(999);
+        $this->assertFalse($dbo->isLoaded());
     }
 
     public function testInstanciate()
@@ -115,6 +123,8 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
             'id' => 1,
             'name' => 'test record',
         ], $property->getValue($testDBO));
+
+        $this->assertFalse($testDBO->isLoaded());
     }
 
     public function testHydrate()
@@ -139,6 +149,8 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
             'id' => 1,
             'name' => 'test record',
         ], $property->getValue($testDBO));
+
+        $this->assertFalse($testDBO->isLoaded());
     }
 
     public function testWakeup()
@@ -265,10 +277,12 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         
         $retVal = $testDBO->loadFromSql($sql, $params);
         $this->assertInstanceOf('\Suricate\DBObject', $retVal);
+        $this->assertTrue($testDBO->isLoaded());
 
         $params = ['id' => 100];
         $retVal = $testDBO->loadFromSql($sql, $params);
         $this->assertFalse($retVal);
+        $this->assertFalse($testDBO->isLoaded());
     }
 
     public function testLoadOrFail()
@@ -286,6 +300,47 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\Suricate\Exception\ModelNotFoundException::class);
         $testDBO->loadOrFail(100);
     }
+
+    public function testLoadOrInstanciate()
+    {
+        // Prepare database
+        $this->setupData();
+
+        $testDBO = Category::loadOrInstanciate(100);
+
+        $comparison = $this->getCategoryDBOject();
+        $comparison->load(100);
+
+        $this->assertInstanceOf('\Suricate\DBObject', $testDBO);
+        $this->assertInstanceOf('Category', $testDBO);
+
+        $this->assertSame($comparison->id, $testDBO->id);
+        $this->assertSame($comparison->name, $testDBO->name);
+        $this->assertTrue($testDBO->isLoaded());
+
+        // non existing
+        $testDBO = Category::loadOrInstanciate(102);
+        $this->assertFalse($testDBO->isLoaded());
+        $this->assertSame($testDBO->id, "102");
+        $this->assertSame($testDBO->name, null);
+
+        $testDBO = Category::loadOrInstanciate(['id' => 102, 'name' => 'test name']);
+        $this->assertFalse($testDBO->isLoaded());
+        $this->assertSame($testDBO->id, "102");
+        $this->assertSame($testDBO->name, 'test name');
+
+        $testDBO = Category::loadOrInstanciate(['id' => 101, 'name' => 'test name']);
+        $this->assertFalse($testDBO->isLoaded());
+        $this->assertSame($testDBO->id, "101");
+        $this->assertSame($testDBO->name, 'test name');
+
+        $testDBO = Category::loadOrInstanciate(['id' => 101, 'name' => 'Employee']);
+        $this->assertTrue($testDBO->isLoaded());
+        $this->assertSame($testDBO->id, "101");
+        $this->assertSame($testDBO->name, 'Employee');
+        
+    }
+
 
     public function testToArray()
     {
@@ -402,6 +457,25 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         self::mockProperty($testDBO, 'tableName', $this->tableName);
         self::mockProperty($testDBO, 'tableIndex', 'id');
         self::mockProperty($testDBO, 'dbVariables', ['id', 'category_id', 'name', 'date_added']);
+
+        return $testDBO;
+    }
+
+    protected function getCategoryDBOject()
+    {
+        $dbLink = $this->getDatabase();
+        // Inject database handler
+        $testDBO = new \Suricate\DBObject();
+
+
+        $reflector = new ReflectionClass(get_class($testDBO));
+        $property = $reflector->getProperty('dbLink');
+        $property->setAccessible(true);
+        $property->setValue($testDBO, $dbLink);
+
+        self::mockProperty($testDBO, 'tableName', 'categories');
+        self::mockProperty($testDBO, 'tableIndex', 'id');
+        self::mockProperty($testDBO, 'dbVariables', ['id','name']);
 
         return $testDBO;
     }
