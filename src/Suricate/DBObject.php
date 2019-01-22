@@ -42,6 +42,7 @@ class DBObject implements Interfaces\IDBObject
      */
     const RELATION_MANY_MANY    = 3;
 
+    protected $loaded                       = false;
     protected $dbVariables                  = [];
     protected $dbValues                     = [];
 
@@ -102,7 +103,7 @@ class DBObject implements Interfaces\IDBObject
     public function __set($name, $value)
     {
         if ($this->isDBVariable($name)) {
-            $this->dbValues[$name] = $value;
+            $this->dbValues[$name] = (string) $value;
             return;
         }
 
@@ -282,6 +283,7 @@ class DBObject implements Interfaces\IDBObject
     {
         $this->loadedProtectedVariables = [];
         $this->loadedRelations          = [];
+        $this->loaded                   = false;
 
         return $this;
     }
@@ -330,7 +332,7 @@ class DBObject implements Interfaces\IDBObject
 
     public function isLoaded()
     {
-        return $this->{$this->getTableIndex()} !== null;
+        return $this->loaded;
     }
 
     public function loadOrFail($index)
@@ -351,11 +353,18 @@ class DBObject implements Interfaces\IDBObject
         return $obj;
     }
 
+    /**
+     * Load existing object by passing properties or instanciate if
+     *
+     * @param mixed $arg
+     * @return DBObject
+     */
     public static function loadOrInstanciate($arg)
     {
         $calledClass = get_called_class();
         $obj = new $calledClass;
         
+        // got only one parameter ? consider as table index value (id)
         if (!is_array($arg)) {
             $arg = [$obj->getTableIndex() => $arg];
         }
@@ -367,15 +376,15 @@ class DBObject implements Interfaces\IDBObject
 
         $sqlArray   = [];
         $params     = [];
-        $i = 0;
+        $offset = 0;
         foreach ($arg as $key => $val) {
             if (is_null($val)) {
-                $sqlArray[] = '`' . $key . '` IS :arg' . $i;
+                $sqlArray[] = '`' . $key . '` IS :arg' . $offset;
             } else {
-                $sqlArray[] = '`' . $key . '`=:arg' . $i;
+                $sqlArray[] = '`' . $key . '`=:arg' . $offset;
             }
-            $params['arg' .$i] = $val;
-            $i++;
+            $params['arg' .$offset] = $val;
+            $offset++;
         }
         $sql .= implode(' AND ', $sqlArray);
 
@@ -402,7 +411,7 @@ class DBObject implements Interfaces\IDBObject
             foreach ($results as $key => $value) {
                 $this->$key = $value;
             }
-
+            $this->loaded = true;
             return $this;
         }
 
