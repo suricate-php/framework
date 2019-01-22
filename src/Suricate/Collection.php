@@ -170,26 +170,6 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
         unset($this->items[$offset]);
     }
 
-    // to be deprecated
-    public function getFirstItem()
-    {
-        foreach ($this->items as $currentItem) {
-            return $currentItem;
-        }
-    }
-
-    // to be deprecated
-    public function getRandom($nb = 1)
-    {
-        $keys = (array) array_rand($this->items, $nb);
-        $result = [];
-        foreach ($keys as $currentKey) {
-            $result[$currentKey] = $this->items[$currentKey];
-        }
-
-        return $result;
-    }
-
     // Helpers
 
     /**
