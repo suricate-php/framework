@@ -320,7 +320,7 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
 
         // non existing
         $testDBO = Category::loadOrInstanciate(102);
-        $this->assertFalse($testDBO->isLoaded());
+        $this->assertFalse($testDBO->isLoaded()); // has been instanciated, not loaded
         $this->assertSame($testDBO->id, "102");
         $this->assertSame($testDBO->name, null);
 
@@ -338,6 +338,23 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($testDBO->isLoaded());
         $this->assertSame($testDBO->id, "101");
         $this->assertSame($testDBO->name, 'Employee');
+    }
+
+    public function testCreate()
+    {
+        // Prepare database
+        $this->setupData();
+        $comparison = $this->getCategoryDBOject();
+
+        $testDBO = Category::create(['id' => 1020]);
+
+        $this->assertInstanceOf('\Suricate\DBObject', $testDBO);
+        $this->assertTrue($testDBO->isLoaded());
+
+        $comparison->load(1020);
+
+        $this->assertSame($comparison->id, $testDBO->id);
+        $this->assertSame($comparison->name, null);
         
     }
 
@@ -391,6 +408,13 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
             '{"id":"2","category_id":"100","name":"Paul","date_added":"2019-01-11 00:00:00"}',
             $testDBO->toJson()
         );
+    }
+
+    public function testValidate()
+    {
+        $testDBO = $this->getDBOject();
+        $this->assertTrue($testDBO->validate());
+
     }
 
     public static function mockProperty($object, string $propertyName, $value)
