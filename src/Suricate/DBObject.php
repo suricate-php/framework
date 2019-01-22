@@ -423,7 +423,7 @@ class DBObject implements Interfaces\IDBObject
      * @param  array $data  associative array
      * @return DBObject       Built DBObject
      */
-    public static function instanciate($data = [])
+    public static function instanciate(array $data = [])
     {
         $calledClass    = get_called_class();
         $orm            = new $calledClass;
@@ -431,7 +431,7 @@ class DBObject implements Interfaces\IDBObject
         return $orm->hydrate($data);
     }
 
-    public function hydrate($data = [])
+    public function hydrate(array $data = [])
     {
         foreach ($data as $key => $val) {
             if ($this->propertyExists($key)) {
@@ -442,7 +442,7 @@ class DBObject implements Interfaces\IDBObject
         return $this;
     }
 
-    public static function create($data = [])
+    public static function create(array $data = [])
     {
         $obj = static::instanciate($data);
         $obj->save();
@@ -483,7 +483,7 @@ class DBObject implements Interfaces\IDBObject
         if (count($this->dbValues)) {
             $this->connectDB();
 
-            if ($this->{$this->getTableIndex()} != '' && !$forceInsert) {
+            if ($this->isLoaded() && !$forceInsert) {
                 $this->update();
                 $insert = false;
             } else {
@@ -503,9 +503,11 @@ class DBObject implements Interfaces\IDBObject
                     }
                 }
             }
-        } else {
-            throw new \RuntimeException("Object " . get_called_class() . " has no properties to save");
+
+            return;
         }
+
+        throw new \RuntimeException("Object " . get_called_class() . " has no properties to save");
     }
 
     /**
@@ -559,9 +561,9 @@ class DBObject implements Interfaces\IDBObject
         foreach ($variables as $field) {
             $sqlParams[':' . $field] = $this->$field;
         }
-        
-        $this->dbLink->query($sql, $sqlParams);
 
+        $ret = $this->dbLink->query($sql, $sqlParams);
+        $this->loaded = true;
         $this->{$this->getTableIndex()} = $this->dbLink->lastInsertId();
     }
     
