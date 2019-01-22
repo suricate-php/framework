@@ -103,7 +103,7 @@ class DBObject implements Interfaces\IDBObject
     public function __set($name, $value)
     {
         if ($this->isDBVariable($name)) {
-            $this->dbValues[$name] = (string) $value;
+            $this->dbValues[$name] = is_null($value) ? $value : (string) $value;
             return;
         }
 
