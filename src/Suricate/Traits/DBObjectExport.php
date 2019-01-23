@@ -3,6 +3,28 @@ namespace Suricate\Traits;
 
 trait DBObjectExport
 {
+    protected $exportedVariables            = [];
+
+    /**
+     * Define object exported variables
+     *
+     * @return DBObject
+     */
+    protected function setExportedVariables()
+    {
+        if (count($this->exportedVariables)) {
+            return $this;
+        }
+
+        $dbMappingExport = [];
+        foreach ($this->dbVariables as $field) {
+            $dbMappingExport[$field] = $field;
+        }
+        $this->exportedVariables = $dbMappingExport;
+
+        return $this;
+    }
+
     /**
      * Export DBObject to array
      *

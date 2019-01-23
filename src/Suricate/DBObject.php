@@ -50,8 +50,6 @@ class DBObject implements Interfaces\IDBObject
 
     protected $readOnlyVariables            = [];
 
-    protected $exportedVariables            = [];
-
     protected $dbLink                       = false;
 
     protected $validatorMessages            = [];
@@ -211,26 +209,6 @@ class DBObject implements Interfaces\IDBObject
     public function isDBVariable($name)
     {
         return in_array($name, $this->dbVariables);
-    }
-
-    /**
-     * Define object exported variables
-     *
-     * @return DBObject
-     */
-    protected function setExportedVariables()
-    {
-        if (count($this->exportedVariables)) {
-            return $this;
-        }
-
-        $dbMappingExport = [];
-        foreach ($this->dbVariables as $field) {
-            $dbMappingExport[$field] = $field;
-        }
-        $this->exportedVariables = $dbMappingExport;
-
-        return $this;
     }
 
     private function resetLoadedVariables()
