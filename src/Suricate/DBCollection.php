@@ -100,24 +100,14 @@ class DBCollection extends Collection
         $sqlParams      = [];
 
         $sql  = "SELECT *";
-        $sql .= "   FROM `" . $collection::getTableName() . "`";
+        $sql .= "   FROM `" . $collection->getTableName() . "`";
 
         if ($collection->parentFilterType !== '' && $collection->parentFilterType != null) {
             $sql .= "WHERE " . $collection->parentFilterName . "=:type";
             $sqlParams['type'] = $collection->parentFilterType;
         }
-        $dbLink = Suricate::Database();
-        if ($collection->getDBConfig() !== '') {
-            $dbLink->setConfig($collection->getDBConfig());
-        }
-        $results = $dbLink->query($sql, $sqlParams)->fetchAll();
 
-        if ($results !== false) {
-            foreach ($results as $currentResult) {
-                $itemName = $collection->getItemsType();
-                $collection->addItem($itemName::instanciate($currentResult));
-            }
-        }
+        $collection->loadFromSql($sql, $sqlParams);
 
         return $collection;
     }
@@ -147,6 +137,10 @@ class DBCollection extends Collection
      */
     public function loadFromSql($sql, $sqlParams = [])
     {
+        if (!in_array(Interfaces\IDBObject::class, class_implements($this->itemsType))) {
+            throw new \BadMethodCallException('Item type does not implement IDBObject interface');
+        }
+
         $this->connectDB();
         $results = $this->dbLink->query($sql, $sqlParams)->fetchAll();
 
