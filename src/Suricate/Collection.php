@@ -3,19 +3,12 @@ namespace Suricate;
 
 class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interfaces\ICollection
 {
-    
-    protected $items            = [];
-    protected $mapping          = []; // to be deprecated ?
-
-    const ITEM_TYPE             = '';
-
+    protected $items   = [];
     public $pagination = [
         'nbPages'   => 0,
         'page'      => 1,
         'nbItems'   => 0,
     ];
-    
-    //protected $iteratorPosition  = 0;
 
     public function __construct($items = [])
     {
@@ -72,13 +65,7 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
 
     /*
 
-    public function addItemLink($linkId)
-     {
-         $this->items[$this->itemOffset] = $linkId;
-         // add mapping between item->index and $position in items pool
-         $this->mapping[$this->itemOffset] = $linkId;
-         $this->itemOffset++;
-     }
+    
 
     public function getItemFromKey($key)
     {
