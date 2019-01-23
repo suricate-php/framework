@@ -20,8 +20,8 @@ class DBCollection extends Collection
     protected $parentFilterName;                // Name of field used for filtering
     protected $parentFilterType;                // Value of filter
 
-
-    protected $itemOffset        = 0;
+    protected $dbLink               = false;
+    protected $itemOffset           = 0;
 
     /**
      * Get table name
@@ -138,14 +138,17 @@ class DBCollection extends Collection
         return $collection;
     }
 
+    /**
+     * Load collection from SQL query
+     *
+     * @param string $sql       SQL query
+     * @param array  $sqlParams associative array of SQL params
+     * @return DBCollection
+     */
     public function loadFromSql($sql, $sqlParams = [])
     {
-        $dbLink = Suricate::Database();
-        if ($this->DBConfig !== '') {
-            $dbLink->setConfig($this->DBConfig);
-        }
-
-        $results = Suricate::Database()->query($sql, $sqlParams)->fetchAll();
+        $this->connectDB();
+        $results = $this->dbLink->query($sql, $sqlParams)->fetchAll();
 
         if ($results !== false) {
             foreach ($results as $currentResult) {
@@ -325,5 +328,15 @@ class DBCollection extends Collection
         $this->itemOffset++;
 
         return $this;
+    }
+
+    protected function connectDB()
+    {
+        if (!$this->dbLink) {
+            $this->dbLink = Suricate::Database();
+            if ($this->getDBConfig() !== '') {
+                $this->dbLink->setConfig($this->getDBConfig());
+            }
+        }
     }
 }
