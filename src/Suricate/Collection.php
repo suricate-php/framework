@@ -70,16 +70,15 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
         return $this->items;
     }
 
-    /*public function addItemLink($linkId)
-    {
-        $this->items[$this->itemOffset] = $linkId;
-        // add mapping between item->index and $position in items pool
-        $this->mapping[$this->itemOffset] = $linkId;
+    /*
 
-        $this->itemOffset++;
-    }*/
-
-    
+    public function addItemLink($linkId)
+     {
+         $this->items[$this->itemOffset] = $linkId;
+         // add mapping between item->index and $position in items pool
+         $this->mapping[$this->itemOffset] = $linkId;
+         $this->itemOffset++;
+     }
 
     public function getItemFromKey($key)
     {
@@ -88,8 +87,7 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
             return $this->items[$invertedMapping[$key]];
         }
     }
-
-
+*/
     /**
      * Implementation of countable interface
      *
@@ -118,7 +116,7 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
      */
     public function offsetExists($offset): bool
     {
-        return isset($this->items[$offset]);
+        return \array_key_exists($offset, $this->items);
     }
 
     /**
@@ -129,18 +127,23 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
      */
     public function offsetGet($offset)
     {
-        $item =isset($this->items[$offset]) ? $this->items[$offset] : null;
+        if (array_key_exists($offset, $this->items)) {
+            return $this->items[$offset];
+        }
+        return null;
+        /*
+        $item = isset($this->items[$offset]) ? $this->items[$offset] : null;
         if (gettype($item) == 'object' || $item == null) {
             return $item;
         }
-        // Lazy load
+       // Lazy load
         $itemType = $this::ITEM_TYPE;
         $itemToLoad = new $itemType;
         $itemToLoad->load($this->items[$offset]);
 
         $this->items[$offset] = $itemToLoad;
 
-        return $this->items[$offset];
+        return $this->items[$offset];*/
     }
 
     /**
