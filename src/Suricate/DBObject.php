@@ -103,6 +103,7 @@ class DBObject implements Interfaces\IDBObject
     public function __set($name, $value)
     {
         if ($this->isDBVariable($name)) {
+            // Cast to string as PDO only handle string or NULL
             $this->dbValues[$name] = is_null($value) ? $value : (string) $value;
             return;
         }
@@ -562,7 +563,7 @@ class DBObject implements Interfaces\IDBObject
             $sqlParams[':' . $field] = $this->$field;
         }
 
-        $ret = $this->dbLink->query($sql, $sqlParams);
+        $this->dbLink->query($sql, $sqlParams);
         $this->loaded = true;
         $this->{$this->getTableIndex()} = $this->dbLink->lastInsertId();
     }
