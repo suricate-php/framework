@@ -3,6 +3,7 @@ namespace Suricate;
 
 use Suricate\Traits\DBObjectRelations;
 use Suricate\Traits\DBObjectProtected;
+use Suricate\Traits\DBObjectExport;
 /**
  * DBObject, Pseudo ORM Class
  *
@@ -19,6 +20,7 @@ class DBObject implements Interfaces\IDBObject
 {
     use DBObjectRelations;
     use DBObjectProtected;
+    use DBObjectExport;
 
     /** @var string Linked SQL Table */
     protected $tableName = '';
@@ -76,11 +78,14 @@ class DBObject implements Interfaces\IDBObject
     {
         if ($this->isDBVariable($name)) {
             return $this->getDBVariable($name);
-        } elseif ($this->isProtectedVariable($name)) {
+        }
+        if ($this->isProtectedVariable($name)) {
             return $this->getProtectedVariable($name);
-        } elseif ($this->isRelation($name)) {
+        }
+        if ($this->isRelation($name)) {
             return $this->getRelation($name);
-        } elseif (!empty($this->$name)) {
+        }
+        if (!empty($this->$name)) {
             return $this->$name;
         }
 
@@ -125,7 +130,8 @@ class DBObject implements Interfaces\IDBObject
     {
         if ($this->isDBVariable($name)) {
             return isset($this->dbValues[$name]);
-        } elseif ($this->isProtectedVariable($name)) {
+        }
+        if ($this->isProtectedVariable($name)) {
             // Load only one time protected variable automatically
             if (!$this->isProtectedVariableLoaded($name)) {
                 $protectedAccessResult = $this->accessToProtectedVariable($name);
@@ -135,7 +141,8 @@ class DBObject implements Interfaces\IDBObject
                 }
             }
             return isset($this->protectedValues[$name]);
-        } elseif ($this->isRelation($name)) {
+        }
+        if ($this->isRelation($name)) {
             if (!$this->isRelationLoaded($name)) {
                 $this->loadRelation($name);
                 $this->markRelationAsLoaded($name);
@@ -224,60 +231,6 @@ class DBObject implements Interfaces\IDBObject
         $this->exportedVariables = $dbMappingExport;
 
         return $this;
-    }
-
-    /**
-     * Export DBObject to array
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        $this->setExportedVariables();
-        $result = [];
-        foreach ($this->exportedVariables as $sourceName => $destinationName) {
-            $omitEmpty  = false;
-            $castType   = null;
-            if (strpos($destinationName, ',') !== false) {
-                $splitted   = explode(',', $destinationName);
-                array_map(function ($item) use (&$castType, &$omitEmpty) {
-                    if ($item === 'omitempty') {
-                        $omitEmpty = true;
-                        return;
-                    }
-                    if (substr($item, 0, 5) === 'type:') {
-                        $castType = substr($item, 5);
-                    }
-                }, $splitted);
-
-                $destinationName = $splitted[0];
-            }
-
-            if ($destinationName === '-') {
-                continue;
-            }
-
-            if ($omitEmpty && empty($this->$sourceName)) {
-                continue;
-            }
-            $value = $this->$sourceName;
-            if ($castType !== null) {
-                settype($value, $castType);
-            }
-            $result[$destinationName] = $value;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Export DBObject to JSON format
-     *
-     * @return string
-     */
-    public function toJson()
-    {
-        return json_encode($this->toArray());
     }
 
     private function resetLoadedVariables()
