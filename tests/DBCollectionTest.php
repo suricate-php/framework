@@ -85,6 +85,20 @@ class DBCollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(Category::class, $testDBCollection[0]);
     }
 
+    public function testBuildFromSql()
+    {
+        $this->setupData();
+
+        $sql = "SELECT * FROM categories WHERE id>:id";
+        $sqlParams = ['id' => 0];
+
+        $retVal = CategoriesList::buildFromSql($sql, $sqlParams);
+        
+        $this->assertInstanceOf(\Suricate\DBCollection::class, $retVal);
+        $this->assertSame(2, $retVal->count());
+        $this->assertInstanceOf(Category::class, $retVal[0]);
+    }
+
     public function testLoadAll()
     {
         $this->setupData();
