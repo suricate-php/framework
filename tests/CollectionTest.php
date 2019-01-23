@@ -52,6 +52,9 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $arr = array(4, 5, 6);
         $collection = new \Suricate\Collection($arr);
         $this->assertEquals(4, $collection->first());
+
+        $collection = new \Suricate\Collection([]);
+        $this->assertNull($collection->first());
     }
 
     public function testLast()
@@ -240,5 +243,46 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('c', $collection->search(3, true));
         $this->assertFalse($collection->search(22));
         $this->assertFalse($collection->search('3', true));
+    }
+
+    public function testOffsetExists()
+    {
+        $arr = ['a' => 1, 'b' => 2, 'c' => 3, 'd' => null, 'z' => 99];
+
+        $collection = new \Suricate\Collection($arr);
+        $this->assertTrue($collection->offsetExists('a'));
+        $this->assertTrue($collection->offsetExists('d'));
+        $this->assertFalse($collection->offsetExists('e'));
+    }
+
+    public function testOffsetGet()
+    {
+        $arr = [1, 2, 3];
+
+        $collection = new \Suricate\Collection($arr);
+
+        $this->assertNull($collection->offsetGet(4));
+        $this->assertSame(2, $collection->offsetGet(1));
+    }
+
+    public function testOffsetSet()
+    {
+        $arr = [1, 2, 3];
+
+        $collection = new \Suricate\Collection($arr);
+        $collection->offsetSet(null, 4);
+        $this->assertSame([1, 2, 3, 4], $collection->getItems());
+
+        $collection->offsetSet('a', 5);
+        $this->assertSame([1, 2, 3, 4, 'a' => 5], $collection->getItems());
+    }
+
+    public function testOffsetUnset()
+    {
+        $arr = [1, 2, 3];
+
+        $collection = new \Suricate\Collection($arr);
+        $collection->offsetUnset(1);
+        $this->assertSame([0 => 1, 2 => 3], $collection->getItems());
     }
 }
