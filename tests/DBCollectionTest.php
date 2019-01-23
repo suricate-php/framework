@@ -39,6 +39,26 @@ class DBCollectionTest extends \PHPUnit\Framework\TestCase
         self::mockProperty($testCollection, 'parentIdField', $testName);
         $this->assertEquals($testName, $testCollection->getParentIdField());
     }
+
+    public function testGetParentId()
+    {
+        $testId = 100;
+
+        $testCollection = new \Suricate\DBCollection();
+        $this->assertNull($testCollection->getParentId());
+        self::mockProperty($testCollection, 'parentId', $testId);
+        $this->assertSame($testId, $testCollection->getParentId());
+    }
+
+    public function testGetSetLazyLoad()
+    {
+        $testCollection = new \Suricate\DBCollection();
+        $this->assertFalse($testCollection->getLazyLoad());
+        $retVal = $testCollection->setLazyLoad(true);
+        $this->assertInstanceOf(\Suricate\DBCollection::class, $retVal);
+        $this->assertTrue($testCollection->getLazyLoad());
+    }
+
     
     public static function mockProperty($object, string $propertyName, $value)
     {
