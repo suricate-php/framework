@@ -138,9 +138,8 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
      *
      * @param mixed $offset Offset to set
      * @param mixed $value  Value to set
-     * @return void
      */
-    public function offsetSet($offset, $value): void
+    public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
             $this->items[] = $value;
@@ -153,9 +152,8 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
      * Implementation of ArrayAccess Interface
      *
      * @param mixed $offset Offset to unset
-     * @return void
      */
-    public function offsetUnset($offset): void
+    public function offsetUnset($offset)
     {
         unset($this->items[$offset]);
     }
