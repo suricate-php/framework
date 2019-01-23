@@ -3,22 +3,67 @@ namespace Suricate;
 
 class DBCollection extends Collection
 {
-    const TABLE_NAME            = '';           // Name of SQL table containing items
-    const ITEM_TYPE             = '';           // Class of items in collection
-    const DB_CONFIG             = '';           // Database configuration identifier
-    const PARENT_ID_NAME        = 'parent_id';  // Name of the field referencing to parent_id
-    const PARENT_OBJECT_TYPE    = '';           // Parent object type
+    /* @var string SQL table name */
+    protected $tableName        = '';
+    /* @var string Item type stored in collection */
+    protected $itemsType        = '';
+    /* @var string Database configuration identifier */
+    protected $DBConfig         = '';
+    /* @var string Name of parent identifier field */
+    protected $parentIdField    = 'parent_id';
+    /** @var string Parent Object type */
+    protected $parentType       = '';
 
-
+    protected $mapping          = [];
     protected $lazyLoad = false;
     protected $parentId;                       // Id of the parent
     protected $parentFilterName;                // Name of field used for filtering
     protected $parentFilterType;                // Value of filter
 
-    
 
     protected $itemOffset        = 0;
 
+    /**
+     * Get table name
+     *
+     * @return string
+     */
+    public function getTableName(): string
+    {
+        return $this->tableName;
+    }
+
+    public function getItemsType(): string
+    {
+        return $this->itemsType;
+    }
+
+    public function getDBConfig(): string
+    {
+        return $this->DBConfig;
+    }
+
+    public function getParentIdField(): string
+    {
+        return $this->parentIdField;
+    }
+
+    public function getParentType()
+    {
+        return $this->parentType;
+    }
+
+    public function getParentId()
+    {
+        return $this->parentId;
+    }
+
+    /**
+     * Set lazyload flag
+     *
+     * @param bool $lazyLoad
+     * @return DBCollection
+     */
     public function setLazyLoad($lazyLoad)
     {
         $this->lazyLoad = $lazyLoad;
@@ -26,15 +71,23 @@ class DBCollection extends Collection
         return $this;
     }
 
-    
+    /**
+     * Get lazyload flag
+     *
+     * @return boolean
+     */
+    public function getLazyLoad(): bool
+    {
+        return $this->lazyLoad;
+    }
+
     public function purgeItems()
     {
-        $this->items        = array();
-        $this->mapping      = array();
+        $this->items        = [];
+        $this->mapping      = [];
         $this->itemOffset   = 0;
     }
 
-    
     /**
      * Load entire table into collection
      * @return Collection Loaded collection
@@ -44,24 +97,24 @@ class DBCollection extends Collection
         $calledClass    = get_called_class();
         $collection     = new $calledClass;
 
-        $sqlParams      = array();
+        $sqlParams      = [];
 
         $sql  = "SELECT *";
-        $sql .= "   FROM `" . $collection::TABLE_NAME . "`";
+        $sql .= "   FROM `" . $collection::getTableName() . "`";
 
         if ($collection->parentFilterType !== '' && $collection->parentFilterType != null) {
             $sql .= "WHERE " . $collection->parentFilterName . "=:type";
             $sqlParams['type'] = $collection->parentFilterType;
         }
         $dbLink = Suricate::Database();
-        if (static::DB_CONFIG != '') {
-            $dbLink->setConfig(static::DB_CONFIG);
+        if ($collection->getDBConfig() !== '') {
+            $dbLink->setConfig($collection->getDBConfig());
         }
         $results = $dbLink->query($sql, $sqlParams)->fetchAll();
 
         if ($results !== false) {
             foreach ($results as $currentResult) {
-                $itemName = $collection::ITEM_TYPE;
+                $itemName = $collection->getItemsType();
                 $collection->addItem($itemName::instanciate($currentResult));
             }
         }
@@ -85,18 +138,18 @@ class DBCollection extends Collection
         return $collection;
     }
 
-    public function loadFromSql($sql, $sqlParams = array())
+    public function loadFromSql($sql, $sqlParams = [])
     {
         $dbLink = Suricate::Database();
-        if (static::DB_CONFIG != '') {
-            $dbLink->setConfig(static::DB_CONFIG);
+        if ($this->DBConfig !== '') {
+            $dbLink->setConfig($this->DBConfig);
         }
 
         $results = Suricate::Database()->query($sql, $sqlParams)->fetchAll();
 
         if ($results !== false) {
             foreach ($results as $currentResult) {
-                $itemName = $this::ITEM_TYPE;
+                $itemName = $this->getItemsType();
                 $this->addItem($itemName::instanciate($currentResult));
             }
         }
@@ -104,14 +157,23 @@ class DBCollection extends Collection
         return $this;
     }
 
+    public function addItemLink($linkId)
+    {
+         $this->items[$this->itemOffset] = $linkId;
+         // add mapping between item->index and $position in items pool
+         $this->mapping[$this->itemOffset] = $linkId;
+         $this->itemOffset++;
+    }
+
     public function lazyLoadFromSql($sql, $sqlParams = array())
     {
         $dbLink = Suricate::Database();
-        if (static::DB_CONFIG != '') {
-            $dbLink->setConfig(static::DB_CONFIG);
+        if ($this->DBConfig !== '') {
+            $dbLink->setConfig($this->DBConfig);
         }
 
-        $results = $dbLink->query($sql, $sqlParams)
+        $results = $dbLink
+            ->query($sql, $sqlParams)
             ->fetchAll();
 
         if ($results !== false) {
@@ -135,20 +197,20 @@ class DBCollection extends Collection
         $collection     = new $calledClass;
 
         if ($parentId != '') {
-            $sqlParams     = array();
+            $sqlParams     = [];
             $dbHandler     = Suricate::Database(true);
 
-            if (static::DB_CONFIG != '') {
-                $dbHandler->setConfig(static::DB_CONFIG);
+            if ($collection->getDBConfig() !== '') {
+                $dbHandler->setConfig($collection->getDBConfig());
             }
 
             $sql  = "SELECT *";
-            $sql .= " FROM `" . $collection::TABLE_NAME . "`";
+            $sql .= " FROM `" . $collection->getTableName() . "`";
             $sql .= " WHERE";
             if ($parentIdField !== null) {
-                $sql .= "   " . $parentIdField . "=:parent_id";
+                $sql .= "`" . $parentIdField . "`=:parent_id";
             } else {
-                $sql .= "   " . $collection::PARENT_ID_NAME . "=:parent_id";
+                $sql .= "`" . $collection->getParentIdField() . "`=:parent_id";
             }
 
             if ($collection->parentFilterType !== null) {
@@ -161,7 +223,7 @@ class DBCollection extends Collection
 
             if ($results !== false) {
                 foreach ($results as $currentResult) {
-                    $itemName = $collection::ITEM_TYPE;
+                    $itemName = $collection->getItemsType();
                     $item = $itemName::instanciate($currentResult);
                     if ($validate === null || $validate($item)) {
                         $collection->addItem($item);
@@ -178,8 +240,8 @@ class DBCollection extends Collection
     public function setParentIdForAll($parentId)
     {
         $this->parentId = $parentId;
-        foreach ($this->items as $key => $currentItem) {
-            $this->items[$key]->{static::PARENT_ID_NAME} = $parentId;
+        foreach (array_keys($this->items) as $key) {
+            $this->items[$key]->{$this->parentIdField} = $parentId;
         }
     }
 
@@ -188,28 +250,28 @@ class DBCollection extends Collection
      */
     public function loadParent()
     {
-        if (static::PARENT_OBJECT_TYPE != '' && $this->parentId != '') {
-            $parentObjectType = static::PARENT_OBJECT_TYPE;
+        if ($this->parentType !== '' && $this->parentId != '') {
+            $parentObjectType = $this->parentType;
             $parent = new $parentObjectType();
             if (method_exists($parent, 'load')) {
                 $parent->load($this->parentId);
 
                 return $parent;
             } else {
-                throw new \BadMethodCallException("Parent object does not have a load(\$id) method");
+                throw new \BadMethodCallException('Parent object does not have a load($id) method');
             }
         } else {
-            throw new \BadMethodCallException("PARENT_OBJECT_TYPE is not defined");
+            throw new \BadMethodCallException('self::$parentType is not defined');
         }
     }
 
     public function craftItem($itemData)
     {
-        $itemName = static::ITEM_TYPE;
+        $itemName = $this->itemsType;
 
         foreach ($itemData as $data) {
             $newItem = new $itemName();
-            $newItem->{static::PARENT_ID_NAME} = $this->parentId;
+            $newItem->{$this->parentIdField} = $this->parentId;
             $hasData = false;
             foreach ($data as $field => $value) {
                 $newItem->$field = $value;
@@ -228,10 +290,10 @@ class DBCollection extends Collection
     public function save()
     {
         // 1st step : delete all records for current parentId
-        $sql  = "DELETE FROM `" . static::TABLE_NAME . "`";
-        if (static::PARENT_ID_NAME != '') {
+        $sql  = "DELETE FROM `" . $this->tableName . "`";
+        if ($this->parentIdField !== '') {
             $sql .= " WHERE";
-            $sql .= "   " . static::PARENT_ID_NAME . "=:parent_id";
+            $sql .= "   `" . $this->parentIdField . "`=:parent_id";
 
             $sqlParams = array('parent_id' => $this->parentId);
         } else {
@@ -239,8 +301,8 @@ class DBCollection extends Collection
         }
 
         $dbLink = Suricate::Database();
-        if (static::DB_CONFIG != '') {
-            $dbLink->setConfig(static::DB_CONFIG);
+        if ($this->DBConfig !== '') {
+            $dbLink->setConfig($this->DBConfig);
         }
         
         $dbLink->query($sql, $sqlParams);
@@ -261,20 +323,7 @@ class DBCollection extends Collection
         $this->mapping[$this->itemOffset] = $item->$key;
 
         $this->itemOffset++;
-    }
 
-    public function getItemsType()
-    {
-        return static::ITEM_TYPE;
-    }
-
-    public function getParentIdName()
-    {
-        return static::PARENT_ID_NAME;
-    }
-
-    public function getParentId()
-    {
-        return $this->parentId;
+        return $this;
     }
 }
