@@ -1,6 +1,7 @@
 <?php
 
 require_once 'stubs/Category.php';
+require_once 'stubs/CategoriesList.php';
 
 class DBCollectionTest extends \PHPUnit\Framework\TestCase
 {
@@ -82,6 +83,15 @@ class DBCollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(\Suricate\DBCollection::class, $retVal);
         $this->assertSame(2, $testDBCollection->count());
         $this->assertInstanceOf(Category::class, $testDBCollection[0]);
+    }
+
+    public function testLoadAll()
+    {
+        $this->setupData();
+        $retVal = CategoriesList::loadAll();
+
+        $this->assertInstanceOf(\Suricate\DBCollection::class, $retVal);
+        $this->assertSame(2, $retVal->count());
     }
 
     protected function getDatabase()
