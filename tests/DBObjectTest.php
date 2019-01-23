@@ -433,7 +433,7 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $pdo->exec("DROP TABLE IF EXISTS `users`");
         $pdo->exec("DROP TABLE IF EXISTS `categories`");
         $pdo->exec("CREATE TABLE `users` (`id` INTEGER PRIMARY KEY,`category_id` INTEGER, `name` varchar(50) DEFAULT NULL,`date_added` datetime NOT NULL)");
-        $pdo->exec("CREATE TABLE `categories` (`id` INTEGER PRIMARY KEY, `name` varchar(50) DEFAULT NULL)");
+        $pdo->exec("CREATE TABLE `categories` (`id` INTEGER PRIMARY KEY, `name` varchar(50) DEFAULT NULL, `parent_id` INTEGER DEFAULT NULL)");
         
         $stmt = $pdo->prepare("INSERT INTO `users` (name, category_id, date_added) VALUES (:name, :categoryid, :date)");
         $values = [

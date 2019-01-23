@@ -17,7 +17,8 @@ class Category extends \Suricate\DBObject
 
         $this->dbVariables = [
             'id',
-            'name'
+            'name',
+            'parent_id',
         ];
     }
 }
