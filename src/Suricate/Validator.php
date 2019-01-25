@@ -5,8 +5,21 @@ namespace Suricate;
  * Validator
  * Inspired from Kieron Wilson PHP Validator
  *
- * @method Validator true(mixed $toTest)
- * @method Validator false(mixed $toTest)
+ * @method Validator true(string $errorMessage)
+ * @method Validator false(string $errorMessage)
+ * @method Validator equalTo(mixed $toTest, string $errorMessage)
+ * @method Validator identicalTo(mixed $toTest, string $errorMessage)
+ * @method Validator lessThan(mixed $toTest, string $errorMessage)
+ * @method Validator lessThanOrEqual(mixed $toTest, string $errorMessage)
+ * @method Validator greaterThan(mixed $toTest, string $errorMessage)
+ * @method Validator greaterThanOrEqual(mixed $toTest, string $errorMessage)
+ * @method Validator blank(string $errorMessage)
+ * @method Validator null(string $errorMessage)
+ * @method Validator type(string $testType, string $errorMessage)
+ * &method Validator email(string $errorMessage)
+ * &method Validator url(string $errorMessage)
+ * &method Validator ip(string $errorMessage)
+ * &method Validator regexp(string $errorMessage)
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
  * @copyright   Mathieu LESNIAK
  * @package     Suricate

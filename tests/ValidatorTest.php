@@ -123,6 +123,85 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $validator = new \Suricate\Validator($test);
         $validator->type('bool', "Not a bool");
         $this->assertTrue($validator->fails());
+
+        $test = 1.0;
+        $validator = new \Suricate\Validator($test);
+        $validator->type('int', "Not an int");
+        $this->assertTrue($validator->fails());
+
+        $test = 1;
+        $validator = new \Suricate\Validator($test);
+        $validator->type('float', "Not a float");
+        $this->assertTrue($validator->fails());
+
+        $test = 1;
+        $validator = new \Suricate\Validator($test);
+        $validator->type('numeric', "Not a numeric");
+        $this->assertTrue($validator->pass());
+
+        $test = 1.2;
+        $validator = new \Suricate\Validator($test);
+        $validator->type('numeric', "Not a numeric");
+        $this->assertTrue($validator->pass());
+
+        $test = new stdClass();
+        $validator = new \Suricate\Validator($test);
+        $validator->type('object', "Not an object ");
+        $this->assertTrue($validator->pass());
+
+        $test = "tt";
+        $validator = new \Suricate\Validator($test);
+        $validator->type('string', "Not a string ");
+        $this->assertTrue($validator->pass());
+    }
+
+    public function testEmail()
+    {
+        $test = 'mathieu@lesniak.fr';
+        $validator = new \Suricate\Validator($test);
+        $validator->email("Not an email");
+        $this->assertTrue($validator->pass());
+
+        $test = 'mathieu@lesniak';
+        $validator = new \Suricate\Validator($test);
+        $validator->email("Not an email");
+        $this->assertFalse($validator->pass());
+
+        $test = 'mathieu@lesniak.co.uk';
+        $validator = new \Suricate\Validator($test);
+        $validator->email("Not an email");
+        $this->assertTrue($validator->pass());
+    }
+
+    public function testUrl()
+    {
+        $test = 'https://www.google.com/search?index=1';
+        $validator = new \Suricate\Validator($test);
+        $validator->url("Not an URL");
+        $this->assertTrue($validator->pass());
+
+        $test = 'www.google.com/search?index=1';
+        $validator = new \Suricate\Validator($test);
+        $validator->url("Not an URL");
+        $this->assertTrue($validator->fails());
+
+        $test = 'gopher://www.google.com/search?index=1';
+        $validator = new \Suricate\Validator($test);
+        $validator->url("Not an URL");
+        $this->assertTrue($validator->pass());
+    }
+
+    public function testIP()
+    {
+        $test = '8.8.8.8';
+        $validator = new \Suricate\Validator($test);
+        $validator->ip("Not an IP");
+        $this->assertTrue($validator->pass());
+
+        $test = '2001:0db8:0000:85a3:0000:0000:ac1f:8001';
+        $validator = new \Suricate\Validator($test);
+        $validator->ip("Not an IP");
+        $this->assertTrue($validator->pass());
     }
 
     public function testAlnum()
