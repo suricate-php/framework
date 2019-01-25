@@ -423,19 +423,6 @@ class DBObject implements Interfaces\IDBObject
                 $insert = true;
             }
 
-            // Checking protected variables
-            foreach ($this->protectedVariables as $variable) {
-                // only if current protected_var is set
-                if (isset($this->protectedValues[$variable]) && $this->isProtectedVariableLoaded($variable)) {
-                    if ($this->protectedValues[$variable] instanceof Interfaces\ICollection) {
-                        if ($insert) {
-                            $this->protectedValues[$variable]->setParentIdForAll($this->{$this->getTableIndex()});
-                        }
-                        $this->protectedValues[$variable]->save();
-                    }
-                }
-            }
-
             return;
         }
 
