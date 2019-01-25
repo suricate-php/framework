@@ -47,6 +47,19 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([3], $collection->getItems());
     }
 
+    public function testGetPossibleValuesFor()
+    {
+        $arr = [
+            ['id' => 40, 'name' => 'name 1'],
+            ['id' => 20, 'name' => 'name 2'],
+            ['id' => 35, 'name' => 'name 3'],
+        ];
+        $collection = new \Suricate\Collection($arr);
+
+        $this->assertEquals([40 => 'name 1', 20 => 'name 2', 35 =>'name 3'], $collection->getPossibleValuesFor('name', 'id'));
+        $this->assertEquals(['name 1', 'name 2', 'name 3'], $collection->getPossibleValuesFor('name'));
+    }
+
     public function testFirst()
     {
         $arr = array(4, 5, 6);
