@@ -179,9 +179,6 @@ class DBCollection extends Collection
 
     public function save()
     {
-        $this->connectDB();
-        $this->dbLink->query($sql, $sqlParams);
-
         foreach ($this->items as $currentItem) {
             $currentItem->save(true); // Force insert
         }
