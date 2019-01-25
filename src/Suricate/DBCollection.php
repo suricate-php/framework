@@ -12,6 +12,7 @@ class DBCollection extends Collection
     protected $DBConfig         = '';
 
     protected $mapping          = [];
+    protected $loadedValues     = [];
     protected $lazyLoad = false;
 
     protected $dbLink               = false;
@@ -65,6 +66,32 @@ class DBCollection extends Collection
         $this->items        = [];
         $this->mapping      = [];
         $this->itemOffset   = 0;
+    }
+
+    /**
+     * Implementation of ArrayAccess Interface
+     * override parent get to lazyLoad item
+     * @param  mixed $offset Offset to get
+     * @return mixed
+     */
+    public function offsetGet($offset)
+    {
+        if (!$this->lazyLoad) {
+            return parent::offsetGet($offset);
+        }
+
+        if (isset($this->loadedValues[$offset]) && $this->loadedValues[$offset]) {
+            return $this->items[$offset];
+        }
+
+        $itemType = $this::ITEM_TYPE;
+        $itemToLoad = new $itemType;
+        $itemToLoad->load($this->items[$offset]);
+
+        $this->items[$offset] = $itemToLoad;
+        $this->loadedValues[$offset] = true;
+
+        return $this->items[$offset];
     }
 
     /**
@@ -128,22 +155,19 @@ class DBCollection extends Collection
         return $this;
     }
 
-    public function addItemLink($linkId)
+    protected function addItemLink($linkId)
     {
          $this->items[$this->itemOffset] = $linkId;
          // add mapping between item->index and $position in items pool
          $this->mapping[$this->itemOffset] = $linkId;
+         $this->loadedValues[$this->itemOffset] = false;
          $this->itemOffset++;
     }
 
     public function lazyLoadFromSql($sql, $sqlParams = array())
     {
-        $dbLink = Suricate::Database();
-        if ($this->DBConfig !== '') {
-            $dbLink->setConfig($this->DBConfig);
-        }
-
-        $results = $dbLink
+        $this->connectDB();
+        $results = $this->dbLink
             ->query($sql, $sqlParams)
             ->fetchAll();
 

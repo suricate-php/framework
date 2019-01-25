@@ -118,19 +118,6 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
             return $this->items[$offset];
         }
         return null;
-        /*
-        $item = isset($this->items[$offset]) ? $this->items[$offset] : null;
-        if (gettype($item) == 'object' || $item == null) {
-            return $item;
-        }
-       // Lazy load
-        $itemType = $this::ITEM_TYPE;
-        $itemToLoad = new $itemType;
-        $itemToLoad->load($this->items[$offset]);
-
-        $this->items[$offset] = $itemToLoad;
-
-        return $this->items[$offset];*/
     }
 
     /**
