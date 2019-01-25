@@ -5,6 +5,8 @@ namespace Suricate;
  * Validator
  * Inspired from Kieron Wilson PHP Validator
  *
+ * @method Validator true(mixed $toTest)
+ * @method Validator false(mixed $toTest)
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
  * @copyright   Mathieu LESNIAK
  * @package     Suricate
@@ -181,25 +183,28 @@ class Validator
 
     public function callValidate()
     {
-        
         $args = func_get_args();
         if (count($args) < 1) {
             throw new \InvalidArgumentException('bad number of arguments');
-        } else {
-            $method = array_shift($args);
-            // Object method
-            if (is_array($method) || is_string($method)) {
-                $this->index = null;
-                $this->value = call_user_func_array($method, $args);
-            } elseif (is_object($method) && ($method instanceof \Closure)) {
-                $this->index = null;
-                $this->value = call_user_func_array($method, $args);
-            } else {
-                throw new \InvalidArgumentException('Bad method');
-            }
+        }
+        
+        $method = array_shift($args);
+        // Object method
+        if (is_array($method) || is_string($method)) {
+            $this->index = null;
+            $this->value = call_user_func_array($method, $args);
+
+            return $this;
         }
 
-        return $this;
+        if (is_object($method) && ($method instanceof \Closure)) {
+            $this->index = null;
+            $this->value = call_user_func_array($method, $args);
+
+            return $this;
+        }
+        throw new \InvalidArgumentException('Bad method');
+
     }
 
     public function __call($method, $parameters)
