@@ -84,7 +84,7 @@ class DBCollection extends Collection
             return $this->items[$offset];
         }
 
-        $itemType = $this::ITEM_TYPE;
+        $itemType = $this->itemsType;
         $itemToLoad = new $itemType;
         $itemToLoad->load($this->items[$offset]);
 
