@@ -3,80 +3,25 @@
 require_once 'stubs/Category.php';
 require_once 'stubs/CategoriesList.php';
 
-class DBCollectionTest extends \PHPUnit\Framework\TestCase
+class DBCollectionOneManyTest extends \PHPUnit\Framework\TestCase
 {
-    public function testGetTableName()
+    public function testGetParentIdField()
     {
-        $testName = 'categories';
+        $testName = 'parent_id';
 
-        $testCollection = new \Suricate\DBCollection();
-        self::mockProperty($testCollection, 'tableName', $testName);
-        $this->assertEquals($testName, $testCollection->getTableName());
+        $testCollection = new \Suricate\DBCollectionOneMany();
+        self::mockProperty($testCollection, 'parentIdField', $testName);
+        $this->assertEquals($testName, $testCollection->getParentIdField());
     }
 
-    public function testGetItemsType()
+    public function testGetParentId()
     {
-        $testName = Category::class;
+        $testId = 100;
 
-        $testCollection = new \Suricate\DBCollection();
-        self::mockProperty($testCollection, 'itemsType', $testName);
-        $this->assertEquals($testName, $testCollection->getItemsType());
-    }
-
-    public function testGetDBConfig()
-    {
-        $testConfigName = 'my_config';
-
-        $testCollection = new \Suricate\DBCollection();
-        self::mockProperty($testCollection, 'DBConfig', $testConfigName);
-        $this->assertEquals($testConfigName, $testCollection->getDBConfig());
-    }
-
-    public function testGetSetLazyLoad()
-    {
-        $testCollection = new \Suricate\DBCollection();
-        $this->assertFalse($testCollection->getLazyLoad());
-        $retVal = $testCollection->setLazyLoad(true);
-        $this->assertInstanceOf(\Suricate\DBCollection::class, $retVal);
-        $this->assertTrue($testCollection->getLazyLoad());
-    }
-
-    public function testLoadFromSql()
-    {
-        $this->setupData();
-        $testDBCollection = $this->getDBCollection();
-
-        $sql = "SELECT * FROM categories WHERE id>:id";
-        $sqlParams = ['id' => 0];
-
-        $retVal = $testDBCollection->loadFromSql($sql, $sqlParams);
-        
-        $this->assertInstanceOf(\Suricate\DBCollection::class, $retVal);
-        $this->assertSame(2, $testDBCollection->count());
-        $this->assertInstanceOf(Category::class, $testDBCollection[0]);
-    }
-
-    public function testBuildFromSql()
-    {
-        $this->setupData();
-
-        $sql = "SELECT * FROM categories WHERE id>:id";
-        $sqlParams = ['id' => 0];
-
-        $retVal = CategoriesList::buildFromSql($sql, $sqlParams);
-        
-        $this->assertInstanceOf(\Suricate\DBCollection::class, $retVal);
-        $this->assertSame(2, $retVal->count());
-        $this->assertInstanceOf(Category::class, $retVal[0]);
-    }
-
-    public function testLoadAll()
-    {
-        $this->setupData();
-        $retVal = CategoriesList::loadAll();
-
-        $this->assertInstanceOf(\Suricate\DBCollection::class, $retVal);
-        $this->assertSame(2, $retVal->count());
+        $testCollection = new \Suricate\DBCollectionOneMany();
+        $this->assertNull($testCollection->getParentId());
+        self::mockProperty($testCollection, 'parentId', $testId);
+        $this->assertSame($testId, $testCollection->getParentId());
     }
 
     protected function getDatabase()
@@ -94,7 +39,7 @@ class DBCollectionTest extends \PHPUnit\Framework\TestCase
     {
         $dbLink = $this->getDatabase();
         // Inject database handler
-        $testDBCollection = new \Suricate\DBCollection();
+        $testDBCollection = new \Suricate\DBCollectionOneMany();
 
 
         $reflector = new ReflectionClass(get_class($testDBCollection));
@@ -104,6 +49,7 @@ class DBCollectionTest extends \PHPUnit\Framework\TestCase
 
         self::mockProperty($testDBCollection, 'tableName', 'categories');
         self::mockProperty($testDBCollection, 'itemsType', Category::class);
+        self::mockProperty($testDBCollection, 'parentIdField', 'parent_id');
         
         return $testDBCollection;
     }
