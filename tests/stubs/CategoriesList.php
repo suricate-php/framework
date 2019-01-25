@@ -5,7 +5,6 @@ class CategoriesList extends \Suricate\DBCollection
     protected $tableName = 'categories';
     protected $itemsType = Category::class;
     protected $parentIdField = 'parent_id';
-    protected $parentType = Category::class;
 
     public function __construct()
     {

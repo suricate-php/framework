@@ -51,16 +51,6 @@ class DBCollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($testId, $testCollection->getParentId());
     }
 
-    public function testGetParentType()
-    {
-        $testType = Category::class;
-
-        $testCollection = new \Suricate\DBCollection();
-        $this->assertSame('', $testCollection->getParentType());
-        self::mockProperty($testCollection, 'parentType', $testType);
-        $this->assertSame($testType, $testCollection->getParentType());
-    }
-
     public function testGetSetLazyLoad()
     {
         $testCollection = new \Suricate\DBCollection();
@@ -134,7 +124,6 @@ class DBCollectionTest extends \PHPUnit\Framework\TestCase
         self::mockProperty($testDBCollection, 'tableName', 'categories');
         self::mockProperty($testDBCollection, 'itemsType', Category::class);
         self::mockProperty($testDBCollection, 'parentIdField', 'parent_id');
-        self::mockProperty($testDBCollection, 'parentType', Category::class);
         
         return $testDBCollection;
     }
