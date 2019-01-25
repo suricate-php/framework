@@ -236,10 +236,15 @@ class DBCollection extends Collection
 
     public function setParentIdForAll($parentId)
     {
-        $this->parentId = $parentId;
-        foreach (array_keys($this->items) as $key) {
-            $this->items[$key]->{$this->parentIdField} = $parentId;
+        if ($this->parentIdField !== null) {
+            $this->parentId = $parentId;
+            foreach (array_keys($this->items) as $key) {
+                $this->items[$key]->{$this->parentIdField} = $parentId;
+            }
+            return $this;
         }
+
+        throw new \BadMethodCallException('Collection does not have a parentId field');
     }
 
     /**
