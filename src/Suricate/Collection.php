@@ -41,8 +41,13 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
             foreach ($args['data'] as $arg) {
                 $itemValues[] = dataGet($item, $arg);
             }
+            
             $arrayKey = ($key !== null) ? dataGet($item, $key) : null;
-            $values[$arrayKey] = vsprintf($args['format'], $itemValues);
+            if (is_null($arrayKey)) {
+                $values[] = vsprintf($args['format'], $itemValues);
+            } else {
+                $values[$arrayKey] = vsprintf($args['format'], $itemValues);
+            }
         }
 
         return $values;
