@@ -417,12 +417,10 @@ class DBObject implements Interfaces\IDBObject
 
             if ($this->isLoaded() && !$forceInsert) {
                 $this->update();
-                $insert = false;
-            } else {
-                $this->insert();
-                $insert = true;
+                return;
             }
 
+            $this->insert();
             return;
         }
 
