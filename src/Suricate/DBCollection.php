@@ -11,8 +11,6 @@ class DBCollection extends Collection
     protected $DBConfig         = '';
     /* @var string Name of parent identifier field */
     protected $parentIdField    = 'parent_id';
-    /** @var string Parent Object type */
-    protected $parentType       = '';
 
     protected $mapping          = [];
     protected $lazyLoad = false;
@@ -46,11 +44,6 @@ class DBCollection extends Collection
     public function getParentIdField(): string
     {
         return $this->parentIdField;
-    }
-
-    public function getParentType()
-    {
-        return $this->parentType;
     }
 
     public function getParentId()
@@ -245,26 +238,6 @@ class DBCollection extends Collection
         }
 
         throw new \BadMethodCallException('Collection does not have a parentId field');
-    }
-
-    /**
-     * Load Parent Item, if item type is defined
-     */
-    public function loadParent()
-    {
-        if ($this->parentType !== '' && $this->parentId != '') {
-            $parentObjectType = $this->parentType;
-            $parent = new $parentObjectType();
-            if (method_exists($parent, 'load')) {
-                $parent->load($this->parentId);
-
-                return $parent;
-            } else {
-                throw new \BadMethodCallException('Parent object does not have a load($id) method');
-            }
-        } else {
-            throw new \BadMethodCallException('self::$parentType is not defined');
-        }
     }
 
     public function craftItem($itemData)
