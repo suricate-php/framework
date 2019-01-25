@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Suricate - Another micro PHP 5 framework
  *

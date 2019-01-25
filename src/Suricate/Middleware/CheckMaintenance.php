@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate\Middleware;
 
 class CheckMaintenance implements \Suricate\Interfaces\IMiddleware
