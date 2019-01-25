@@ -93,8 +93,8 @@ class Request
     ];
 
     private $httpCode;
-    private $headers;
-    private $requestUri;
+    private $headers    = [];
+    private $requestUri = '';
     private $url;
     private $body;
     private $path;
