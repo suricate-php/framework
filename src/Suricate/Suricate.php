@@ -4,7 +4,7 @@
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
  * @copyright   2013-2019 Mathieu LESNIAK
- * @version     0.1.16
+ * @version     0.2.0
  * @package     Suricate
  *
  * @method static \Suricate\App      App()      Get instance of App service
@@ -53,6 +53,12 @@ class Suricate
     ];
 
 
+    /**
+     * Suricate contructor
+     *
+     * @param array $paths Application paths
+     * @param string|array|null $configFile path of configuration file(s)
+     */
     public function __construct($paths = [], $configFile = null)
     {
         if ($configFile !== null) {
