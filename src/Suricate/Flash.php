@@ -3,11 +3,16 @@ namespace Suricate;
 
 class Flash
 {
+    const TYPE_SUCCESS  = 'success';
+    const TYPE_INFO     = 'info';
+    const TYPE_ERROR    = 'error';
+    const TYPE_DATA     = 'data';
+
     public static $types = [
-        'success',
-        'info',
-        'error',
-        'data'
+        self::TYPE_SUCCESS,
+        self::TYPE_INFO,
+        self::TYPE_ERROR,
+        self::TYPE_DATA,
     ];
 
     private static $items = [];
@@ -25,23 +30,26 @@ class Flash
         }
     }
 
-    public static function renderMessages()
+    /**
+     * Render success / info / error messages in HTML
+     *
+     * @return string
+     */
+    public static function renderMessages(): string
     {
-        /**
-         TODO : call user defined view
-         */
         self::read();
-        $output = '';
+
         $availableTypes = [
-            'success'   => 'success',
-            'info'      => 'info',
-            'error'     => 'danger'
+            self::TYPE_SUCCESS   => 'success',
+            self::TYPE_INFO      => 'info',
+            self::TYPE_ERROR     => 'danger'
         ];
-        
+
+        $output = '';
         foreach ($availableTypes as $type => $displayAlias) {
-            $currentMessage = dataGet(self::$items, $type, null);
+            $currentMessage = self::getMessages($type);
             
-            if ($currentMessage !== null) {
+            if (count($currentMessage)) {
                 $output .= '<div class="alert alert-' . $displayAlias . '">' . implode('<br/>', (array) $currentMessage) . '</div>';
             }
         }
@@ -49,18 +57,44 @@ class Flash
         return $output;
     }
 
-    public static function getData($key)
+    public static function getData(string $key): array
     {
         self::read();
 
-        if (isset(self::$items['data']) && array_key_exists($key, self::$items['data'])) {
-            return self::$items['data'][$key];
+        if (isset(self::$items[self::TYPE_DATA]) && array_key_exists($key, self::$items[self::TYPE_DATA])) {
+            return self::$items[self::TYPE_DATA][$key];
         }
 
-        return null;
+        return [];
     }
 
-    public static function write($type, $message)
+    /**
+     * Get flash message for a type
+     *
+     * @param string $type
+     * @return array
+     */
+    public static function getMessages(string $type): array
+    {
+        self::read();
+
+        if (isset(self::$items[$type])) {
+            $result = self::$items[$type];
+            unset(self::$items[$type]);
+            return $result;
+        }
+
+        return [];
+    }
+
+    /**
+     * Write flash message or data to session
+     *
+     * @param string $type
+     * @param mixed $message
+     * @return void
+     */
+    public static function write(string $type, $message)
     {
         if (in_array($type, static::$types)) {
             $currentSessionData = Suricate::Session()->read('flash');
@@ -73,16 +107,7 @@ class Flash
 
             $currentSessionData[$type] = $newData;
             Suricate::Session()->write('flash', $currentSessionData);
+            self::$consumed = false;
         }
-    }
-
-    public static function writeMessage($type, $message)
-    {
-
-    }
-
-    public static function writeData($key, $data)
-    {
-
     }
 }
