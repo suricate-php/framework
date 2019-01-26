@@ -1,6 +1,9 @@
 <?php declare(strict_types=1);
 namespace Suricate;
 
+/**
+ * @SuppressWarnings("StaticAccess")
+ */
 class Request
 {
     const HTTP_METHOD_GET       = 'GET';
@@ -174,7 +177,7 @@ class Request
 
     public static function getPostParam($variable, $defaultValue = null)
     {
-        if (isset($_POST[$variable])) {
+        if (array_key_exists($variable, $_POST)) {
             return $_POST[$variable];
         }
         return $defaultValue;
@@ -182,10 +185,10 @@ class Request
 
     public static function getParam($variable, $defaultValue = null)
     {
-        if (isset($_GET[$variable])) {
+        if (array_key_exists($variable, $_GET)) {
             return $_GET[$variable];
         }
-        if (isset($_POST[$variable])) {
+        if (array_key_exists($variable, $_POST)) {
             return $_POST[$variable];
         }
         
@@ -194,25 +197,43 @@ class Request
 
     public static function hasParam($variable)
     {
-        return isset($_GET[$variable]) || isset($_POST[$variable]);
+        return array_key_exists($variable, $_GET) || array_key_exists($variable, $_POST);
     }
 
-       
-    public function setHeaders($headers)
+
+    /**
+     * Set request headers
+     *
+     * @param array $headers Headers to set key => $value
+     * @return Request
+     */
+    public function setHeaders(array $headers): Request
     {
         $this->headers = $headers;
 
         return $this;
     }
 
-    public function addHeader($header, $value)
+    /**
+     * Add specific header
+     *
+     * @param string $header header name
+     * @param string $value  header value
+     * @return Request
+     */
+    public function addHeader($header, $value): Request
     {
         $this->headers[$header] = $value;
 
         return $this;
     }
 
-    public function getHeaders()
+    /**
+     * Get request headers
+     *
+     * @return array
+     */
+    public function getHeaders(): array
     {
         return $this->headers;
     }
@@ -287,7 +308,7 @@ class Request
 
     public function flash($type, $data)
     {
-        Flash::write($type, $data);
+        Flash::writeMessage($type, $data);
         
         return $this;
     }
