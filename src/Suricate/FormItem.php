@@ -273,7 +273,7 @@ class FormItem
             }
             $output .= '>';
             $output .= $this->label;
-            $output .= '</label>'."\n";
+            $output .= '</label>';
         }
 
         return $output;
