@@ -57,15 +57,22 @@ class Flash
         return $output;
     }
 
-    public static function getData(string $key): array
+    /**
+     * Get flash data for a key
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public static function getData(string $key)
     {
         self::read();
 
-        if (isset(self::$items[self::TYPE_DATA]) && array_key_exists($key, self::$items[self::TYPE_DATA])) {
+        if (isset(self::$items[self::TYPE_DATA])
+            && array_key_exists($key, self::$items[self::TYPE_DATA])) {
             return self::$items[self::TYPE_DATA][$key];
         }
 
-        return [];
+        return null;
     }
 
     /**
@@ -92,9 +99,10 @@ class Flash
      *
      * @param string $type
      * @param mixed $message
+     * @throws \InvalidArgumentException
      * @return void
      */
-    public static function write(string $type, $message)
+    private static function write(string $type, $message)
     {
         if (in_array($type, static::$types)) {
             $currentSessionData = Suricate::Session()->read('flash');
@@ -108,6 +116,34 @@ class Flash
             $currentSessionData[$type] = $newData;
             Suricate::Session()->write('flash', $currentSessionData);
             self::$consumed = false;
+
+            return;
         }
+
+        throw new \InvalidArgumentException("Unknown message type '$type'");
+    }
+
+    /**
+     * Write message to flash storage
+     *
+     * @param string $type
+     * @param string $message
+     * @return void
+     */
+    public static function writeMessage(string $type, string $message)
+    {
+        self::write($type, $message);
+    }
+
+    /**
+     * Write data to flash storage
+     *
+     * @param string $key
+     * @param mixed $data
+     * @return void
+     */
+    public static function writeData(string $key, $data)
+    {
+        self::write(self::TYPE_DATA, [$key => $data]);
     }
 }
