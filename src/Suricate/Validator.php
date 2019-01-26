@@ -271,7 +271,7 @@ class Validator
         if ($index === null) {
             return $this->errors;
         } else {
-            return isset($this->errors[$index]) ? $this->errors[$index] : array();
+            return isset($this->errors[$index]) ? $this->errors[$index] : [];
         }
     }
 

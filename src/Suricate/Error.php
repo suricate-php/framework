@@ -5,11 +5,11 @@ use ErrorException;
 
 class Error extends Service
 {
-    protected $parametersList   = array(
+    protected $parametersList = [
         'report',
         'dumpContext',
         'httpHandler'
-        );
+    ];
 
     public static function handleException($e, $context = null)
     {

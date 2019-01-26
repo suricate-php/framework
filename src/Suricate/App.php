@@ -21,7 +21,7 @@ class App extends Service
     const PRELIVE_MODE      = 'prelive';
     const PRODUCTION_MODE   = 'production';
 
-    protected $parametersList   = array(
+    protected $parametersList   = [
         'root',
         'mode',
         'url',
@@ -30,7 +30,7 @@ class App extends Service
         'path.public',
         'path.base',
         'base_uri',
-        );
+    ];
 
     public function isDebug()
     {
@@ -57,7 +57,7 @@ class App extends Service
         return is_file($this->getParameter('path.app') . '/config/maintenance');
     }
 
-    public function abort($httpCode, $message = '', $headers = array())
+    public function abort($httpCode, $message = '', $headers = [])
     {
         throw new Exception\HttpException($httpCode, $message, null, $headers);
     }

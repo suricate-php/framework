@@ -37,7 +37,7 @@ class Event
     protected function getImpactedListeners($eventName)
     {
         if (!isset($this->sortedListeners[$eventName])) {
-            $listeners = isset($this->listeners[$eventName]) ? $this->listeners[$eventName] : array();
+            $listeners = isset($this->listeners[$eventName]) ? $this->listeners[$eventName] : [];
             $listeners = array_merge($listeners, $this->getImpactedWildcardListeners($listeners));
 
             $listeners = krsort($listeners);

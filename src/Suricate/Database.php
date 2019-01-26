@@ -135,7 +135,7 @@ class Database extends Service
      * @param  array  $parameters Parameters used in query
      * @return Database
      */
-    public function query($sql, $parameters = array())
+    public function query($sql, $parameters = [])
     {
         $this->connect();
 

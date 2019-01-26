@@ -3,16 +3,16 @@ namespace Suricate;
 
 class PivotTable extends DBObject
 {
-    protected $references = array();
+    protected $references = [];
 
     public function __construct()
     {
         parent::__construct();
 
         foreach ($this->references as $referenceName => $referenceData) {
-            $this->relations[$referenceName] = array(
+            $this->relations[$referenceName] = [
                 'type' => self::RELATION_ONE_ONE, 'source' => $referenceData['key'], 'target' => $referenceData['type']
-            );
+            ];
         }
     }
 

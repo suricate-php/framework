@@ -11,14 +11,14 @@ class Request
     const HTTP_METHOD_OPTIONS   = 'OPTIONS';
 
     private $method = self::HTTP_METHOD_GET;
-    private $methods = array(
-            self::HTTP_METHOD_GET       => 'GET',
-            self::HTTP_METHOD_POST      => 'POST',
-            self::HTTP_METHOD_PUT       => 'PUT',
-            self::HTTP_METHOD_DELETE    => 'DELETE',
-            self::HTTP_METHOD_HEAD      => 'HEAD',
-            self::HTTP_METHOD_OPTIONS   => 'OPTIONS'
-        );
+    private $methods = [
+        self::HTTP_METHOD_GET       => 'GET',
+        self::HTTP_METHOD_POST      => 'POST',
+        self::HTTP_METHOD_PUT       => 'PUT',
+        self::HTTP_METHOD_DELETE    => 'DELETE',
+        self::HTTP_METHOD_HEAD      => 'HEAD',
+        self::HTTP_METHOD_OPTIONS   => 'OPTIONS'
+    ];
 
     private $httpCodeString = [
         100 => 'Continue',
@@ -102,7 +102,7 @@ class Request
 
     public function __construct()
     {
-        $this->headers  = array();
+        $this->headers  = [];
         $this->httpCode = 200;
     }
 
@@ -294,7 +294,7 @@ class Request
 
     public function flashData($name, $value)
     {
-        Flash::write('data', array($name => $value));
+        Flash::write('data', [$name => $value]);
 
         return $this;
     }

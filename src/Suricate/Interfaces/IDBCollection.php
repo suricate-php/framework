@@ -8,16 +8,16 @@ interface IDBCollection
     /**
      * @return \Suricate\Collection
      */
-    public static function buildFromSql($sql, $sqlParams = array());
+    public static function buildFromSql($sql, $sqlParams = []);
 
     public static function loadForParentId($parentId);
 
     /**
      * @return \Suricate\Collection
      */
-    public function loadFromSql($sql, $sqlParams = array());
+    public function loadFromSql($sql, $sqlParams = []);
 
-    public function lazyLoadFromSql($sql, $sqlParams = array());
+    public function lazyLoadFromSql($sql, $sqlParams = []);
 
     public function setParentIdForAll($parentId);
 

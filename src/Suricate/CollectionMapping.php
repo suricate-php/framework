@@ -6,7 +6,7 @@ class CollectionMapping extends Collection
     const SQL_RELATION_TABLE_NAME   = '';
     const MAPPING_ID_NAME           = '';
 
-    protected $additionalMappingFieldList = array();
+    protected $additionalMappingFieldList = [];
 
     public static function loadForParentId($parentId)
     {
@@ -17,7 +17,7 @@ class CollectionMapping extends Collection
         $itemName = $collection::ITEM_TYPE;
 
         $sql            = '';
-        $sqlParams      = array();
+        $sqlParams      = [];
 
         $sql .= "SELECT a.*";
         if (count($collection->additionalMappingFieldList)) {
@@ -59,7 +59,7 @@ class CollectionMapping extends Collection
             $sql .= " WHERE";
             $sql .= "   " . static::PARENT_ID_NAME . "=:parent_id";
 
-            $sqlParams      = array();
+            $sqlParams      = [];
             $sqlParams['parent_id'] = $this->parent_id;
 
             $dbHandler->query($sql, $sqlParams);
@@ -71,7 +71,7 @@ class CollectionMapping extends Collection
                 }
 
                 //3rd step : create the mapping
-                $sqlParams = array();
+                $sqlParams = [];
 
                 $sql  = "INSERT INTO `" . static::SQL_RELATION_TABLE_NAME . "`";
                 $sql .= " (`" . static::PARENT_ID_NAME . "`, `" . static::MAPPING_ID_NAME. "`";
@@ -121,7 +121,7 @@ class CollectionMapping extends Collection
                 $newItem->load($data[$newItem->getTableIndex()]);
             } else {
                 // Build SQL query to load corresponding item
-                $sqlData = array();
+                $sqlData = [];
                 
 
                 $sql  = "SELECT *";

@@ -279,7 +279,7 @@ if (!function_exists('getParam')) {
 if (!function_exists('i18n')) {
     function i18n()
     {
-        return call_user_func_array(array(Suricate::I18n(), 'get'), func_get_args());
+        return call_user_func_array([Suricate::I18n(), 'get'], func_get_args());
     }
 }
 

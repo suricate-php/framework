@@ -132,16 +132,16 @@ class Curl extends Service
 
     private function generateCurlOptions()
     {
-        $curlOptions = array(
-                CURLOPT_RETURNTRANSFER  => true,
-                CURLOPT_HEADER          => true,
-                CURLINFO_HEADER_OUT     => true,
-                CURLOPT_FOLLOWLOCATION  => true,
-                CURLOPT_SSL_VERIFYPEER  => false,
-                CURLOPT_SSL_VERIFYHOST  => false
-            );
+        $curlOptions = [
+            CURLOPT_RETURNTRANSFER  => true,
+            CURLOPT_HEADER          => true,
+            CURLINFO_HEADER_OUT     => true,
+            CURLOPT_FOLLOWLOCATION  => true,
+            CURLOPT_SSL_VERIFYPEER  => false,
+            CURLOPT_SSL_VERIFYHOST  => false
+        ];
         
-        $parametersMapping = array(
+        $parametersMapping = [
             CURLOPT_CONNECTTIMEOUT  => 'timeout',
             CURLOPT_PROXY           => 'proxyHost',
             CURLOPT_PROXYPORT       => 'proxyPort',
@@ -149,7 +149,7 @@ class Curl extends Service
             CURLOPT_COOKIE          => 'cookie',
             CURLOPT_USERAGENT       => 'userAgent',
             CURLOPT_HTTPHEADER      => 'headers',
-        );
+        ];
 
         foreach ($parametersMapping as $curlKey => $optionKey) {
             if (($value = $this->getParameter($optionKey)) !== null) {

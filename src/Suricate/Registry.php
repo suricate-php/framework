@@ -54,7 +54,7 @@ class Registry
     {
         if (static::$context !== null) {
             if (!isset(static::$data[static::$context])) {
-                static::$data[static::$context] = array();
+                static::$data[static::$context] = [];
             }
             return static::$data[static::$context];
         }

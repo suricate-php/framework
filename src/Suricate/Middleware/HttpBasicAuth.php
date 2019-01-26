@@ -11,13 +11,13 @@ class HttpBasicAuth implements \Suricate\Interfaces\IMiddleware
 
     public function __construct($options = null)
     {
-        $this->options = array(
-            'users' => array(),
+        $this->options = [
+            'users' => [],
             'type'  => self::AUTHTYPE_ARRAY,
             'path'  => '/',
             'realm' => 'restricted area',
-            'db'    => array(),
-            );
+            'db'    => [],
+        ];
 
         if ($options !== null) {
             $this->options = array_merge($this->options, (array)$options);
@@ -83,9 +83,9 @@ class HttpBasicAuth implements \Suricate\Interfaces\IMiddleware
                 app()->abort(
                     '401',
                     'not aut',
-                    array(
+                    [
                         "WWW-Authenticate" => sprintf('Basic realm="%s"', $this->options["realm"])
-                    )
+                    ]
                 );
             }
         }

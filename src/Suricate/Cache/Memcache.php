@@ -17,12 +17,12 @@ use Suricate;
 
 class Memcache extends Suricate\Cache
 {
-    protected $parametersList = array(
-                                    'host',
-                                    'port',
-                                    'defaultExpiry',
-                                    'useCompression'
-                                );
+    protected $parametersList = [
+        'host',
+        'port',
+        'defaultExpiry',
+        'useCompression'
+    ];
     private $handler;
 
     public function __construct()

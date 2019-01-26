@@ -164,7 +164,7 @@ class DBCollection extends Collection
          $this->itemOffset++;
     }
 
-    public function lazyLoadFromSql($sql, $sqlParams = array())
+    public function lazyLoadFromSql($sql, $sqlParams = [])
     {
         $this->connectDB();
         $results = $this->dbLink

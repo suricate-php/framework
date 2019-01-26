@@ -7,19 +7,19 @@
  * @version     0.1.16
  * @package     Suricate
  *
- * @method static \Suricate\Suricate\App      App()      Get instance of App service
- * @method static \Suricate\Suricate\Database Database() Get instance of Database service
- * @method static \Suricate\Suricate\Error    Error()    Get instance of Error service
- * @method static \Suricate\Suricate\I18n     I18n()     Get instance of I18n service
- * @method static \Suricate\Suricate\Request  Request()  Get instance of Request service
- * @method static \Suricate\Suricate\Logger   Logger()    Get instance of Logger service
+ * @method static \Suricate\App      App()      Get instance of App service
+ * @method static \Suricate\Database Database() Get instance of Database service
+ * @method static \Suricate\Error    Error()    Get instance of Error service
+ * @method static \Suricate\I18n     I18n()     Get instance of I18n service
+ * @method static \Suricate\Request  Request()  Get instance of Request service
+ * @method static \Suricate\Logger   Logger()   Get instance of Logger service
  */
 namespace Suricate;
 
 class Suricate
 {
 
-    const VERSION = '0.1.16';
+    const VERSION = '0.2.0';
 
     const CONF_DIR = '/conf/';
 
@@ -33,7 +33,7 @@ class Suricate
     private static $servicesContainer;
     private static $servicesRepository;
 
-    private $servicesList = array(
+    private $servicesList = [
         'Logger'            => '\Suricate\Logger',
         'App'               => '\Suricate\App',
         'I18n'              => '\Suricate\I18n',
@@ -52,10 +52,10 @@ class Suricate
         'SessionNative'     => '\Suricate\Session\Native',
         'SessionCookie'     => '\Suricate\Session\Cookie',
         'SessionMemcache'   => '\Suricate\Session\Memcache',
-    );
+    ];
 
 
-    public function __construct($paths = array(), $configFile = null)
+    public function __construct($paths = [], $configFile = null)
     {
         if ($configFile !== null) {
             $this->setConfigFile($configFile);
@@ -74,16 +74,16 @@ class Suricate
         }
 
         // Define error handler
-        set_exception_handler(array('\Suricate\Error', 'handleException'));
-        set_error_handler(array('\Suricate\Error', 'handleError'));
-        register_shutdown_function(array('\Suricate\Error', 'handleShutdownError'));
+        set_exception_handler(['\Suricate\Error', 'handleException']);
+        set_error_handler(['\Suricate\Error', 'handleError']);
+        register_shutdown_function(['\Suricate\Error', 'handleShutdownError']);
 
         self::$servicesRepository = new Container();
 
         $this->initServices();
     }
 
-    private function setAppPaths($paths = array())
+    private function setAppPaths($paths = [])
     {
         foreach ($paths as $key => $value) {
             $this->config['App']['path.' . $key] = realpath($value);
@@ -101,7 +101,7 @@ class Suricate
 
         self::$servicesRepository['Request']->parse();
         if (isset($this->config['App']['locale'])) {
-            $this->config['I18n'] = array('locale' => $this->config['App']['locale']);
+            $this->config['I18n'] = ['locale' => $this->config['App']['locale']];
         }
         // first sync, && init, dependency to Suricate::request
         self::$servicesContainer = clone self::$servicesRepository;
@@ -146,9 +146,9 @@ class Suricate
      */
     private function loadConfig()
     {
-        $userConfig = array();
+        $userConfig = [];
         if ($this->configFile !== null) {
-            $userConfig = array();
+            $userConfig = [];
             foreach ($this->configFile as $configFile) {
                 $userConfig = array_merge_recursive($userConfig, parse_ini_file($configFile, true));
             }
