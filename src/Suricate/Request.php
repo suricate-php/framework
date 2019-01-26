@@ -294,7 +294,7 @@ class Request
 
     public function flashData($name, $value)
     {
-        Flash::write('data', [$name => $value]);
+        Flash::writeData($name, $value);
 
         return $this;
     }
