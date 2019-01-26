@@ -30,6 +30,9 @@ class FlashTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(2, count(Flash::getMessages(Flash::TYPE_SUCCESS)));
         $this->assertEquals(0, count(Flash::getMessages(Flash::TYPE_SUCCESS)));
         $this->assertEquals(0, count(Flash::getMessages(Flash::TYPE_INFO)));
+
+        $this->expectException(\InvalidArgumentException::class);
+        Flash::writeMessage('unknown type', "OK 1");
     }
 
     public function testRenderMessages()
@@ -54,6 +57,7 @@ class FlashTest extends \PHPUnit\Framework\TestCase
         $myObj->property = 1;
         $myObj->otherProperty = "1";
 
+        $this->assertNull(Flash::getData('myKey'));
 
         Flash::writeData('myKey', $myObj);
         $this->assertEquals($myObj, Flash::getData('myKey'));
