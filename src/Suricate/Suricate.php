@@ -26,7 +26,7 @@ class Suricate
     protected $router;
 
     private $config;
-    private $configFile;
+    private $configFile = [];
 
     private $useAutoloader = false;
 
@@ -135,8 +135,6 @@ class Suricate
                 $this->configFile[] = $file;
             }
         }
-        
-        
 
         return $this;
     }
