@@ -60,7 +60,17 @@ class SuricateTest extends \PHPUnit\Framework\TestCase
                 'dumpContext' => true,
             ],
         ], $suricate->getConfig());
+    }
 
+    public function testConfigConst()
+    {
+        $object = new \Suricate\Suricate([], './tests/stubs/const.ini');
+        $this->assertTrue(defined('MY_TEST_CONST'));
+        $this->assertFalse(defined('my_test_const'));
+        $this->assertSame(1, MY_TEST_CONST);
+        $this->assertSame("my string", ANOTHER_CONST);
+        $this->assertTrue(ITS_TRUE);
+        $this->assertSame(true, ITS_TRUE);
     }
 
 }

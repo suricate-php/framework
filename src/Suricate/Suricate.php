@@ -156,7 +156,7 @@ class Suricate
         if (count($this->configFile)) {
             $userConfig = [];
             foreach ($this->configFile as $configFile) {
-                $userConfig = array_merge_recursive($userConfig, parse_ini_file($configFile, true));
+                $userConfig = array_merge_recursive($userConfig, parse_ini_file($configFile, true, INI_SCANNER_TYPED));
             }
 
             // Advanced ini parsing, split key with '.' into subarrays
