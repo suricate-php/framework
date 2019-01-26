@@ -145,7 +145,7 @@ class Suricate
     private function loadConfig()
     {
         $userConfig = [];
-        if ($this->configFile !== null) {
+        if (count($this->configFile)) {
             $userConfig = [];
             foreach ($this->configFile as $configFile) {
                 $userConfig = array_merge_recursive($userConfig, parse_ini_file($configFile, true));
@@ -153,7 +153,7 @@ class Suricate
 
             // Advanced ini parsing, split key with '.' into subarrays
             foreach ($userConfig as $section => $configData) {
-                foreach ($configData as $name => $value) {
+                foreach (array_keys($configData) as $name) {
                     if (stripos($name, '.') !== false) {
                         $subkeys = explode('.', $name);
                         unset($userConfig[$section][$name]);
@@ -256,8 +256,8 @@ class Suricate
     {
         if (isset($arguments[0]) && $arguments[0] === true) {
             return clone self::$servicesRepository[$name];
-        } else {
-            return self::$servicesContainer[$name];
         }
+
+        return self::$servicesContainer[$name];
     }
 }
