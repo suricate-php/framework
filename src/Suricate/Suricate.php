@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * Suricate - Another micro PHP 5 framework
+ * Suricate - Another micro PHP framework
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
  * @copyright   2013-2019 Mathieu LESNIAK
@@ -23,9 +23,7 @@ class Suricate
 
     const CONF_DIR = '/conf/';
 
-    protected $router;
-
-    private $config;
+    private $config  = [];
     private $configFile = [];
 
     private $useAutoloader = false;
@@ -83,6 +81,11 @@ class Suricate
         $this->initServices();
     }
 
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
     private function setAppPaths($paths = [])
     {
         foreach ($paths as $key => $value) {
@@ -126,6 +129,11 @@ class Suricate
 
         // final sync, repository is complete
         self::$servicesContainer = clone self::$servicesRepository;
+    }
+
+    public function hasService(string $serviceName): bool
+    {
+        return isset(self::$servicesContainer[$serviceName]);
     }
 
     private function setConfigFile($configFile)
@@ -180,8 +188,8 @@ class Suricate
 
     private function configureAppMode()
     {
-        $errorReporting     = false;
-        $errorDumpContext   = false;
+        $errorReporting     = true;
+        $errorDumpContext   = true;
         $logLevel           = Logger::LOGLEVEL_WARN;
         $logFile            = 'php://stdout';
         
@@ -239,7 +247,6 @@ class Suricate
     {
         return [
             'Router'    => [],
-            'Session'   => ['type' => 'native'],
             'Logger'    => [
                 'enabled'   => true,
             ],

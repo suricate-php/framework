@@ -40,4 +40,27 @@ class SuricateTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(['./tests/stubs/another-config.ini'], $configFiles);
     }
 
+    public function testDefaultConfig()
+    {
+        $suricate = new Suricate\Suricate();
+        $this->assertTrue($suricate->hasService('Logger'));
+        $this->assertTrue($suricate->hasService('Error'));
+        $this->assertFalse($suricate->hasService('Session'));
+        
+        $this->assertEquals([
+            'Router'    => [],
+            'Logger'    => [
+                'enabled'   => true,
+                'level'     => \Suricate\Logger::LOGLEVEL_WARN,
+                'logfile'   => 'php://stdout',
+            ],
+            'App'       => ['base_uri' => '/'],
+            'Error'     => [
+                'report' => true,
+                'dumpContext' => true,
+            ],
+        ], $suricate->getConfig());
+
+    }
+
 }
