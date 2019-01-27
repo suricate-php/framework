@@ -201,7 +201,7 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $mock->__wakeup();
     }
 
-    public function testRelations()
+    public function testRelationOneOne()
     {
         $relations = [
             'category' => [
@@ -296,6 +296,55 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals('John', $testDBO->name);
         
+        $this->assertInstanceOf('\Suricate\DBObject', $retVal);
+    }
+
+    public function testSaveUpdate()
+    {
+        // Prepare database
+        $this->setupData();
+
+        // Simple save
+        $testDBO = $this->getDBOject();
+        $testDBO->id = 55;
+        $testDBO->name = 'Steve';
+        $testDBO->date_added = '2019-01-27';
+        $testDBO->save();
+
+        $loaded = $this->getDBOject();
+        $retVal = $loaded->load(55);
+        $this->assertTrue($testDBO->isLoaded());
+        $this->assertEquals(55, $loaded->id);
+        $this->assertEquals('Steve', $loaded->name);
+        $this->assertInstanceOf('\Suricate\DBObject', $retVal);
+
+        // Update
+        $loaded->name = 'Tim';
+        $loaded->save();
+        $loaded = $this->getDBOject();
+        $retVal = $loaded->load(55);
+        $this->assertTrue($testDBO->isLoaded());
+        $this->assertEquals(55, $loaded->id);
+        $this->assertEquals('Tim', $loaded->name);
+        $this->assertInstanceOf('\Suricate\DBObject', $retVal);
+    }
+
+    public function testForceInsert()
+    {
+         // Prepare database
+         $this->setupData();
+
+        // Force insert
+        $loadedForce = $this->getDBOject();
+        $retVal = $loadedForce->load(1);
+        $loadedForce->id = 56;
+        $loadedForce->save(true);
+
+        $loaded = $this->getDBOject();
+        $retVal = $loaded->load(56);
+
+        $this->assertEquals(56, $loaded->id);
+        $this->assertEquals('John', $loaded->name);
         $this->assertInstanceOf('\Suricate\DBObject', $retVal);
     }
 
