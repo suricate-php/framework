@@ -20,5 +20,22 @@ class Category extends \Suricate\DBObject
             'name',
             'parent_id',
         ];
+
+        $this->protectedVariables = [
+            'prot_var',
+            'unloadable',
+        ];
+    }
+
+    protected function accessToProtectedVariable($name)
+    {
+        switch ($name) {
+            case 'prot_var':
+                $this->prot_var = 42;
+                return true;
+                break;
+            case 'unloadable':
+                return false;
+        }
     }
 }

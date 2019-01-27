@@ -1,6 +1,9 @@
 <?php
 require_once 'stubs/Category.php';
 
+/**
+ * @SuppressWarnings("StaticAccess")
+ */
 class DBObjectTest extends \PHPUnit\Framework\TestCase
 {
     protected $tableName = 'users';
@@ -109,6 +112,38 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($dbo->isLoaded());
     }
 
+    public function testProtected()
+    {
+        $testDBO = Category::instanciate([
+            'id' => 1,
+            'name' => 'test record',
+        ]);
+        $reflector = new ReflectionClass(Category::class);
+        $property = $reflector->getProperty('protectedValues');
+        $property->setAccessible(true);
+        $this->assertSame([], $property->getValue($testDBO));
+        $this->assertNull($testDBO->unloadable);
+        
+        $reflector = new ReflectionClass(Category::class);
+        $property = $reflector->getProperty('protectedValues');
+        $property->setAccessible(true);
+        $this->assertSame([], $property->getValue($testDBO));
+        
+        $reflector = new ReflectionClass(Category::class);
+        $property = $reflector->getProperty('loadedProtectedVariables');
+        $property->setAccessible(true);
+        $this->assertSame([], $property->getValue($testDBO));
+
+        $this->assertSame(42, $testDBO->prot_var);
+        $property = $reflector->getProperty('protectedValues');
+        $property->setAccessible(true);
+        $this->assertSame(['prot_var' => 42], $property->getValue($testDBO));
+
+        $reflector = new ReflectionClass(Category::class);
+        $property = $reflector->getProperty('loadedProtectedVariables');
+        $property->setAccessible(true);
+        $this->assertSame(['prot_var' => true], $property->getValue($testDBO));
+    }
     public function testInstanciate()
     {
         $testDBO = Category::instanciate([
