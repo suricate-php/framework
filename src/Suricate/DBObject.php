@@ -28,7 +28,7 @@ class DBObject implements Interfaces\IDBObject
     /** @var string Unique ID of the SQL table */
     protected $tableIndex = '';
     
-    /** @var string Database config name */
+    /** @var string Database config name (optionnal) */
     protected $DBConfig = '';
 
     /**
