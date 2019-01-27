@@ -64,9 +64,9 @@ class Image
     {
         if ($this->source) {
             if ($width == null) {
-                $width = round(($height / $this->height) * $this->width);
+                $width = round(($height / $this->height) * $this->width, 0);
             } elseif ($height == null) {
-                $height = round(($width / $this->width) * $this->height);
+                $height = round(($width / $this->width) * $this->height, 0);
             }
 
             $this->destination = imagecreatetruecolor($width, $height);
