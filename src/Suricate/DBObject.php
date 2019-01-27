@@ -427,11 +427,11 @@ class DBObject implements Interfaces\IDBObject
 
             if ($this->isLoaded() && !$forceInsert) {
                 $this->update();
-                return;
+                return null;
             }
 
             $this->insert();
-            return;
+            return null;
         }
 
         throw new \RuntimeException("Object " . get_called_class() . " has no properties to save");

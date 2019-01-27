@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 namespace Suricate;
-
+/*
 class CollectionMapping extends Collection
 {
     const SQL_RELATION_TABLE_NAME   = '';
@@ -149,3 +149,4 @@ class CollectionMapping extends Collection
         }
     }
 }
+*/

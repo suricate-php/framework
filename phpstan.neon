@@ -1,0 +1,9 @@
+parameters:
+	bootstrap: %rootDir%/../../../tests/phpstan_bootstrap.php
+	ignoreErrors:
+		- '#Call to method connect\(\) on an unknown class Memcache.#'
+		- '#Call to method addServer\(\) on an unknown class Memcached.#'
+		- '#Instantiated class Memcache not found.#'
+		- '#Constant MEMCACHE_COMPRESSED not found.#'
+		- '#Instantiated class Memcached not found.#'
+

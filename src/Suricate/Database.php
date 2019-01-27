@@ -187,12 +187,12 @@ class Database extends Service
 
     public function rollback(): bool
     {
-        return $this->handle->rollback();
+        return $this->handler->rollback();
     }
 
     public function inTransaction(): bool
     {
-        return $this->handle->inTransaction();
+        return $this->handler->inTransaction();
     }
 
     public function getColumnCount()

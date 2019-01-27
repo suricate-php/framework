@@ -3,7 +3,7 @@ namespace Suricate\Middleware;
 
 use Suricate\Suricate;
 
-class HttpBasicAuth implements \Suricate\Interfaces\IMiddleware
+class HttpBasicAuth extends \Suricate\Middleware
 {
     const AUTHTYPE_ARRAY    = 'array';
     const AUTHTYPE_DB       = 'database';

@@ -90,10 +90,10 @@ trait ImageFilter
                 $this->source,
                 constant($filterType)
             ];
-            $params = array_merge($params, $args);
+            $params = array_values(array_merge($params, $args));
 
             call_user_func_array('imagefilter', $params);
-            
+
             return $this;
         }
 

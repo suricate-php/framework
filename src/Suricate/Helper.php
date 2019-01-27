@@ -129,11 +129,11 @@ if (!function_exists('camelCase')) {
 }
 
 if (!function_exists('snakeCase')) {
-    function snakeCase($str, $delimiter)
+    function snakeCase(string $str, $delimiter)
     {
         $replace = '$1' . $delimiter . '$2';
 
-        return ctype_lower($str) ? $str : strtolower(preg_replace('/(.)([A-Z])/', $replace, $str));
+        return ctype_lower($str) ? $str : strtolower((string) preg_replace('/(.)([A-Z])/', $replace, $str));
     }
 }
 
@@ -199,27 +199,10 @@ if (!function_exists('slug')) {
     {
         if (class_exists('Transliterator')) {
             $translit = \Transliterator::create('Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC; [:Punctuation:] Remove; Lower();');
-            return preg_replace('/\s/', '-', $translit->transliterate($str));
-        } else {
-            if (!$isUtf8) {
-                $str = strtr(
-                    $str,
-                    utf8_decode("ÀÁÂÃÄÅàáâãäåÇçÒÓÔÕÖØòóôõöøÈÉÊËèéêëÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ"),
-                    "AAAAAAaaaaaaCcOOOOOOooooooEEEEeeeeIIIIiiiiUUUUuuuuyNn"
-                );
-            } else {
-                $str = strtr(
-                    utf8_decode($str),
-                    utf8_decode("ÀÁÂÃÄÅàáâãäåÇçÒÓÔÕÖØòóôõöøÈÉÊËèéêëÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ"),
-                    "AAAAAAaaaaaaCcOOOOOOooooooEEEEeeeeIIIIiiiiUUUUuuuuyNn"
-                );
+            if ($translit !== null) {
+                return preg_replace('/\s/', '-', (string) $translit->transliterate($str));
             }
-
-            $str = preg_replace('/[^a-z0-9_-\s]/', '', strtolower($str));
-            $str = preg_replace('/[\s]+/', ' ', trim($str));
-            $str = str_replace(' ', '-', $str);
-
-            return $str;
+            throw new \RuntimeException("Cannot instanciate Transliterator");
         }
     }
 }

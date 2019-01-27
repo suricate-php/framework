@@ -8,7 +8,7 @@ trait DBObjectExport
     /**
      * Define object exported variables
      *
-     * @return DBObject
+     * @return \Suricate\DBObject
      */
     protected function setExportedVariables()
     {
@@ -76,6 +76,6 @@ trait DBObjectExport
      */
     public function toJson()
     {
-        return json_encode($this->toArray());
+        return (string) json_encode($this->toArray());
     }
 }

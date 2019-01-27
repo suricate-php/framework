@@ -129,7 +129,7 @@ class Router extends Service
         );
     }
 
-    public function addMiddleware($middleware)
+    public function addMiddleware(Middleware $middleware)
     {
         array_unshift($this->appMiddlewares, $middleware);
 

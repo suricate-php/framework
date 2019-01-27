@@ -70,6 +70,9 @@ class Image
             }
 
             $this->destination = imagecreatetruecolor($width, $height);
+            if ($this->destination === false) {
+                throw new \RuntimeException("Can't create destination image");
+            }
             imagecopyresampled(
                 $this->destination,
                 $this->source,
@@ -96,10 +99,13 @@ class Image
         $cropWidthHalf  = round($width / 2);
         $cropHeightHalf = round($height / 2);
 
-        $x1 = max(0, $centerX - $cropWidthHalf);
-        $y1 = max(0, $centerY - $cropHeightHalf);
+        $x1 = intval(max(0, $centerX - $cropWidthHalf));
+        $y1 = intval(max(0, $centerY - $cropHeightHalf));
         
         $this->destination = imagecreatetruecolor($width, $height);
+        if ($this->destination === false) {
+            throw new \RuntimeException("Can't create destination image");
+        }
         imagecopy($this->destination, $this->source, 0, 0, $x1, $y1, $width, $height);
 
         return $this->chain();
@@ -108,6 +114,9 @@ class Image
     public function resizeCanvas($width, $height, $position = null, $color = [0, 0, 0])
     {
         $this->destination = imagecreatetruecolor($width, $height);
+        if ($this->destination === false) {
+            throw new \RuntimeException("Can't create destination image");
+        }
         $colorRes = imagecolorallocate($this->destination, $color[0], $color[1], $color[2]);
         $imageObj = new Image();
         $imageObj->width = $width;
@@ -155,7 +164,9 @@ class Image
         // Handle transparent image
         // creating a cut resource
         $cut = imagecreatetruecolor($source->getWidth(), $source->getHeight());
-
+        if ($cut === false) {
+            throw new \RuntimeException("Can't create destination image");
+        }
         // copying relevant section from background to the cut resource
         imagecopy($cut, $this->destination, 0, 0, $x, $y, $source->getWidth(), $source->getHeight());
         

@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+namespace Suricate;
 /**
  * Suricate - Another micro PHP framework
  *
@@ -7,18 +8,22 @@
  * @version     0.2.0
  * @package     Suricate
  *
- * @method static \Suricate\App      App()      Get instance of App service
- * @method static \Suricate\Database Database() Get instance of Database service
- * @method static \Suricate\Error    Error()    Get instance of Error service
- * @method static \Suricate\I18n     I18n()     Get instance of I18n service
- * @method static \Suricate\Request  Request()  Get instance of Request service
- * @method static \Suricate\Logger   Logger()   Get instance of Logger service
+ * @method static \Suricate\App      App($newInstance = false)      Get instance of App service
+ * @method static \Suricate\Database Database($newInstance = false) Get instance of Database service
+ * @method static \Suricate\Error    Error($newInstance = false)    Get instance of Error service
+ * @method static \Suricate\I18n     I18n($newInstance = false)     Get instance of I18n service
+ * @method static \Suricate\Logger   Logger($newInstance = false)   Get instance of Logger service
+ * @method static \Suricate\Request  Request($newInstance = false)  Get instance of Request service
+ * @method static \Suricate\Request  Response($newInstance = false) Get instance of Request/Response service 
+ * @method static \Suricate\Session  Session($newInstance = false)  Get instance of Session service 
+ * @method static \Suricate\SessionNative SessionNative($newInstance = false)  Get instance of Session service 
+ * @method static \Suricate\SessionCookie SessionCookie($newInstance = false)  Get instance of Session service 
+ * @method static \Suricate\SessionMemcache SessionMemcache($newInstance = false)  Get instance of Session service 
  */
-namespace Suricate;
+
 
 class Suricate
 {
-
     const VERSION = '0.2.0';
 
     const CONF_DIR = '/conf/';
@@ -162,7 +167,7 @@ class Suricate
         if (count($this->configFile)) {
             $userConfig = [];
             foreach ($this->configFile as $configFile) {
-                $userConfig = array_merge_recursive($userConfig, parse_ini_file($configFile, true, INI_SCANNER_TYPED));
+                $userConfig = array_merge_recursive($userConfig, (array) parse_ini_file($configFile, true, INI_SCANNER_TYPED));
             }
 
             // Advanced ini parsing, split key with '.' into subarrays

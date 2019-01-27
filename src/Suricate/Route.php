@@ -43,8 +43,8 @@ class Route
     private function match($request)
     {
         $requestUri = $request->getRequestUri();
-
-        if (($pos = strpos($requestUri, '?')) !== false) {
+        $pos = strpos($requestUri, '?');
+        if ($pos !== false) {
             $requestUri = substr($requestUri, 0, $pos);
         }
 
@@ -76,13 +76,13 @@ class Route
             
             // Middleware stack processing
             foreach ($this->middlewares as $middleware) {
-                if (is_object($middleware)) {
+                if (is_object($middleware) && ($middleware instanceOf Middleware)) {
                     $middleware->call($response);
                 } else {
                     with(new $middleware)->call($response);
                 }
             }
-            
+
             $result = call_user_func_array($callable, $methodArguments);
         }
 

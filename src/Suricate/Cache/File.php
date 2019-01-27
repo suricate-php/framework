@@ -4,7 +4,7 @@ namespace Suricate\Cache;
 use Suricate;
 
 /**
- * Memcache extension for Suricate
+ * File cache extension for Suricate
  *
  * @package Suricate
  * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
@@ -74,7 +74,7 @@ class File extends Suricate\Cache
         if (is_readable($this->path . $variable)) {
             if (is_readable($this->path . $variable . '.expiry')) {
                 $expiry = file_get_contents($this->path . $variable . '.expiry');
-                $hasExpired = (time() - $expiry) > 0 ? 1 : -1;
+                $hasExpired = (time() - (int) $expiry) > 0 ? 1 : -1;
             } else {
                 $hasExpired = 0;
             }

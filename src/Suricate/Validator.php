@@ -202,20 +202,13 @@ class Validator
         }
         
         $method = array_shift($args);
-        // Object method
-        if (is_array($method) || is_string($method)) {
+        if (is_callable($method)) {
             $this->index = null;
             $this->value = call_user_func_array($method, $args);
 
             return $this;
         }
 
-        if (is_object($method) && ($method instanceof \Closure)) {
-            $this->index = null;
-            $this->value = call_user_func_array($method, $args);
-
-            return $this;
-        }
         throw new \InvalidArgumentException('Bad method');
 
     }

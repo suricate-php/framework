@@ -2,6 +2,7 @@
 namespace Suricate;
 
 /**
+ * @property string $id Formitem id attribute
  * @SuppressWarnings("StaticAccess")
  */
 class FormItem
@@ -46,9 +47,9 @@ class FormItem
     {
         if (isset($this->objectHtmlValues[$name])) {
             return $this->objectHtmlValues[$name];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     public function __set($name, $value)
@@ -212,7 +213,7 @@ class FormItem
     {
         $itemData           = [];
         $itemData['name']   = $name;
-        $itemData['value']  = $value;
+
         $itemData['label']  = $label;
         if ($label !== null && !isset($htmlAttributes['id'])) {
             $itemData['id']     = $name;
@@ -225,7 +226,7 @@ class FormItem
         $output .= '<textarea';
         $output .= $item->renderAttributes(true);
         $output .= '>';
-        $output .= $item->value;
+        $output .= $value;
         $output .= '</textarea>';
 
         return $output;

@@ -94,7 +94,8 @@ class Curl extends Service
         if ($curlHandler === false) {
             throw new \Exception('Can\'t init curl');
         }
-        curl_setopt_array($curlHandler, $this->generateCurlOptions());
+        $curlOptions = $this->generateCurlOptions();
+        curl_setopt_array($curlHandler, $curlOptions);
 
         $curlResponse       = curl_exec($curlHandler);
         if ($curlResponse === false) {
@@ -102,6 +103,10 @@ class Curl extends Service
             $this->errorCode    = curl_errno($curlHandler);
 
             return false;
+        }
+        // No return transfer option
+        if (is_bool($curlResponse)) {
+            return true;
         }
 
         $this->responseData = curl_getinfo($curlHandler);
