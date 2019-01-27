@@ -60,7 +60,7 @@ class FormItem
 
     public function __isset($name)
     {
-        return in_array($name, $this->objectHtmlProperties);
+        return array_key_exists($name, $this->objectHtmlValues);
     }
 
     public static function input($type, $name, $value = null, $label = null, $htmlAttributes = [])
