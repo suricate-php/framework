@@ -32,7 +32,7 @@ class PivotTable extends DBObject
             $query .= "     ON p.`" . $sourceField . "`=t." . $className::tableIndex();
             $query .= " WHERE";
             $query .= "     `" . $pivot->getSourceFieldForRelation($relation) . "` =  :id";
-            $query .= " GROUP BY t." . $targetClass->getTableIndex();
+            $query .= " GROUP BY t." . $targetClass::getTableIndex();
         } else {
             $query  = "SELECT *";
             $query .= " FROM `" . $pivot->getTableName() ."`";
