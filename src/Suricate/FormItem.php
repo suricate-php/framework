@@ -1,6 +1,9 @@
 <?php declare(strict_types=1);
 namespace Suricate;
 
+/**
+ * @SuppressWarnings("StaticAccess")
+ */
 class FormItem
 {
     public $objectHtmlProperties = [
@@ -25,7 +28,8 @@ class FormItem
         'pattern',
         'min',
         'step',
-        'max'
+        'max',
+        'src',
     ];
     public $label;
     public $objectHtmlValues            = [];
@@ -127,33 +131,32 @@ class FormItem
         return static::input('image', $name, null, null, $htmlAttributes);
     }
 
-    public static function radio($name, $availableValues = [], $value = null, $label = null, $htmlAttributes = [], $errors = [])
+    public static function radio($name, $availableValues = [], $value = null, $label = null, $htmlAttributes = [])
     {
         $itemData           = [];
         $itemData['name']   = $name;
         $itemData['value']  = $value;
         $itemData['label']  = $label;
-        $itemData['errors'] = $errors;
         $itemData = array_merge($itemData, $htmlAttributes);
 
         $item = new FormItem($itemData);
 
         $output  = $item->renderLabel();
-        $output .= '<div class="radio-list">'."\n";
+        $output .= '<div class="radio-list">';
         foreach ($availableValues as $currentValue => $currentLabel) {
             $htmlAttributes = ['id' => $name . '-' . $currentValue];
             if ($currentValue == $value) {
                 $htmlAttributes['checked'] = 'checked';
             }
 
-            $output .= '<div class="radio-item">' . FormItem::input('radio', $name, $currentValue, $currentLabel, $htmlAttributes) . '</div>'."\n";
+            $output .= '<div class="radio-item">' . FormItem::input('radio', $name, $currentValue, $currentLabel, $htmlAttributes) . '</div>';
         }
-        $output .= '</div>'."\n";
+        $output .= '</div>';
 
         return $output;
     }
 
-    public static function reset($value = null, $htmlAttributes)
+    public static function reset($value = null, $htmlAttributes = [])
     {
         return static::input('reset', null, $value, null, $htmlAttributes);
     }
@@ -171,10 +174,10 @@ class FormItem
         $output  = $item->renderLabel();
         $output .= '<select';
         $output .= $item->renderAttributes(true);
-        $output .= '>' . "\n";
+        $output .= '>';
         foreach ($availableValues as $currentKey => $currentOption) {
             if (is_array($currentOption)) {
-                $output .= '<optgroup label="' . $currentKey . '">'."\n";
+                $output .= '<optgroup label="' . htmlentities((string) $currentKey, ENT_COMPAT, static::$encoding) . '">';
                 foreach ($currentOption as $subKey => $subOption) {
                     if (is_array($value)) {
                         $selected = in_array($subKey, $value) ? ' selected' : '';
@@ -182,16 +185,16 @@ class FormItem
                         $selected = ($subKey == $value) ? ' selected' : '';
                     }
                     $selected = $subKey == $value ? ' selected' : '';
-                    $output .= '<option value="' . $subKey . '"' . $selected . '>' . $subOption . '</option>'."\n";
+                    $output .= '<option value="' . htmlentities((string) $subKey, ENT_COMPAT, static::$encoding) . '"' . $selected . '>' . htmlentities((string) $subOption, ENT_COMPAT, static::$encoding) . '</option>';
                 }
-                $output .= '</optgroup>'."\n";
+                $output .= '</optgroup>';
             } else {
                 if (is_array($value)) {
                     $selected = in_array($currentKey, $value) ? ' selected' : '';
                 } else {
                     $selected = ($currentKey == $value) ? ' selected' : '';
                 }
-                $output .= '<option value="' . $currentKey . '"' . $selected . '>' . $currentOption . '</option>'."\n";
+                $output .= '<option value="' . htmlentities((string) $currentKey, ENT_COMPAT, static::$encoding) . '"' . $selected . '>' . htmlentities((string) $currentOption, ENT_COMPAT, static::$encoding) . '</option>';
             }
         }
 
@@ -285,7 +288,7 @@ class FormItem
         foreach ($this->objectHtmlProperties as $currentAttribute) {
             if (!($currentAttribute == 'value' && $skipValue)) {
                 if ($this->$currentAttribute !== null) {
-                    $output .= ' ' . $currentAttribute . '="' . htmlentities($this->$currentAttribute, ENT_COMPAT, static::$encoding) . '"';
+                    $output .= ' ' . $currentAttribute . '="' . htmlentities((string) $this->$currentAttribute, ENT_COMPAT, static::$encoding) . '"';
                 }
             }
         }
