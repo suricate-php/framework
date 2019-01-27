@@ -33,7 +33,6 @@ class Category extends \Suricate\DBObject
             case 'prot_var':
                 $this->prot_var = 42;
                 return true;
-                break;
             case 'unloadable':
                 return false;
         }
