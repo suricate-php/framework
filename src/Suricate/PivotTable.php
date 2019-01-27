@@ -24,17 +24,15 @@ class PivotTable extends DBObject
         $items = [];
         if ($target !== null) {
             $className = $pivot->getTargetForRelation($target);
-            $targetClass    = new $className;
+            $targetClass    = $className;
             $sourceField    = $pivot->getSourceFieldForRelation($target);
             
-            $query  = "SELECT t.* FROM " . $targetClass->getTableName() . " t";
+            $query  = "SELECT t.* FROM " . $className::tableName() . " t";
             $query .= " LEFT JOIN " . $pivot->getTableName() . " p";
-            $query .= "     ON p.`" . $sourceField . "`=t." . $targetClass->getTableIndex();
+            $query .= "     ON p.`" . $sourceField . "`=t." . $className::tableIndex();
             $query .= " WHERE";
             $query .= "     `" . $pivot->getSourceFieldForRelation($relation) . "` =  :id";
             $query .= " GROUP BY t." . $targetClass->getTableIndex();
-            
-            
         } else {
             $query  = "SELECT *";
             $query .= " FROM `" . $pivot->getTableName() ."`";
@@ -43,8 +41,8 @@ class PivotTable extends DBObject
 
             $targetClass = $pivot;
         }
-        $params         = [];
-        $params['id']   = $parentId;
+
+        $params = ['id' => $parentId];
 
         $results = $pivot
             ->dbLink
@@ -54,7 +52,7 @@ class PivotTable extends DBObject
         foreach ($results as $result) {
             $add = true;
 
-            $itemToAdd = $targetClass->hydrate($result);
+            $itemToAdd = $targetClass::instanciate($result);
             
             if ($validate !== null && is_callable($validate)) {
                 $add = $validate($itemToAdd);
