@@ -28,6 +28,13 @@ class FormItemTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function testIsset()
+    {
+        $handler = new FormItem(['src' => 'http://']);
+        $this->assertTrue(isset($handler->src));
+        $this->assertFalse(isset($hander->value));
+    }
+
     public function testInputText()
     {
         $res = FormItem::text('my-input-name', "accentué", 'Mon input');
@@ -108,6 +115,18 @@ class FormItemTest extends \PHPUnit\Framework\TestCase
         $res = FormItem::select('my-input-name', ["é\"" => ['a', 'b'], 2, 3 => ['c', 'd']], 2, 'Mon input');
         $this->assertEquals(
             '<label>Mon input</label><select name="my-input-name"><optgroup label="&eacute;&quot;"><option value="0">a</option><option value="1">b</option></optgroup><option value="0">2</option><optgroup label="3"><option value="0">c</option><option value="1">d</option></optgroup></select>',
+            $res
+        );
+
+        $res = FormItem::select('my-input-name', ["é\"" => ['a', 'b'], 2, 3 => ['c', 'd']], 'c', 'Mon input');
+        $this->assertEquals(
+            '<label>Mon input</label><select name="my-input-name"><optgroup label="&eacute;&quot;"><option value="0" selected>a</option><option value="1">b</option></optgroup><option value="0" selected>2</option><optgroup label="3"><option value="0" selected>c</option><option value="1">d</option></optgroup></select>',
+            $res
+        );
+
+        $res = FormItem::select('my-input-name', [1, 2, 3], [2, 1], 'Mon input');
+        $this->assertEquals(
+            '<label>Mon input</label><select name="my-input-name"><option value="0">1</option><option value="1" selected>2</option><option value="2" selected>3</option></select>',
             $res
         );
     }
