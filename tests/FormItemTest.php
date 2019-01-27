@@ -32,7 +32,7 @@ class FormItemTest extends \PHPUnit\Framework\TestCase
     {
         $handler = new FormItem(['src' => 'http://']);
         $this->assertTrue(isset($handler->src));
-        $this->assertFalse(isset($hander->value));
+        $this->assertFalse(isset($handler->value));
     }
 
     public function testInputText()
