@@ -55,6 +55,15 @@ class FormItemTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function testInputFile()
+    {
+        $res = FormItem::file('my-input-name', "Mon input");
+        $this->assertEquals(
+            '<label for="my-input-name">Mon input</label><input type="file" name="my-input-name" id="my-input-name"/>',
+            $res
+        );
+    }
+
     public function testInputHidden()
     {
         $res = FormItem::hidden('my-input-name', "accentué");
@@ -69,6 +78,15 @@ class FormItemTest extends \PHPUnit\Framework\TestCase
         $res = FormItem::submit('my-input-name', "accentué", 'Mon input');
         $this->assertEquals(
             '<label for="my-input-name">Mon input</label><input type="submit" name="my-input-name" id="my-input-name" value="accentu&eacute;"/>',
+            $res
+        );
+    }
+
+    public function testInputTextarea()
+    {
+        $res = FormItem::textarea('my-input-name', "accentué", 'Mon input');
+        $this->assertEquals(
+            '<label for="my-input-name">Mon input</label><textarea name="my-input-name" id="my-input-name">accentué</textarea>',
             $res
         );
     }

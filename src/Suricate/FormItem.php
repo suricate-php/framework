@@ -124,7 +124,7 @@ class FormItem
     {
         $htmlAttributes['src'] = $url;
 
-        return static::input('email', $name, null, null, $htmlAttributes);
+        return static::input('image', $name, null, null, $htmlAttributes);
     }
 
     public static function radio($name, $availableValues = [], $value = null, $label = null, $htmlAttributes = [], $errors = [])
@@ -223,7 +223,7 @@ class FormItem
         $output .= $item->renderAttributes(true);
         $output .= '>';
         $output .= $item->value;
-        $output .= '</textarea>'."\n";
+        $output .= '</textarea>';
 
         return $output;
     }
