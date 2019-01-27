@@ -191,18 +191,18 @@ class Page
         $htmlClass = count($this->htmlClass) ? ' class="' . implode(' ', array_keys($this->htmlClass)) .'"' : '';
         $output  = '<!DOCTYPE html>' . "\n";
         $output .= '<html lang="' . substr($this->language, 0, 2) . '"' . $htmlClass . '>' . "\n";
-        $output .= '    <head>' . "\n";
-        $output .= '        <title>' . $this->title . '</title>' . "\n";
-        $output .= '        <meta http-equiv="Content-Type" content="text/html; charset=' . $this->encoding . '" />'."\n";
-        $output .=          $this->renderMetas();
-        $output .=          $this->renderStylesheets();
-        $output .=          $this->renderScripts();
-        $output .=          $this->renderRss();
-        $output .= '    </head>' . "\n";
-        $output .= '    <body>' . "\n";
+        $output .= '<head>' . "\n";
+        $output .= '<title>' . htmlentities((string) $this->title, ENT_COMPAT, $this->encoding) . '</title>' . "\n";
+        $output .= '<meta http-equiv="Content-Type" content="text/html; charset=' . $this->encoding . '" />'."\n";
+        $output .=  $this->renderMetas();
+        $output .=  $this->renderStylesheets();
+        $output .=  $this->renderScripts();
+        $output .=  $this->renderRss();
+        $output .= '</head>' . "\n";
+        $output .= '<body>' . "\n";
         $output .= $content;
-        $output .= '    </body>'."\n";
-        $output .= '</html>' . "\n";
+        $output .= '</body>'."\n";
+        $output .= '</html>';
 
         return $output;
     }
