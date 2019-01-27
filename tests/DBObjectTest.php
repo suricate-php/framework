@@ -331,8 +331,8 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
 
     public function testForceInsert()
     {
-         // Prepare database
-         $this->setupData();
+        // Prepare database
+        $this->setupData();
 
         // Force insert
         $loadedForce = $this->getDBOject();
@@ -346,6 +346,29 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(56, $loaded->id);
         $this->assertEquals('John', $loaded->name);
         $this->assertInstanceOf('\Suricate\DBObject', $retVal);
+    }
+
+    public function testDelete()
+    {
+        // Prepare database
+        $this->setupData();
+
+        // Simple save
+        $testDBO = $this->getDBOject();
+        $testDBO->id = 55;
+        $testDBO->name = 'Steve';
+        $testDBO->date_added = '2019-01-27';
+        $testDBO->save();
+
+        $testDBO = $this->getDBOject();
+        $retVal = $testDBO->loadOrFail(55);
+        $this->assertInstanceOf('\Suricate\DBObject', $retVal);
+
+        $testDBO->delete();
+
+        $testDBO = $this->getDBOject();
+        $this->expectException(\Suricate\Exception\ModelNotFoundException::class);
+        $testDBO->loadOrFail(55);
     }
 
     public function testLoadFromSQL()
