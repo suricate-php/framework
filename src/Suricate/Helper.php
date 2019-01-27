@@ -302,7 +302,7 @@ if (!function_exists('niceTime')) {
         } elseif ($delta < (24 * 60 * 60)) {
             return 'il y a environ ' . floor($delta / 3600) . ' heures.';
         } elseif ($delta < (48 * 60 * 60)) {
-            return 'hier';
+            return 'hier.';
         } elseif ($delta < 30 * 24 *3600) {
             return 'il y a ' . floor($delta / 86400) . ' jours.';
         } elseif ($delta < 365 * 24 * 3600) {
