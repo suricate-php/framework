@@ -156,9 +156,19 @@ class DBObject implements Interfaces\IDBObject
         return $this->tableName;
     }
 
+    public static function tableName()
+    {
+        return with(new static)->getTableName();
+    }
+
     public function getTableIndex()
     {
         return $this->tableIndex;
+    }
+
+    public static function tableIndex()
+    {
+        return with(new static)->getTableIndex();
     }
 
     public function getDBConfig()

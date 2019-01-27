@@ -36,6 +36,11 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($testName, $testDBO->getTableName());
     }
 
+    public function testStaticTableName()
+    {
+        $this->assertEquals('categories', Category::tableName());
+    }
+
     public function testGetTableIndex()
     {
         $testIndex = 'id';
@@ -43,6 +48,11 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $testDBO = new \Suricate\DBObject();
         self::mockProperty($testDBO, 'tableIndex', $testIndex);
         $this->assertEquals($testIndex, $testDBO->getTableIndex());
+    }
+
+    public function testStaticTableIndex()
+    {
+        $this->assertEquals('id', Category::tableIndex());
     }
 
     public function testGetDBConfig()
