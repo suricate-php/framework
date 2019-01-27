@@ -115,9 +115,9 @@ class FormItem
         return static::input('file', $name, null, $label, $htmlAttributes);
     }
 
-    public static function hidden($name, $value, $label = null, $htmlAttributes = [])
+    public static function hidden($name, $value, $htmlAttributes = [])
     {
-        return static::input('hidden', $name, $value, $label, $htmlAttributes);
+        return static::input('hidden', $name, $value, null, $htmlAttributes);
     }
 
     public static function image($name, $url, $htmlAttributes = [])
