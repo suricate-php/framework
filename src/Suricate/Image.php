@@ -280,7 +280,7 @@ class Image
                 $y = $this->height - $offsetHeight;
                 break;
             case 'bottom-right':
-                $x = $x = $this->width - $offsetWidth;
+                $x = $this->width - $offsetWidth;
                 $y = $this->height - $offsetHeight;
                 break;
             

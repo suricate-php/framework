@@ -195,7 +195,7 @@ if (!function_exists('wordLimit')) {
 
 
 if (!function_exists('slug')) {
-    function slug($str, $isUtf8 = true)
+    function slug($str)
     {
         if (class_exists('Transliterator')) {
             $translit = \Transliterator::create('Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC; [:Punctuation:] Remove; Lower();');

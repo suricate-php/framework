@@ -266,9 +266,9 @@ class Request
     {
         if (!headers_sent()) {
             if (substr(php_sapi_name(), 0, 3) == 'cgi') {
-                $headerString = 'Status: ' . self::getStringForHttpCode();
+                $headerString = 'Status: ' . $this->getStringForHttpCode();
             } else {
-                $headerString = 'HTTP/1.1 ' . self::getStringForHttpCode();
+                $headerString = 'HTTP/1.1 ' . $this->getStringForHttpCode();
             }
 
             header($headerString);

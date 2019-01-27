@@ -185,7 +185,6 @@ class FormItem
                     } else {
                         $selected = ($subKey == $value) ? ' selected' : '';
                     }
-                    $selected = $subKey == $value ? ' selected' : '';
                     $output .= '<option value="' . htmlentities((string) $subKey, ENT_COMPAT, static::$encoding) . '"' . $selected . '>' . htmlentities((string) $subOption, ENT_COMPAT, static::$encoding) . '</option>';
                 }
                 $output .= '</optgroup>';

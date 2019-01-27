@@ -58,7 +58,7 @@ class HttpBasicAuth extends \Suricate\Middleware
      * @param string $password password
      * @return bool
      */
-    private function authenticateAgainstArray($user, $password)
+    private function authenticateAgainstArray(string $user, string $password): bool
     {
         if (isset($this->options['users'][$user]) && $this->options['users'][$user] == $password) {
             return true;
@@ -67,7 +67,7 @@ class HttpBasicAuth extends \Suricate\Middleware
         return false;
     }
 
-    private function authenticateAgainstDatabase($user, $password)
+    private function authenticateAgainstDatabase(string $user, string $password): bool
     {
         return false;
     }
