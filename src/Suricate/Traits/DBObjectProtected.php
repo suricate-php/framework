@@ -12,7 +12,7 @@ trait DBObjectProtected
     /**
      * @param string $name
      */
-    private function getProtectedVariable($name)
+    private function getProtectedVariable(string $name)
     {
         // Variable exists, and is already loaded
         if (isset($this->protectedValues[$name]) && $this->isProtectedVariableLoaded($name)) {
@@ -37,7 +37,7 @@ trait DBObjectProtected
      *
      * @return DBObject
      */
-    public function markProtectedVariableAsLoaded($name)
+    public function markProtectedVariableAsLoaded(string $name)
     {
         if ($this->isProtectedVariable($name)) {
             $this->loadedProtectedVariables[$name] = true;
@@ -51,7 +51,7 @@ trait DBObjectProtected
     * @param  string  $name variable name
     * @return boolean
     */
-    public function isProtectedVariable($name)
+    public function isProtectedVariable(string $name): bool
     {
         return in_array($name, $this->protectedVariables);
     }
@@ -61,12 +61,12 @@ trait DBObjectProtected
      * @param  string  $name Variable name
      * @return boolean
      */
-    protected function isProtectedVariableLoaded($name)
+    protected function isProtectedVariableLoaded(string $name): bool
     {
         return isset($this->loadedProtectedVariables[$name]);
     }
 
-    protected function accessToProtectedVariable($name): bool
+    protected function accessToProtectedVariable(string $name): bool
     {
         return false;
     }

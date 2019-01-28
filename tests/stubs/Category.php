@@ -27,7 +27,7 @@ class Category extends \Suricate\DBObject
         ];
     }
 
-    protected function accessToProtectedVariable($name)
+    protected function accessToProtectedVariable(string $name): bool
     {
         switch ($name) {
             case 'prot_var':

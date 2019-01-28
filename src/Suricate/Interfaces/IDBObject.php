@@ -11,11 +11,11 @@ interface IDBObject
 
     public function propertyExists($property);
 
-    public function isProtectedVariable($variableName);
+    public function isProtectedVariable(string $variableName);
 
-    public function isDBVariable($variableName);
+    public function isDBVariable(string $variableName);
 
-    public function markProtectedVariableAsLoaded($variableName);
+    public function markProtectedVariableAsLoaded(string $variableName);
 
     public function load($uniqueId);
 
