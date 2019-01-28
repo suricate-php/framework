@@ -8,17 +8,24 @@ namespace Suricate;
  * @version     0.2.0
  * @package     Suricate
  *
- * @method static \Suricate\App      App($newInstance = false)      Get instance of App service
- * @method static \Suricate\Database Database($newInstance = false) Get instance of Database service
- * @method static \Suricate\Error    Error($newInstance = false)    Get instance of Error service
- * @method static \Suricate\I18n     I18n($newInstance = false)     Get instance of I18n service
- * @method static \Suricate\Logger   Logger($newInstance = false)   Get instance of Logger service
- * @method static \Suricate\Request  Request($newInstance = false)  Get instance of Request service
- * @method static \Suricate\Request  Response($newInstance = false) Get instance of Request/Response service 
- * @method static \Suricate\Session  Session($newInstance = false)  Get instance of Session service 
- * @method static \Suricate\SessionNative SessionNative($newInstance = false)  Get instance of Session service 
- * @method static \Suricate\SessionCookie SessionCookie($newInstance = false)  Get instance of Session service 
- * @method static \Suricate\SessionMemcache SessionMemcache($newInstance = false)  Get instance of Session service 
+ * @method static \Suricate\App             App($newInstance = false)             Get instance of App service
+ * @method static \Suricate\Cache           Cache($nezwInstance = false)          Get instance of Cache service
+ * @method static \Suricate\CacheMemcache   CacheMemcache($newInstance = false)   Get instance of CacheMemcache service
+ * @method static \Suricate\CacheMemcached  CacheMemcached($newInstance = false)  Get instance of CacheMemcached service
+ * @method static \Suricate\CacheApc        CacheApc($newInstance = false)        Get instance of CacheApc service
+ * @method static \Suricate\CacheFile       CacheFile($newInstance = false)       Get instance of CacheFile service
+ * @method static \Suricate\Curl            Curl($newInstance = false)            Get instance of Curl service
+ * @method static \Suricate\Database        Database($newInstance = false)        Get instance of Database service
+ * @method static \Suricate\Error           Error($newInstance = false)           Get instance of Error service
+ * @method static \Suricate\I18n            I18n($newInstance = false)            Get instance of I18n service
+ * @method static \Suricate\Logger          Logger($newInstance = false)          Get instance of Logger service
+ * @method static \Suricate\Request         Request($newInstance = false)         Get instance of Request service
+ * @method static \Suricate\Request         Response($newInstance = false)        Get instance of Request/Response service
+ * @method static \Suricate\Router          Router($newInstance = false)          Get instance of Router service
+ * @method static \Suricate\Session         Session($newInstance = false)         Get instance of Session service
+ * @method static \Suricate\SessionNative   SessionNative($newInstance = false)   Get instance of Session service
+ * @method static \Suricate\SessionCookie   SessionCookie($newInstance = false)   Get instance of Session service
+ * @method static \Suricate\SessionMemcache SessionMemcache($newInstance = false) Get instance of Session service
  */
 
 
@@ -37,20 +44,20 @@ class Suricate
     private static $servicesRepository;
 
     private $servicesList = [
-        'Logger'            => '\Suricate\Logger',
         'App'               => '\Suricate\App',
-        'I18n'              => '\Suricate\I18n',
-        'Error'             => '\Suricate\Error',
-        'Router'            => '\Suricate\Router',
-        'Request'           => '\Suricate\Request',
-        'Database'          => '\Suricate\Database',
         'Cache'             => '\Suricate\Cache',
         'CacheMemcache'     => '\Suricate\Cache\Memcache',
         'CacheMemcached'    => '\Suricate\Cache\Memcached',
         'CacheApc'          => '\Suricate\Cache\Apc',
         'CacheFile'         => '\Suricate\Cache\File',
         'Curl'              => '\Suricate\Curl',
+        'Database'          => '\Suricate\Database',
+        'Error'             => '\Suricate\Error',
+        'I18n'              => '\Suricate\I18n',
+        'Logger'            => '\Suricate\Logger',
+        'Request'           => '\Suricate\Request',
         'Response'          => '\Suricate\Request',
+        'Router'            => '\Suricate\Router',
         'Session'           => '\Suricate\Session',
         'SessionNative'     => '\Suricate\Session\Native',
         'SessionCookie'     => '\Suricate\Session\Cookie',
