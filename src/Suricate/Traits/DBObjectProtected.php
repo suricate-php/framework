@@ -66,7 +66,7 @@ trait DBObjectProtected
         return isset($this->loadedProtectedVariables[$name]);
     }
 
-    protected function accessToProtectedVariable($name)
+    protected function accessToProtectedVariable($name): bool
     {
         return false;
     }
