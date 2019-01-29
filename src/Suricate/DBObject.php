@@ -216,7 +216,7 @@ class DBObject implements Interfaces\IDBObject
      * @param  string  $name variable name
      * @return boolean
      */
-    public function isDBVariable($name)
+    public function isDBVariable(string $name)
     {
         return in_array($name, $this->dbVariables);
     }
