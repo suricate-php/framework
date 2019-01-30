@@ -90,7 +90,7 @@ class DBObject implements Interfaces\IDBObject
         throw new \InvalidArgumentException('Undefined property ' . $name);
     }
 
-        /**
+    /**
      * Magic setter
      *
      * Set a property to defined value
@@ -151,21 +151,41 @@ class DBObject implements Interfaces\IDBObject
         return false;
     }
 
+    /**
+     * Get table name
+     *
+     * @return string
+     */
     public function getTableName()
     {
         return $this->tableName;
     }
 
+    /**
+     * Get table name
+     *
+     * @return string
+     */
     public static function tableName()
     {
         return with(new static)->getTableName();
     }
 
+    /**
+     * Get Table Index
+     *
+     * @return string
+     */
     public function getTableIndex()
     {
         return $this->tableIndex;
     }
 
+    /**
+     * Get table index
+     *
+     * @return string
+     */
     public static function tableIndex()
     {
         return with(new static)->getTableIndex();
@@ -272,7 +292,12 @@ class DBObject implements Interfaces\IDBObject
         return $this->loadFromSql($query, $params);
     }
 
-    public function isLoaded()
+    /**
+     * Check if object is linked to entry in database
+     *
+     * @return boolean
+     */
+    public function isLoaded(): bool
     {
         return $this->loaded;
     }
@@ -299,7 +324,7 @@ class DBObject implements Interfaces\IDBObject
      * Load existing object by passing properties or instanciate if
      *
      * @param mixed $arg
-     * @return DBObject
+     * @return static
      */
     public static function loadOrInstanciate($arg)
     {
@@ -341,6 +366,7 @@ class DBObject implements Interfaces\IDBObject
     
     /**
      * @param string $sql
+     * @return static|bool
      */
     public function loadFromSql(string $sql, $sqlParams = [])
     {
@@ -363,7 +389,7 @@ class DBObject implements Interfaces\IDBObject
     /**
      * Construct an DBObject from an array
      * @param  array $data  associative array
-     * @return DBObject       Built DBObject
+     * @return static       Built DBObject
      */
     public static function instanciate(array $data = [])
     {
@@ -373,6 +399,12 @@ class DBObject implements Interfaces\IDBObject
         return $orm->hydrate($data);
     }
 
+    /**
+     * Hydrate object (set dbValues)
+     *
+     * @param array $data
+     * @return static
+     */
     public function hydrate(array $data = [])
     {
         foreach ($data as $key => $val) {
@@ -384,6 +416,12 @@ class DBObject implements Interfaces\IDBObject
         return $this;
     }
 
+    /**
+     * Create an object and save it to database
+     *
+     * @param array $data
+     * @return static
+     */
     public static function create(array $data = [])
     {
         $obj = static::instanciate($data);
