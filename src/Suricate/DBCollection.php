@@ -122,7 +122,7 @@ class DBCollection extends Collection
 
     /**
      * Load entire table into collection
-     * @return Collection Loaded collection
+     * @return DBCollection Loaded collection
      */
     public static function loadAll()
     {
@@ -143,7 +143,7 @@ class DBCollection extends Collection
      * Static wrapper for loadFromSql
      * @param  string     $sql       SQL Statement
      * @param  array      $sqlParams SQL Parameters
-     * @return Collection Loaded collection
+     * @return DBCollection Loaded collection
      */
     public static function buildFromSql($sql, $sqlParams = [])
     {
