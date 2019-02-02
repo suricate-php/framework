@@ -63,7 +63,7 @@ class PivotTable extends DBObject
         }
     
 
-        return new Collection($items);
+        return new DBCollection($items);
     }
 
     public function getSourceFieldForRelation($relationName)
