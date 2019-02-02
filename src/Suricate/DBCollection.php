@@ -39,6 +39,32 @@ class DBCollection extends Collection
     }
 
     /**
+     * __sleep magic method, permits an inherited DBObject class to be serialized
+     * @return Array of properties to serialize
+     */
+    public function __sleep()
+    {
+        $discardedProps = ['dbLink'];
+        $reflection = new \ReflectionClass($this);
+        $props = $reflection->getProperties();
+        $result = [];
+        foreach ($props as $currentProperty) {
+            $result[] = $currentProperty->name;
+        }
+
+        return array_diff($result, $discardedProps);
+    }
+
+    /**
+     * Wake up magic method
+     * restore dblink to initial value
+     */
+    public function __wakeup()
+    {
+        $this->dbLink = false;
+    }
+
+    /**
      * Set lazyload flag
      *
      * @param bool $lazyLoad
