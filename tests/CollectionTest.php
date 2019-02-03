@@ -29,13 +29,6 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(3, $collection->count());
     }
 
-    public function testGetIterator()
-    {
-        $arr = array(1, 2, 3);
-        $collection = new \Suricate\Collection($arr);
-        $this->assertEquals(new \ArrayIterator($arr), $collection->getIterator());
-    }
-
     public function testPaginate()
     {
         $arr = array(1, 2, 3, 4, 5);

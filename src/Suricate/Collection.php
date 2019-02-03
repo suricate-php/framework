@@ -1,13 +1,19 @@
 <?php declare(strict_types=1);
 namespace Suricate;
 
-class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interfaces\ICollection
+class Collection implements
+    \Iterator,
+    \Countable,
+    \ArrayAccess,
+    Interfaces\ICollection
 {
-    protected $items   = [];
+    protected $iteratorPosition = 0;
+
+    protected $items = [];
     public $pagination = [
-        'nbPages'   => 0,
-        'page'      => 1,
-        'nbItems'   => 0,
+        'nbPages' => 0,
+        'page' => 1,
+        'nbItems' => 0
     ];
 
     public function __construct($items = [])
@@ -17,11 +23,17 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
 
     public function paginate($nbItemPerPage, $currentPage = 1)
     {
-        $this->pagination['page']       = $currentPage;
-        $this->pagination['nbItems']    = count($this->items);
-        $this->pagination['nbPages']    = ceil($this->pagination['nbItems'] / $nbItemPerPage);
+        $this->pagination['page'] = $currentPage;
+        $this->pagination['nbItems'] = count($this->items);
+        $this->pagination['nbPages'] = ceil(
+            $this->pagination['nbItems'] / $nbItemPerPage
+        );
 
-        $this->items = array_slice($this->items, ($currentPage - 1) * $nbItemPerPage, $nbItemPerPage);
+        $this->items = array_slice(
+            $this->items,
+            ($currentPage - 1) * $nbItemPerPage,
+            $nbItemPerPage
+        );
 
         return $this;
     }
@@ -41,8 +53,8 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
             foreach ($args['data'] as $arg) {
                 $itemValues[] = dataGet($item, $arg);
             }
-            
-            $arrayKey = ($key !== null) ? dataGet($item, $key) : null;
+
+            $arrayKey = $key !== null ? dataGet($item, $key) : null;
             if (is_null($arrayKey)) {
                 $values[] = vsprintf($args['format'], $itemValues);
             } else {
@@ -90,16 +102,27 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
         return count($this->items);
     }
 
-    /**
-     * Implementation of IteratorAggregate Interface
-     *
-     * @return \ArrayIterator
-     */
-    public function getIterator(): \ArrayIterator
+    public function key()
     {
-        return new \ArrayIterator($this->items);
+        return $this->iteratorPosition;
     }
 
+    public function next()
+    {
+        ++$this->iteratorPosition;
+    }
+    public function current()
+    {
+        return $this->offsetGet($this->iteratorPosition);
+    }
+    public function rewind()
+    {
+        $this->iteratorPosition = 0;
+    }
+    public function valid()
+    {
+        return isset($this->items[$this->iteratorPosition]);
+    }
     /**
      * Implementation of ArrayAccess interface
      *
@@ -174,7 +197,7 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
         if (count($this->items)) {
             return end($this->items);
         }
-        
+
         return null;
     }
 
@@ -217,7 +240,7 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
         if (is_array($keys)) {
             return array_intersect_key($this->items, array_flip($keys));
         }
-        
+
         return $this->items[$keys];
     }
 
@@ -267,7 +290,7 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
                 if ($first == $second) {
                     return 0;
                 }
-                return ($first > $second) ? -1 : 1;
+                return $first > $second ? -1 : 1;
             };
         } else {
             $sortFunction = function ($a, $b) use ($field) {
@@ -276,10 +299,9 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
                 if ($first == $second) {
                     return 0;
                 }
-                return ($first < $second) ? -1 : 1;
+                return $first < $second ? -1 : 1;
             };
         }
-
 
         usort($this->items, $sortFunction);
 
@@ -330,7 +352,7 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
     {
         return array_shift($this->items);
     }
-    
+
     public function pop()
     {
         return array_pop($this->items);
@@ -348,7 +370,9 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
 
     public function slice($offset, $length = null, $preserveKeys = false)
     {
-        return new static(array_slice($this->items, $offset, $length, $preserveKeys));
+        return new static(
+            array_slice($this->items, $offset, $length, $preserveKeys)
+        );
     }
 
     public function take($limit = null)
@@ -362,12 +386,14 @@ class Collection implements \IteratorAggregate, \Countable, \ArrayAccess, Interf
 
     public function splice($offset, $length = null, $replacement = [])
     {
-        return new static(array_splice($this->items, $offset, $length, $replacement));
+        return new static(
+            array_splice($this->items, $offset, $length, $replacement)
+        );
     }
 
     public function chunk($size, $preserveKeys = false)
     {
-        $result = new static;
+        $result = new static();
         foreach (array_chunk($this->items, $size, $preserveKeys) as $chunk) {
             $result->push(new static($chunk));
         }
