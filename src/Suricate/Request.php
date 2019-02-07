@@ -6,21 +6,21 @@ namespace Suricate;
  */
 class Request
 {
-    const HTTP_METHOD_GET       = 'GET';
-    const HTTP_METHOD_POST      = 'POST';
-    const HTTP_METHOD_PUT       = 'PUT';
-    const HTTP_METHOD_DELETE    = 'DELETE';
-    const HTTP_METHOD_HEAD      = 'HEAD';
-    const HTTP_METHOD_OPTIONS   = 'OPTIONS';
+    const HTTP_METHOD_GET = 'GET';
+    const HTTP_METHOD_POST = 'POST';
+    const HTTP_METHOD_PUT = 'PUT';
+    const HTTP_METHOD_DELETE = 'DELETE';
+    const HTTP_METHOD_HEAD = 'HEAD';
+    const HTTP_METHOD_OPTIONS = 'OPTIONS';
 
     private $method = self::HTTP_METHOD_GET;
     private $methods = [
-        self::HTTP_METHOD_GET       => 'GET',
-        self::HTTP_METHOD_POST      => 'POST',
-        self::HTTP_METHOD_PUT       => 'PUT',
-        self::HTTP_METHOD_DELETE    => 'DELETE',
-        self::HTTP_METHOD_HEAD      => 'HEAD',
-        self::HTTP_METHOD_OPTIONS   => 'OPTIONS'
+        self::HTTP_METHOD_GET => 'GET',
+        self::HTTP_METHOD_POST => 'POST',
+        self::HTTP_METHOD_PUT => 'PUT',
+        self::HTTP_METHOD_DELETE => 'DELETE',
+        self::HTTP_METHOD_HEAD => 'HEAD',
+        self::HTTP_METHOD_OPTIONS => 'OPTIONS'
     ];
 
     private $httpCodeString = [
@@ -96,7 +96,7 @@ class Request
     ];
 
     private $httpCode;
-    private $headers    = [];
+    private $headers = [];
     private $requestUri = '';
     private $url;
     private $body;
@@ -105,7 +105,7 @@ class Request
 
     public function __construct()
     {
-        $this->headers  = [];
+        $this->headers = [];
         $this->httpCode = 200;
     }
 
@@ -114,8 +114,8 @@ class Request
         if (isset($_SERVER['REQUEST_URI'])) {
             $this->setRequestUri($_SERVER['REQUEST_URI']);
             $parseResult = parse_url($_SERVER['REQUEST_URI']);
-            $this->path     = dataGet($parseResult, 'path');
-            $this->query    = dataGet($parseResult, 'query');
+            $this->path = dataGet($parseResult, 'path');
+            $this->query = dataGet($parseResult, 'query');
         }
 
         if (isset($_SERVER['REQUEST_METHOD'])) {
@@ -129,7 +129,9 @@ class Request
     public function setMethod($method)
     {
         if (!isset($this->methods[$method])) {
-            throw new \InvalidArgumentException('Invalid HTTP Method ' . $method);
+            throw new \InvalidArgumentException(
+                'Invalid HTTP Method ' . $method
+            );
         }
 
         $this->method = $method;
@@ -191,15 +193,15 @@ class Request
         if (array_key_exists($variable, $_POST)) {
             return $_POST[$variable];
         }
-        
+
         return $defaultValue;
     }
 
     public static function hasParam($variable)
     {
-        return array_key_exists($variable, $_GET) || array_key_exists($variable, $_POST);
+        return array_key_exists($variable, $_GET) ||
+            array_key_exists($variable, $_POST);
     }
-
 
     /**
      * Set request headers
@@ -238,9 +240,10 @@ class Request
         return $this->headers;
     }
 
-
-    public function setContentType(string $contentType, $encoding = null): Request
-    {
+    public function setContentType(
+        string $contentType,
+        $encoding = null
+    ): Request {
         if ($encoding !== null) {
             $contentType .= '; charset=' . $encoding;
         }
@@ -260,7 +263,6 @@ class Request
     {
         return $this->body;
     }
-
 
     public function write()
     {
@@ -283,7 +285,6 @@ class Request
          TODO HANDLE HTTP RESPONSE CODE
          */
         if ($this->httpCode !== null) {
-
         }
 
         // Send body
@@ -306,10 +307,10 @@ class Request
         return $this->httpCode;
     }
 
-    public function flash($type, $data)
+    public function flash(string $type, string $data)
     {
         Flash::writeMessage($type, $data);
-        
+
         return $this;
     }
 
@@ -331,30 +332,22 @@ class Request
 
     public function redirectWithSuccess($url, $message)
     {
-        $this
-            ->flash('success', $message)
-            ->redirect($url);
+        $this->flash('success', $message)->redirect($url);
     }
 
     public function redirectWithInfo($url, $message)
     {
-        $this
-            ->flash('info', $message)
-            ->redirect($url);
+        $this->flash('info', $message)->redirect($url);
     }
 
     public function redirectWithError($url, $message)
     {
-        $this
-            ->flash('error', $message)
-            ->redirect($url);
+        $this->flash('error', $message)->redirect($url);
     }
 
     public function redirectWithData($url, $key, $value)
     {
-        $this
-            ->flashData($key, $value)
-            ->redirect($url);
+        $this->flashData($key, $value)->redirect($url);
     }
 
     /**
@@ -364,7 +357,7 @@ class Request
      */
     public function isOK(): bool
     {
-        return ( $this->httpCode == 200 );
+        return $this->httpCode == 200;
     }
 
     /**
@@ -374,7 +367,7 @@ class Request
      */
     public function isRedirect(): bool
     {
-        return ( $this->httpCode >= 300 && $this->httpCode < 400 );
+        return $this->httpCode >= 300 && $this->httpCode < 400;
     }
 
     /**
@@ -384,7 +377,7 @@ class Request
      */
     public function isClientError(): bool
     {
-        return ( $this->httpCode >= 400 && $this->httpCode < 500 );
+        return $this->httpCode >= 400 && $this->httpCode < 500;
     }
 
     /**
@@ -394,13 +387,15 @@ class Request
      */
     public function isServerError(): bool
     {
-        return ( $this->httpCode >= 500 && $this->httpCode < 600 );
+        return $this->httpCode >= 500 && $this->httpCode < 600;
     }
 
     private function getStringForHttpCode()
     {
         if (isset($this->httpCodeString[$this->httpCode])) {
-            return $this->httpCode . ' ' . $this->httpCodeString[$this->httpCode];
+            return $this->httpCode .
+                ' ' .
+                $this->httpCodeString[$this->httpCode];
         }
     }
 }
