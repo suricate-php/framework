@@ -307,7 +307,13 @@ class Request
         return $this->httpCode;
     }
 
-    public function flash(string $type, string $data)
+    /**
+     * Flash message
+     *
+     * @param string $type message type
+     * @param array|string $data data to be flashed
+     */
+    public function flash(string $type, $data)
     {
         Flash::writeMessage($type, $data);
 

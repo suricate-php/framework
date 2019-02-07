@@ -127,10 +127,10 @@ class Flash
      * Write message to flash storage
      *
      * @param string $type
-     * @param string $message
+     * @param string|array $message
      * @return void
      */
-    public static function writeMessage(string $type, string $message)
+    public static function writeMessage(string $type, $message)
     {
         self::write($type, $message);
     }
