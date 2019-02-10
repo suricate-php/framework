@@ -24,5 +24,6 @@
     "phpunit/phpunit": "^7",
     "phpstan/phpstan": "^0.11.0@dev",
     "phpmd/phpmd": "dev-master"
-  }
+  },
+  "license": "MIT"
 }
