@@ -297,7 +297,7 @@ if (!function_exists('niceTime')) {
             return 'il y a environ une minute.';
         } elseif ($delta < (45 * 60)) {
             return 'il y a ' . floor($delta / 60) . ' minutes.';
-        } elseif ($delta < (90 * 60)) {
+        } elseif ($delta < (120 * 60)) {
             return 'il y a environ une heure.';
         } elseif ($delta < (24 * 60 * 60)) {
             return 'il y a environ ' . floor($delta / 3600) . ' heures.';
