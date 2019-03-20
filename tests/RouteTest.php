@@ -1,5 +1,5 @@
 <?php
-class RouteTest extends PHPUnit_Framework_TestCase
+class RouteTest extends \PHPUnit\Framework\TestCase
 {
     public function testConstruct()
     {
@@ -8,7 +8,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $path   = '/test-uri';
         $request = new Suricate\Request();
         $routeTarget = 'myController::myMethod';
-        $parametersDefinitions = array();
+        $parametersDefinitions = [];
         $middleware = null;
 
         $route = new Suricate\Route($name, $method, $path, $request, $routeTarget, $parametersDefinitions, $middleware);

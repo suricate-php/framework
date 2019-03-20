@@ -1,14 +1,16 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate;
 
 use Exception;
 
+/**
+ * @property string $type Session type
+ */
 class Session extends Service implements Interfaces\ISession
 {
-    protected $parametersList = array('type');
+    protected $parametersList = ['type'];
     private static $container;
 
-    
     protected function init()
     {
         if (self::$container === null) {
@@ -26,14 +28,13 @@ class Session extends Service implements Interfaces\ISession
                     break;
                 default:
                     throw new Exception("Unknown session type " . $this->type);
-                    break;
             }
         }
     }
     
     /**
      * Get instance of session driver used
-     * @return Sessiondriver instance
+     * @return Session driver instance
      */
     public function getInstance()
     {

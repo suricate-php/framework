@@ -1,45 +1,34 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate;
 
 class Image
 {
+    use Traits\ImageFilter;
+
     public $source;
     private $destination;
 
     private $width;
     private $height;
-    private $filters = array(
-        'IMG_FILTER_NEGATE',
-        'IMG_FILTER_GRAYSCALE',
-        'IMG_FILTER_BRIGHTNESS',
-        'IMG_FILTER_CONTRAST',
-        'IMG_FILTER_COLORIZE',
-        'IMG_FILTER_EDGEDETECT',
-        'IMG_FILTER_EMBOSS',
-        'IMG_FILTER_GAUSSIAN_BLUR',
-        'IMG_FILTER_SELECTIVE_BLUR',
-        'IMG_FILTER_MEAN_REMOVAL',
-        'IMG_FILTER_SMOOTH',
-        'IMG_FILTER_PIXELATE'
-        );
-
-    public function __construct()
-    {
-    }
+    
 
     public function load($filename)
     {
-        if (is_file($filename)) {
-            $this->source = imagecreatefromstring(file_get_contents($filename));
-            if ($this->source !== false) {
+        if (is_file($filename) && $imgString = file_get_contents($filename)) {
+            $imgString = imagecreatefromstring($imgString);
+            if ($imgString !== false) {
+                $this->source = $imgString;
                 $this->destination = $this->source;
                 $this->width = imagesx($this->source);
                 $this->height = imagesy($this->source);
+
+                return $this;
             }
-        } else {
-            throw new \InvalidArgumentException('Cannot load ' . $filename);
+
+            throw new \InvalidArgumentException('Cannot load ' . $filename . ', not an image');
         }
-        return $this;
+        
+        throw new \InvalidArgumentException('Cannot load ' . $filename . ', file unreadable');
     }
 
     public function getWidth()
@@ -75,12 +64,15 @@ class Image
     {
         if ($this->source) {
             if ($width == null) {
-                $width = round(($height / $this->height) * $this->width);
+                $width = intval(round(($height / $this->height) * $this->width, 0));
             } elseif ($height == null) {
-                $height = round(($width / $this->width) * $this->height);
+                $height = intval(round(($width / $this->width) * $this->height, 0));
             }
 
             $this->destination = imagecreatetruecolor($width, $height);
+            if ($this->destination === false) {
+                throw new \RuntimeException("Can't create destination image");
+            }
             imagecopyresampled(
                 $this->destination,
                 $this->source,
@@ -107,10 +99,13 @@ class Image
         $cropWidthHalf  = round($width / 2);
         $cropHeightHalf = round($height / 2);
 
-        $x1 = max(0, $centerX - $cropWidthHalf);
-        $y1 = max(0, $centerY - $cropHeightHalf);
+        $x1 = intval(max(0, $centerX - $cropWidthHalf));
+        $y1 = intval(max(0, $centerY - $cropHeightHalf));
         
         $this->destination = imagecreatetruecolor($width, $height);
+        if ($this->destination === false) {
+            throw new \RuntimeException("Can't create destination image");
+        }
         imagecopy($this->destination, $this->source, 0, 0, $x1, $y1, $width, $height);
 
         return $this->chain();
@@ -119,6 +114,9 @@ class Image
     public function resizeCanvas($width, $height, $position = null, $color = [0, 0, 0])
     {
         $this->destination = imagecreatetruecolor($width, $height);
+        if ($this->destination === false) {
+            throw new \RuntimeException("Can't create destination image");
+        }
         $colorRes = imagecolorallocate($this->destination, $color[0], $color[1], $color[2]);
         $imageObj = new Image();
         $imageObj->width = $width;
@@ -136,67 +134,7 @@ class Image
         return $this->chain();
     }
 
-    public function asNegative()
-    {
-        return $this->filter('IMG_FILTER_NEGATE');
-    }
-
-    public function asGrayscale()
-    {
-        return $this->filter('IMG_FILTER_GRAYSCALE');
-    }
-
-    public function setBrightness($level)
-    {
-        return $this->filter('IMG_FILTER_BRIGHTNESS', $level);
-    }
-
-    public function setContrast($level)
-    {
-        return $this->filter('IMG_FILTER_CONTRAST', $level);
-    }
-
-    public function colorize($r, $g, $b, $alpha)
-    {
-        $this->filter('IMG_FILTER_COLORIZE', $r, $g, $b, $alpha);
-
-        return $this;
-    }
-
-    public function detectEdge()
-    {
-        return $this->filter('IMG_FILTER_EDGEDETECT');
-    }
-
-    public function emboss()
-    {
-        return $this->filter('IMG_FILTER_EMBOSS');
-    }
-
-    public function blur()
-    {
-        return $this->filter('IMG_FILTER_GAUSSIAN_BLUR');
-    }
-
-    public function selectiveBlur()
-    {
-        return $this->filter('IMG_FILTER_SELECTIVE_BLUR');
-    }
-
-    public function meanRemoval()
-    {
-        return $this->filter('IMG_FILTER_MEAN_REMOVAL');
-    }
-
-    public function smooth($level)
-    {
-        return $this->filter('IMG_FILTER_SMOOTH', $level);
-    }
-
-    public function pixelate($size)
-    {
-        return $this->filter('IMG_FILTER_PIXELATE', $size);
-    }
+    
 
     public function rotate()
     {
@@ -226,7 +164,9 @@ class Image
         // Handle transparent image
         // creating a cut resource
         $cut = imagecreatetruecolor($source->getWidth(), $source->getHeight());
-
+        if ($cut === false) {
+            throw new \RuntimeException("Can't create destination image");
+        }
         // copying relevant section from background to the cut resource
         imagecopy($cut, $this->destination, 0, 0, $x, $y, $source->getWidth(), $source->getHeight());
         
@@ -280,25 +220,7 @@ class Image
         return $this;
     }
 
-    protected function filter()
-    {
-        $args = func_get_args();
-        $filterType = array_shift($args);
-        
-        if (in_array($filterType, $this->filters)) {
-            $params = array(
-                $this->source,
-                constant($filterType)
-            );
-            $params = array_merge($params, $args);
-
-            call_user_func_array('imagefilter', $params);
-            
-            return $this;
-        } else {
-            throw new \InvalidArgumentException('Unknown filter type ' . $filterType);
-        }
-    }
+    
 
     public function save($filename, $outputType = null, $quality = 70)
     {
@@ -346,7 +268,7 @@ class Image
                 $y = floor(($this->height / 2) - ($offsetHeight / 2));
                 break;
             case 'right':
-                $x = $x = $this->width - $offsetWidth;
+                $x = $this->width - $offsetWidth;
                 $y = floor(($this->height / 2) - ($offsetHeight / 2));
                 break;
             case 'bottom-left':
@@ -358,7 +280,7 @@ class Image
                 $y = $this->height - $offsetHeight;
                 break;
             case 'bottom-right':
-                $x = $x = $this->width - $offsetWidth;
+                $x = $this->width - $offsetWidth;
                 $y = $this->height - $offsetHeight;
                 break;
             

@@ -1,23 +1,23 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate\Middleware;
 
 use Suricate\Suricate;
 
-class HttpBasicAuth implements \Suricate\Interfaces\IMiddleware
+class HttpBasicAuth extends \Suricate\Middleware
 {
     const AUTHTYPE_ARRAY    = 'array';
     const AUTHTYPE_DB       = 'database';
-    protected $realm;
+    protected $options;
 
     public function __construct($options = null)
     {
-        $this->options = array(
-            'users' => array(),
+        $this->options = [
+            'users' => [],
             'type'  => self::AUTHTYPE_ARRAY,
             'path'  => '/',
             'realm' => 'restricted area',
-            'db'    => array(),
-            );
+            'db'    => [],
+        ];
 
         if ($options !== null) {
             $this->options = array_merge($this->options, (array)$options);
@@ -32,7 +32,14 @@ class HttpBasicAuth implements \Suricate\Interfaces\IMiddleware
         return preg_match($regex, $request->getRequestUri());
     }
 
-    private function authenticate($user, $password)
+    /**
+     * Authenticate against backend dispatcher
+     *
+     * @param string $user     username
+     * @param string $password password
+     * @return bool
+     */
+    private function authenticate(string $user, string $password): bool
     {
         switch ($this->options['type']) {
             case self::AUTHTYPE_ARRAY:
@@ -40,9 +47,18 @@ class HttpBasicAuth implements \Suricate\Interfaces\IMiddleware
             case self::AUTHTYPE_DB:
                 return $this->authenticateAgainstDatabase($user, $password);
         }
+
+        return false;
     }
 
-    private function authenticateAgainstArray($user, $password)
+    /**
+     * Authenticate against array of usernames / passwords
+     *
+     * @param string $user     username
+     * @param string $password password
+     * @return bool
+     */
+    private function authenticateAgainstArray(string $user, string $password): bool
     {
         if (isset($this->options['users'][$user]) && $this->options['users'][$user] == $password) {
             return true;
@@ -51,9 +67,9 @@ class HttpBasicAuth implements \Suricate\Interfaces\IMiddleware
         return false;
     }
 
-    private function authenticateAgainstDatabase($user, $password)
+    private function authenticateAgainstDatabase(string $user, string $password): bool
     {
-
+        return false;
     }
 
 
@@ -67,9 +83,9 @@ class HttpBasicAuth implements \Suricate\Interfaces\IMiddleware
                 app()->abort(
                     '401',
                     'not aut',
-                    array(
+                    [
                         "WWW-Authenticate" => sprintf('Basic realm="%s"', $this->options["realm"])
-                    )
+                    ]
                 );
             }
         }

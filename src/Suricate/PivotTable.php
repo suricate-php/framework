@@ -1,16 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate;
 
 class PivotTable extends DBObject
 {
-    protected $references = array();
+    protected $references = [];
 
     public function __construct()
     {
+        parent::__construct();
+
         foreach ($this->references as $referenceName => $referenceData) {
-            $this->relations[$referenceName] = array(
+            $this->relations[$referenceName] = [
                 'type' => self::RELATION_ONE_ONE, 'source' => $referenceData['key'], 'target' => $referenceData['type']
-            );
+            ];
         }
     }
 
@@ -19,36 +21,38 @@ class PivotTable extends DBObject
         $pivot = new static;
         $pivot->connectDB();
 
-        $items = array();
+        $items = [];
         if ($target !== null) {
-            $targetType     = $pivot->getTargetForRelation($target);
+            $className = $pivot->getTargetForRelation($target);
+            $targetClass    = $className;
             $sourceField    = $pivot->getSourceFieldForRelation($target);
             
-            $query  = "SELECT t.* FROM " . $targetType::TABLE_NAME . " t";
-            $query .= " LEFT JOIN " . static::TABLE_NAME . " p";
-            $query .= "     ON p.`" . $sourceField . "`=t." . $targetType::TABLE_INDEX;
+            $query  = "SELECT t.* FROM " . $className::tableName() . " t";
+            $query .= " LEFT JOIN " . $pivot->getTableName() . " p";
+            $query .= "     ON p.`" . $sourceField . "`=t." . $className::tableIndex();
             $query .= " WHERE";
             $query .= "     `" . $pivot->getSourceFieldForRelation($relation) . "` =  :id";
-            $query .= " GROUP BY t." . $targetType::TABLE_INDEX;
-            
-            $itemToAddType  = $targetType;
+            $query .= " GROUP BY t." . $targetClass::tableIndex();
         } else {
             $query  = "SELECT *";
-            $query .= " FROM `" . static::TABLE_NAME ."`";
+            $query .= " FROM `" . $pivot->getTableName() ."`";
             $query .= " WHERE";
             $query .= "     `" . $pivot->getSourceFieldForRelation($relation) . "` =  :id";
 
-            $itemToAddType = get_called_class();
+            $targetClass = $pivot;
         }
-        $params         = array();
-        $params['id']   = $parentId;
 
-        $results = $pivot->dbLink->query($query, $params)->fetchAll(\PDO::FETCH_ASSOC);
+        $params = ['id' => $parentId];
+
+        $results = $pivot
+            ->dbLink
+            ->query($query, $params)
+            ->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($results as $result) {
             $add = true;
 
-            $itemToAdd = $itemToAddType::instanciate($result);
+            $itemToAdd = $targetClass::instanciate($result);
             
             if ($validate !== null && is_callable($validate)) {
                 $add = $validate($itemToAdd);
@@ -59,10 +63,10 @@ class PivotTable extends DBObject
         }
     
 
-        return new Collection($items);
+        return new DBCollection($items);
     }
 
-    private function getSourceFieldForRelation($relationName)
+    public function getSourceFieldForRelation($relationName)
     {
         if (isset($this->relations[$relationName])) {
             return $this->relations[$relationName]['source'];
@@ -71,7 +75,7 @@ class PivotTable extends DBObject
         throw new \InvalidArgumentException('Cannot get field for relation "' . $relationName . '" : Unknown relation');
     }
 
-    private function getTargetForRelation($relationName)
+    public function getTargetForRelation($relationName)
     {
         if (isset($this->relations[$relationName])) {
             return $this->relations[$relationName]['target'];

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate\Cache;
 
 use Suricate;
@@ -10,24 +10,28 @@ use Suricate;
  * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
  *
  * @property string $host           Memcache host (default: localhost)
- * @property string $port           Memcache port (default: 11211)
+ * @property int    $port           Memcache port (default: 11211)
  * @property int    $defaultExpiry  Key default expiry
  */
 
 class Memcached extends Suricate\Cache
 {
-    protected $parametersList = array(
-                                    'host',
-                                    'port',
-                                    'defaultExpiry',
-                                );
+    protected $parametersList = [
+        'host',
+        'port',
+        'defaultExpiry',
+    ];
+
     private $handler;
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->handler          = false;
         $this->host             = 'localhost';
-        $this->port             = '11211';
+        $this->port             = 11211;
+        $this->defaultExpiry    = 3600;
     }
     
     public function getHost()

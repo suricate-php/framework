@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace Suricate;
 
 /**
@@ -13,23 +14,29 @@ namespace Suricate;
 
 class Database extends Service
 {
+    use Traits\DatabaseMySQL;
+    use Traits\DatabaseSQLite;
+
     protected $parametersList = [
         'configs'
     ];
 
+    /** @var string current configuration name */
     private $config;
     private $handler;
     private $statement;
 
     public function __construct()
     {
-        $this->configs = array();
+        parent::__construct();
+
+        $this->configs = [];
         $this->handler = false;
     }
 
-    public function configure($parameters = array())
+    public function configure($parameters = [])
     {
-        $dbConfs = array();
+        $dbConfs = [];
         foreach ($parameters as $name => $value) {
             if (is_array($value)) {
                 $dbConfs[$name] = $value;
@@ -37,10 +44,15 @@ class Database extends Service
                 $dbConfs['default'][$name] = $value;
             }
         }
-        $parameters = array('configs' => $dbConfs);
+        $parameters = ['configs' => $dbConfs];
         parent::configure($parameters);
     }
 
+    /**
+     * Set Configurations list
+     *
+     * @return Database
+     */
     public function setConfigs($configs)
     {
         $this->configs = $configs;
@@ -48,18 +60,34 @@ class Database extends Service
         return $this;
     }
 
-    public function getConfigs()
+    /**
+     * Get configurations list
+     *
+     * @return array
+     */
+    public function getConfigs(): array
     {
         return $this->configs;
     }
 
-    public function setConfig($config)
+    /**
+     * Set current configuration used
+     *
+     * @param string $config configuration name
+     * @return Database
+     */
+    public function setConfig(string $config): Database
     {
         $this->config = $config;
 
         return $this;
     }
 
+    /**
+     * Get current configuration name used
+     *
+     * @return string|null
+     */
     public function getConfig()
     {
         return $this->config;
@@ -78,7 +106,7 @@ class Database extends Service
             $params = array_shift($confs);
         }
 
-        $pdoAttributes = array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION);
+        $pdoAttributes = [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION];
         switch ($params['type']) {
             case 'mysql':
                 $this->configurePDOMySQL($params, $pdoDsn, $pdoUsername, $pdoPassword, $pdoAttributes);
@@ -101,12 +129,13 @@ class Database extends Service
     }
 
     /**
-     * Execute a query against database. Create a connection if not already alvailable
+     * Execute a query against database.
+     * Create a connection if not already alvailable
      * @param  string $sql        Query
      * @param  array  $parameters Parameters used in query
      * @return Database
      */
-    public function query($sql, $parameters = array())
+    public function query($sql, $parameters = [])
     {
         $this->connect();
 
@@ -136,72 +165,38 @@ class Database extends Service
         return $this->statement->fetch(\PDO::FETCH_OBJ);
     }
 
-    public function lastInsertId()
+    /**
+     * Return the last inserted id
+     *
+     * @return string
+     */
+    public function lastInsertId(): string
     {
         return $this->handler->lastInsertId();
     }
 
     public function beginTransaction()
     {
+        return $this->handler->beginTransaction();
     }
 
-    public function commit()
+    public function commit(): bool
     {
+        return $this->handler->commit();
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
+        return $this->handler->rollback();
     }
 
-    public function inTransaction()
+    public function inTransaction(): bool
     {
+        return $this->handler->inTransaction();
     }
 
     public function getColumnCount()
     {
         return $this->statement->columnCount();
-    }
-
-    private function configurePDOMySQL($params, &$pdoDsn, &$pdoUsername, &$pdoPassword, &$pdoAttributes)
-    {
-        $defaultParams = array(
-            'hostname' => null,
-            'database' => null,
-            'username' => null,
-            'password' => null,
-            'encoding' => null
-        );
-
-        $params = array_merge($defaultParams, $params);
-
-        $pdoDsn         = 'mysql:host=' . $params['hostname'] . ';dbname=' . $params['database'];
-        $pdoUsername    = $params['username'];
-        $pdoPassword    = $params['password'];
-        if ($params['encoding'] != null) {
-            $pdoAttributes[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES " . $params['encoding'];
-        }
-    }
-
-    private function configurePDOSQLite($params, &$pdoDsn, &$pdoUsername, &$pdoPassword)
-    {
-        $defaultParams = array(
-            'username'  => null,
-            'password'  => null,
-            'memory'    => null,
-            'file'      => null,
-        );
-
-        $params = array_merge($defaultParams, $params);
-        
-        $pdoDsn         = 'sqlite';
-
-        if ($params['memory']) {
-            $pdoDsn .= '::memory:';
-        } else {
-            $pdoDsn .= ':' . $params['file'];
-        }
-        
-        $pdoUsername    = $params['username'];
-        $pdoPassword    = $params['password'];
     }
 }

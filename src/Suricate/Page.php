@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate;
 
 class Page
@@ -14,24 +14,41 @@ class Page
 
     public function __construct()
     {
-
     }
 
-    public function setLanguage($language)
+    /**
+     * Set language passed to html tag
+     *
+     * @param string $language language to set
+     * @return Page
+     */
+    public function setLanguage(string $language): Page
     {
         $this->language = $language;
 
         return $this;
     }
 
-    public function setEncoding($encoding)
+    /**
+     * Set encoding passed to html and rss tags
+     *
+     * @param string $encoding Encoding to set
+     * @return Page
+     */
+    public function setEncoding(string $encoding): Page
     {
         $this->encoding = $encoding;
 
         return $this;
     }
 
-    public function setTitle($title)
+    /**
+     * Set title of the page
+     *
+     * @param string $title Title of the page
+     * @return Page
+     */
+    public function setTitle(string $title): Page
     {
         $this->title = $title;
 
@@ -44,11 +61,12 @@ class Page
     
     /**
      * Add a stylesheet
-     * @param string $id  Unique stylesheet identifier
-     * @param string $url Stylesheet URL
-     * @param string $media Stylesheet media (default: all)
+     * @param string $identifier Unique stylesheet identifier
+     * @param string $url        Stylesheet URL
+     * @param string $media      Stylesheet media (default: all)
+     * @return Page
      */
-    public function addStylesheet($identifier, $url, $media = 'all')
+    public function addStylesheet(string $identifier, string  $url, string $media = 'all'): Page
     {
         $this->stylesheets[$identifier] = [
             'url' => $url,
@@ -92,7 +110,7 @@ class Page
      */
     public function addRss($id, $url, $title)
     {
-        $this->rss[$id] = array('url' => $url, 'title' => $title);
+        $this->rss[$id] = ['url' => $url, 'title' => $title];
 
         return $this;
     }
@@ -137,19 +155,19 @@ class Page
     //
     public function addMeta($name, $content)
     {
-        $this->metas[$name] = array('content' => $content, 'type' => 'name');
+        $this->metas[$name] = ['content' => $content, 'type' => 'name'];
 
         return $this;
     }
 
     public function addMetaProperty($name, $content)
     {
-        $this->metas[$name] = array('content' => $content, 'type' => 'property');
+        $this->metas[$name] = ['content' => $content, 'type' => 'property'];
     }
 
     public function addMetaLink($name, $type, $href)
     {
-        $this->metas[$name] = array('href' => $href, 'type' => 'rel', 'relType' => $type);
+        $this->metas[$name] = ['href' => $href, 'type' => 'rel', 'relType' => $type];
     }
 
     protected function renderMetas()
@@ -173,18 +191,18 @@ class Page
         $htmlClass = count($this->htmlClass) ? ' class="' . implode(' ', array_keys($this->htmlClass)) .'"' : '';
         $output  = '<!DOCTYPE html>' . "\n";
         $output .= '<html lang="' . substr($this->language, 0, 2) . '"' . $htmlClass . '>' . "\n";
-        $output .= '    <head>' . "\n";
-        $output .= '        <title>' . $this->title . '</title>' . "\n";
-        $output .= '        <meta http-equiv="Content-Type" content="text/html; charset=' . $this->encoding . '" />'."\n";
-        $output .=          $this->renderMetas();
-        $output .=          $this->renderStylesheets();
-        $output .=          $this->renderScripts();
-        $output .=          $this->renderRss();
-        $output .= '    </head>' . "\n";
-        $output .= '    <body>' . "\n";
+        $output .= '<head>' . "\n";
+        $output .= '<title>' . htmlentities((string) $this->title, ENT_COMPAT, $this->encoding) . '</title>' . "\n";
+        $output .= '<meta http-equiv="Content-Type" content="text/html; charset=' . $this->encoding . '" />'."\n";
+        $output .=  $this->renderMetas();
+        $output .=  $this->renderStylesheets();
+        $output .=  $this->renderScripts();
+        $output .=  $this->renderRss();
+        $output .= '</head>' . "\n";
+        $output .= '<body>' . "\n";
         $output .= $content;
-        $output .= '    </body>'."\n";
-        $output .= '</html>' . "\n";
+        $output .= '</body>'."\n";
+        $output .= '</html>';
 
         return $output;
     }

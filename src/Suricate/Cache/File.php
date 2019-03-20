@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate\Cache;
 
 use Suricate;
 
 /**
- * Memcache extension for Suricate
+ * File cache extension for Suricate
  *
  * @package Suricate
  * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
@@ -23,6 +23,8 @@ class File extends Suricate\Cache
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->handler          = false;
         $this->path             = app_path() . '/storage/app/';
         $this->defaultExpiry    = 3600;
@@ -52,11 +54,17 @@ class File extends Suricate\Cache
             $expiry = $this->defaultExpiry;
         }
         $fp = fopen($this->path . $variable, 'w');
+        if ($fp === false) {
+            throw new \Exception("Cannot open cache file " . $this->path . $variable);
+        }
         fputs($fp, $value);
         fclose($fp);
         if ($expiry !== null) {
             $fp = fopen($this->path . $variable .'.expiry', 'w');
-            fputs($fp, time() + $expiry);
+            if ($fp === false) {
+                throw new \Exception("Cannot open cache file " . $this->path . $variable .'.expiry');
+            }
+            fputs($fp, (string) (time() + $expiry));
             fclose($fp);
         }
     }
@@ -66,7 +74,7 @@ class File extends Suricate\Cache
         if (is_readable($this->path . $variable)) {
             if (is_readable($this->path . $variable . '.expiry')) {
                 $expiry = file_get_contents($this->path . $variable . '.expiry');
-                $hasExpired = (time() - $expiry) > 0 ? 1 : -1;
+                $hasExpired = (time() - (int) $expiry) > 0 ? 1 : -1;
             } else {
                 $hasExpired = 0;
             }

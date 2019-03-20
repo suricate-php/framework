@@ -1,18 +1,33 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate;
 
 /**
  * Validator
  * Inspired from Kieron Wilson PHP Validator
  *
+ * @method Validator true(string $errorMessage)
+ * @method Validator false(string $errorMessage)
+ * @method Validator equalTo(mixed $toTest, string $errorMessage)
+ * @method Validator identicalTo(mixed $toTest, string $errorMessage)
+ * @method Validator lessThan(mixed $toTest, string $errorMessage)
+ * @method Validator lessThanOrEqual(mixed $toTest, string $errorMessage)
+ * @method Validator greaterThan(mixed $toTest, string $errorMessage)
+ * @method Validator greaterThanOrEqual(mixed $toTest, string $errorMessage)
+ * @method Validator blank(string $errorMessage)
+ * @method Validator null(string $errorMessage)
+ * @method Validator type(string $testType, string $errorMessage)
+ * &method Validator email(string $errorMessage)
+ * &method Validator url(string $errorMessage)
+ * &method Validator ip(string $errorMessage)
+ * &method Validator regexp(string $errorMessage)
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
  * @copyright   Mathieu LESNIAK
  * @package     Suricate
  */
 class Validator
 {
-    private $errors = array();
-    private $checks = array();
+    private $errors = [];
+    private $checks = [];
     private $datas;
     private $value;
     private $index;
@@ -160,42 +175,42 @@ class Validator
         if ($index === null) {
             $this->value = $this->datas;
             $this->index = null;
-        } else {
-            if (is_object($this->datas) && isset($this->datas->$index)) {
-                $this->value = $this->datas->$index;
-                $this->index = $index;
-            } elseif (array_key_exists($index, $this->datas)) {
-                $this->value = $this->datas[$index];
-                $this->index = $index;
-            } else {
-                throw new \InvalidArgumentException('Index / Property "' . $index . '" does not exists');
-            }
+            return $this;
         }
 
-        return $this;
+        if (is_object($this->datas) && isset($this->datas->$index)) {
+            $this->value = $this->datas->$index;
+            $this->index = $index;
+
+            return $this;
+        } 
+        if (array_key_exists($index, $this->datas)) {
+            $this->value = $this->datas[$index];
+            $this->index = $index;
+
+            return $this;
+        }
+        
+        throw new \InvalidArgumentException('Index / Property "' . $index . '" does not exists');
     }
 
     public function callValidate()
     {
-        
         $args = func_get_args();
         if (count($args) < 1) {
             throw new \InvalidArgumentException('bad number of arguments');
-        } else {
-            $method = array_shift($args);
-            // Object method
-            if (is_array($method) || is_string($method)) {
-                $this->index = null;
-                $this->value = call_user_func_array($method, $args);
-            } elseif (is_object($method) && ($method instanceof \Closure)) {
-                $this->index = null;
-                $this->value = call_user_func_array($method, $args);
-            } else {
-                throw new \InvalidArgumentException('Bad method');
-            }
+        }
+        
+        $method = array_shift($args);
+        if (is_callable($method)) {
+            $this->index = null;
+            $this->value = call_user_func_array($method, $args);
+
+            return $this;
         }
 
-        return $this;
+        throw new \InvalidArgumentException('Bad method');
+
     }
 
     public function __call($method, $parameters)
@@ -249,7 +264,7 @@ class Validator
         if ($index === null) {
             return $this->errors;
         } else {
-            return isset($this->errors[$index]) ? $this->errors[$index] : array();
+            return isset($this->errors[$index]) ? $this->errors[$index] : [];
         }
     }
 

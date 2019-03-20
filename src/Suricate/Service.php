@@ -1,12 +1,12 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate;
 
 use InvalidArgumentException;
 
 class Service implements Interfaces\IService
 {
-    protected $parametersList   = array();
-    protected $parametersValues = array();
+    protected $parametersList   = [];
+    protected $parametersValues = [];
 
     public function __construct()
     {
@@ -18,12 +18,12 @@ class Service implements Interfaces\IService
         if (in_array($variable, $this->parametersList)) {
             if (isset($this->parametersValues[$variable])) {
                 return $this->parametersValues[$variable];
-            } else {
-                return null;
             }
-        } else {
-            throw new InvalidArgumentException("Unknown configuration property " . get_called_class() . '->' .$variable);
+
+            return null;
         }
+
+        throw new InvalidArgumentException("Unknown configuration property " . get_called_class() . '->' .$variable);
     }
 
     public function __set($variable, $value)
@@ -32,19 +32,15 @@ class Service implements Interfaces\IService
             $this->parametersValues[$variable] = $value;
 
             return $this;
-        } else {
-            throw new InvalidArgumentException("Unknown configuration property " . get_called_class() . '->' . $variable);
         }
+
+        throw new InvalidArgumentException("Unknown configuration property " . get_called_class() . '->' . $variable);
     }
 
-    public function configure($parameters = array())
+    public function configure($parameters = [])
     {
         foreach ($parameters as $key => $value) {
-            if (in_array($key, $this->parametersList)) {
-                $this->$key = $value;
-            } else {
-                throw new InvalidArgumentException("Unknown configuration property : " . get_called_class() . "->" . $key);
-            }
+            $this->$key = $value;
         }
 
         $this->init();
@@ -52,11 +48,7 @@ class Service implements Interfaces\IService
 
     public function getParameter($parameter)
     {
-        if (in_array($parameter, $this->parametersList)) {
-            return isset($this->parametersValues[$parameter]) ? $this->parametersValues[$parameter] : null;
-        } else {
-            throw new InvalidArgumentException("Unknown configuration property : " . get_called_class() . "->" . $parameter);
-        }
+        return $this->$parameter;
     }
 
     protected function init()

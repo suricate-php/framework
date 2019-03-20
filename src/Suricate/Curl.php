@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate;
 
 /**
@@ -12,7 +12,7 @@ namespace Suricate;
  * @property string $proxyHost
  * @property int $proxyPort
  * @property string $referer
- * @property string @cookie
+ * @property string $cookie
  * @property string $userAgent
  * @property mixed $postFields
  * @property string $login
@@ -44,6 +44,8 @@ class Curl extends Service
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->request  = new Request();
         $this->response = new Request();
         $this->headers  = [];
@@ -89,7 +91,11 @@ class Curl extends Service
     {
         $curlHandler     = curl_init($this->request->getUrl());
 
-        curl_setopt_array($curlHandler, $this->generateCurlOptions());
+        if ($curlHandler === false) {
+            throw new \Exception('Can\'t init curl');
+        }
+        $curlOptions = $this->generateCurlOptions();
+        curl_setopt_array($curlHandler, $curlOptions);
 
         $curlResponse       = curl_exec($curlHandler);
         if ($curlResponse === false) {
@@ -97,6 +103,10 @@ class Curl extends Service
             $this->errorCode    = curl_errno($curlHandler);
 
             return false;
+        }
+        // No return transfer option
+        if (is_bool($curlResponse)) {
+            return true;
         }
 
         $this->responseData = curl_getinfo($curlHandler);
@@ -127,16 +137,16 @@ class Curl extends Service
 
     private function generateCurlOptions()
     {
-        $curlOptions = array(
-                CURLOPT_RETURNTRANSFER  => true,
-                CURLOPT_HEADER          => true,
-                CURLINFO_HEADER_OUT     => true,
-                CURLOPT_FOLLOWLOCATION  => true,
-                CURLOPT_SSL_VERIFYPEER  => false,
-                CURLOPT_SSL_VERIFYHOST  => false
-            );
+        $curlOptions = [
+            CURLOPT_RETURNTRANSFER  => true,
+            CURLOPT_HEADER          => true,
+            CURLINFO_HEADER_OUT     => true,
+            CURLOPT_FOLLOWLOCATION  => true,
+            CURLOPT_SSL_VERIFYPEER  => false,
+            CURLOPT_SSL_VERIFYHOST  => false
+        ];
         
-        $parametersMapping = array(
+        $parametersMapping = [
             CURLOPT_CONNECTTIMEOUT  => 'timeout',
             CURLOPT_PROXY           => 'proxyHost',
             CURLOPT_PROXYPORT       => 'proxyPort',
@@ -144,7 +154,7 @@ class Curl extends Service
             CURLOPT_COOKIE          => 'cookie',
             CURLOPT_USERAGENT       => 'userAgent',
             CURLOPT_HTTPHEADER      => 'headers',
-        );
+        ];
 
         foreach ($parametersMapping as $curlKey => $optionKey) {
             if (($value = $this->getParameter($optionKey)) !== null) {

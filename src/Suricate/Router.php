@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate;
 
 /**
@@ -10,15 +10,17 @@ class Router extends Service
     private $baseUri;
     private $routes;
     private $response;
-    private $appMiddlewares = array(
+    private $appMiddlewares = [
         '\Suricate\Middleware\CheckMaintenance',
-        );
+    ];
 
 
 
     public function __construct()
     {
-        $this->routes   = array();
+        parent::__construct();
+
+        $this->routes   = [];
         $this->response = Suricate::Response();
         $this->parseRequest();
 
@@ -26,7 +28,7 @@ class Router extends Service
         $this->baseUri = Suricate::App()->getParameter('base_uri');
     }
 
-    public function configure($parameters = array())
+    public function configure($parameters = [])
     {
 
         foreach ($parameters as $routeName => $routeData) {
@@ -46,7 +48,7 @@ class Router extends Service
         }
         
         $routeMethod    = isset($routeData['method']) ? $routeData['method'] : 'any';
-        $parameters     = isset($routeData['parameters']) ? $routeData['parameters'] : array();
+        $parameters     = isset($routeData['parameters']) ? $routeData['parameters'] : [];
         
 
         $middleware = [];
@@ -127,7 +129,7 @@ class Router extends Service
         );
     }
 
-    public function addMiddleware($middleware)
+    public function addMiddleware(Middleware $middleware)
     {
         array_unshift($this->appMiddlewares, $middleware);
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate;
 
 class Route
@@ -13,9 +13,9 @@ class Route
 
     public $isMatched;
     public $target;
-    public $middlewares = array();
+    public $middlewares = [];
     
-    public function __construct($name, $method, $path, $request, $routeTarget, $parametersDefinitions = array(), $middleware = null)
+    public function __construct($name, $method, $path, $request, $routeTarget, $parametersDefinitions = [], $middleware = null)
     {
         $this->isMatched                = false;
         $this->name                     = $name;
@@ -23,7 +23,7 @@ class Route
         $this->path                     = $path;
         $this->target                   = $routeTarget;
         $this->parametersDefinitions    = $parametersDefinitions;
-        $this->parametersValues         = array();
+        $this->parametersValues         = [];
         $this->middlewares              = (array)$middleware;
 
         $this->setParameters();
@@ -43,8 +43,8 @@ class Route
     private function match($request)
     {
         $requestUri = $request->getRequestUri();
-
-        if (($pos = strpos($requestUri, '?')) !== false) {
+        $pos = strpos($requestUri, '?');
+        if ($pos !== false) {
             $requestUri = substr($requestUri, 0, $pos);
         }
 
@@ -61,7 +61,7 @@ class Route
         }
     }
 
-    public function dispatch($response, $middlewares = array())
+    public function dispatch($response, $middlewares = [])
     {
         $result     = false;
         $callable   = $this->getCallable($response);
@@ -76,13 +76,13 @@ class Route
             
             // Middleware stack processing
             foreach ($this->middlewares as $middleware) {
-                if (is_object($middleware)) {
+                if (is_object($middleware) && ($middleware instanceOf Middleware)) {
                     $middleware->call($response);
                 } else {
                     with(new $middleware)->call($response);
                 }
             }
-            
+
             $result = call_user_func_array($callable, $methodArguments);
         }
 
@@ -92,10 +92,10 @@ class Route
     private function getCallable($response)
     {
         if (count($this->target) > 1) {
-            $callable = array(
+            $callable = [
                 new $this->target[0]($response, $this),
                 $this->target[1]
-            );
+            ];
         } else {
             $callable = $this->target;
         }
@@ -112,7 +112,7 @@ class Route
         }
         
         $methodParameters = $reflection->getParameters();
-        $methodArguments = array();
+        $methodArguments = [];
 
         foreach ($methodParameters as $index => $parameter) {
             if (isset($this->parametersValues[$parameter->name])) {

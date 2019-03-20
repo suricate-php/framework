@@ -1,23 +1,29 @@
 {
-    "name": "suricate-php/framework",
-    "description": "Suricate PHP framework",
-    "keywords": ["framework", "suricate"],
-    "authors": [
-        {
-            "name": "Mathieu LESNIAK",
-            "email": "mathieu@lesniak.fr"
-        }
-    ],
-    "autoload": {
-        "psr-0": {
-            "Suricate": "src/"
-        }
-    },
-    "minimum-stability": "dev",
-    "require": {
-        "php": ">= 5.4.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^7"
+  "name": "suricate-php/framework",
+  "description": "Suricate PHP framework",
+  "keywords": [
+    "framework",
+    "suricate"
+  ],
+  "authors": [
+    {
+      "name": "Mathieu LESNIAK",
+      "email": "mathieu@lesniak.fr"
     }
+  ],
+  "autoload": {
+    "psr-0": {
+      "Suricate": "src/"
+    }
+  },
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">= 7.1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7",
+    "phpstan/phpstan": "^0.11.0@dev",
+    "phpmd/phpmd": "dev-master"
+  },
+  "license": "MIT"
 }

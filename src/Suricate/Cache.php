@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate;
 
 /**
@@ -12,29 +12,23 @@ namespace Suricate;
 
 class Cache extends Service implements Interfaces\ICache
 {
-    protected $parametersList = array('type');
+    protected $parametersList = ['type'];
     public static $container;
+    protected $cacheTypes = [
+        'memcache'  => 'Suricate\Suricate::CacheMemcache',
+        'memcached' => 'Suricate\Suricate::CacheMemcached',
+        'apc'       => 'Suricate\Suricate::CacheApc',
+        'file'      => 'Suricate\Suricate::CacheFile',
+    ];
 
     protected function init()
     {
         if (static::$container === null) {
-            switch ($this->type) {
-                case 'memcache':
-                    static::$container = Suricate::CacheMemcache(true);
-                    break;
-                case 'memcached':
-                    static::$container = Suricate::CacheMemcached(true);
-                    break;
-                case 'apc':
-                    static::$container = Suricate::CacheApc(true);
-                    break;
-                case 'file':
-                    static::$container = Suricate::CacheFile(true);
-                    break;
-                default:
-                    throw new \Exception("Unknown cache type " . $this->type);
-                    break;
+            if (isset($this->cacheTypes[$this->type])) {
+                static::$container = $this->cacheTypes[$this->type](true);
+                return;
             }
+            throw new \Exception("Unknown cache type " . $this->type);
         }
     }
 
@@ -68,5 +62,11 @@ class Cache extends Service implements Interfaces\ICache
     {
         $this->init();
         return static::$container->get($variable);
+    }
+
+    public function delete(string $variable)
+    {
+        $this->init();
+        return static::$container->delete($variable);
     }
 }

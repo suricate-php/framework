@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate;
 
 /**
@@ -12,9 +12,9 @@ namespace Suricate;
 
 class I18n extends Service
 {
-    protected $parametersList = array(
+    protected $parametersList = [
         'locale'
-    );
+    ];
     private $baseLocaleDir = 'i18n';
     private $translations;
 
@@ -27,7 +27,7 @@ class I18n extends Service
         $langDir    =  app_path() . DIRECTORY_SEPARATOR
             . $this->baseLocaleDir;
 
-        $langList   = array();
+        $langList   = [];
         $iterator   = new \DirectoryIterator($langDir);
 
         foreach ($iterator as $currentFile) {

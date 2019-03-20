@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 use Suricate\Suricate;
 
 // Debug
@@ -6,7 +6,7 @@ use Suricate\Suricate;
 if (!function_exists('_p')) {
     function _p()
     {
-        echo '<pre>';
+        echo '<pre>' ."\n";
         foreach (func_get_args() as $var) {
             print_r($var);
             echo "\n";
@@ -18,7 +18,7 @@ if (!function_exists('_p')) {
 if (!function_exists('_d')) {
     function _d()
     {
-        echo '<pre>';
+        echo '<pre>' . "\n";
         foreach (func_get_args() as $var) {
             var_dump($var);
             echo "\n";
@@ -53,7 +53,7 @@ if (!function_exists('last')) {
 if (!function_exists('flatten')) {
     function flatten(array $array)
     {
-        $return = array();
+        $return = [];
         array_walk_recursive($array, function ($a) use (&$return) {
             $return[] = $a;
         });
@@ -129,11 +129,11 @@ if (!function_exists('camelCase')) {
 }
 
 if (!function_exists('snakeCase')) {
-    function snakeCase($str, $delimiter)
+    function snakeCase(string $str, $delimiter)
     {
         $replace = '$1' . $delimiter . '$2';
 
-        return ctype_lower($str) ? $str : strtolower(preg_replace('/(.)([A-Z])/', $replace, $str));
+        return ctype_lower($str) ? $str : strtolower((string) preg_replace('/(.)([A-Z])/', $replace, $str));
     }
 }
 
@@ -195,31 +195,14 @@ if (!function_exists('wordLimit')) {
 
 
 if (!function_exists('slug')) {
-    function slug($str, $isUtf8 = true)
+    function slug($str)
     {
         if (class_exists('Transliterator')) {
             $translit = \Transliterator::create('Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC; [:Punctuation:] Remove; Lower();');
-            return preg_replace('/\s/', '-', $translit->transliterate($str));
-        } else {
-            if (!$isUtf8) {
-                $str = strtr(
-                    $str,
-                    utf8_decode("ÀÁÂÃÄÅàáâãäåÇçÒÓÔÕÖØòóôõöøÈÉÊËèéêëÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ"),
-                    "AAAAAAaaaaaaCcOOOOOOooooooEEEEeeeeIIIIiiiiUUUUuuuuyNn"
-                );
-            } else {
-                $str = strtr(
-                    utf8_decode($str),
-                    utf8_decode("ÀÁÂÃÄÅàáâãäåÇçÒÓÔÕÖØòóôõöøÈÉÊËèéêëÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ"),
-                    "AAAAAAaaaaaaCcOOOOOOooooooEEEEeeeeIIIIiiiiUUUUuuuuyNn"
-                );
+            if ($translit !== null) {
+                return preg_replace('/\s/', '-', (string) $translit->transliterate($str));
             }
-
-            $str = preg_replace('/[^a-z0-9_-\s]/', '', strtolower($str));
-            $str = preg_replace('/[\s]+/', ' ', trim($str));
-            $str = str_replace(' ', '-', $str);
-
-            return $str;
+            throw new \RuntimeException("Cannot instanciate Transliterator");
         }
     }
 }
@@ -279,7 +262,7 @@ if (!function_exists('getParam')) {
 if (!function_exists('i18n')) {
     function i18n()
     {
-        return call_user_func_array(array(Suricate::I18n(), 'get'), func_get_args());
+        return call_user_func_array([Suricate::I18n(), 'get'], func_get_args());
     }
 }
 
@@ -314,12 +297,12 @@ if (!function_exists('niceTime')) {
             return 'il y a environ une minute.';
         } elseif ($delta < (45 * 60)) {
             return 'il y a ' . floor($delta / 60) . ' minutes.';
-        } elseif ($delta < (90 * 60)) {
+        } elseif ($delta < (120 * 60)) {
             return 'il y a environ une heure.';
         } elseif ($delta < (24 * 60 * 60)) {
             return 'il y a environ ' . floor($delta / 3600) . ' heures.';
         } elseif ($delta < (48 * 60 * 60)) {
-            return 'hier';
+            return 'hier.';
         } elseif ($delta < 30 * 24 *3600) {
             return 'il y a ' . floor($delta / 86400) . ' jours.';
         } elseif ($delta < 365 * 24 * 3600) {

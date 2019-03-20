@@ -1,6 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate;
 
+use Suricate\Traits\DBObjectRelations;
+use Suricate\Traits\DBObjectProtected;
+use Suricate\Traits\DBObjectExport;
 /**
  * DBObject, Pseudo ORM Class
  *
@@ -15,20 +18,18 @@ namespace Suricate;
 
 class DBObject implements Interfaces\IDBObject
 {
-    /*
-    * @const TABLE_NAME : Linked SQL Table
-    */
-    const TABLE_NAME    = '';
+    use DBObjectRelations;
+    use DBObjectProtected;
+    use DBObjectExport;
 
-    /*
-    * @const TABLE_INDEX : Unique Id of the SQL Table
-    */
-    const TABLE_INDEX   = '';
+    /** @var string Linked SQL Table */
+    protected $tableName = '';
 
-    /**
-     * @const DB_CONFIG : Database configuration identifier
-     */
-    const DB_CONFIG     = '';
+    /** @var string Unique ID of the SQL table */
+    protected $tableIndex = '';
+    
+    /** @var string Database config name (optionnal) */
+    protected $DBConfig = '';
 
     /**
      * @const RELATION_ONE_ONE : Relation one to one
@@ -43,20 +44,11 @@ class DBObject implements Interfaces\IDBObject
      */
     const RELATION_MANY_MANY    = 3;
 
+    protected $loaded                       = false;
     protected $dbVariables                  = [];
     protected $dbValues                     = [];
-    
-    protected $protectedVariables           = [];
-    protected $protectedValues              = [];
-    protected $loadedProtectedVariables     = [];
 
     protected $readOnlyVariables            = [];
-
-    protected $relations                    = [];
-    protected $relationValues               = [];
-    protected $loadedRelations              = [];
-
-    protected $exportedVariables            = [];
 
     protected $dbLink                       = false;
 
@@ -84,18 +76,21 @@ class DBObject implements Interfaces\IDBObject
     {
         if ($this->isDBVariable($name)) {
             return $this->getDBVariable($name);
-        } elseif ($this->isProtectedVariable($name)) {
+        }
+        if ($this->isProtectedVariable($name)) {
             return $this->getProtectedVariable($name);
-        } elseif ($this->isRelation($name)) {
+        }
+        if ($this->isRelation($name)) {
             return $this->getRelation($name);
-        } elseif (!empty($this->$name)) {
+        }
+        if (!empty($this->$name)) {
             return $this->$name;
         }
 
         throw new \InvalidArgumentException('Undefined property ' . $name);
     }
 
-        /**
+    /**
      * Magic setter
      *
      * Set a property to defined value
@@ -105,25 +100,36 @@ class DBObject implements Interfaces\IDBObject
      *  </ul>
      * @param string $name  variable name
      * @param mixed $value variable value
+     * 
+     * @return void
      */
     public function __set($name, $value)
     {
         if ($this->isDBVariable($name)) {
-            $this->dbValues[$name] = $value;
-        } elseif ($this->isProtectedVariable($name)) {
-            $this->protectedValues[$name] = $value;
-        } elseif ($this->isRelation($name)) {
-            $this->relationValues[$name] = $value;
-        } else {
-            $this->$name = $value;
+            // Cast to string as PDO only handle string or NULL
+            $this->dbValues[$name] = is_null($value) ? $value : (string) $value;
+            return;
         }
+
+        if ($this->isProtectedVariable($name)) {
+            $this->protectedValues[$name] = $value;
+            return;
+        }
+
+        if ($this->isRelation($name)) {
+            $this->relationValues[$name] = $value;
+            return;
+        }
+        
+        $this->$name = $value;
     }
 
     public function __isset($name)
     {
         if ($this->isDBVariable($name)) {
             return isset($this->dbValues[$name]);
-        } elseif ($this->isProtectedVariable($name)) {
+        }
+        if ($this->isProtectedVariable($name)) {
             // Load only one time protected variable automatically
             if (!$this->isProtectedVariableLoaded($name)) {
                 $protectedAccessResult = $this->accessToProtectedVariable($name);
@@ -133,18 +139,61 @@ class DBObject implements Interfaces\IDBObject
                 }
             }
             return isset($this->protectedValues[$name]);
-        } elseif ($this->isRelation($name)) {
+        }
+        if ($this->isRelation($name)) {
             if (!$this->isRelationLoaded($name)) {
-                $relationResult = $this->loadRelation($name);
-
-                if ($relationResult) {
-                    $this->markRelationAsLoaded($name);
-                }
+                $this->loadRelation($name);
+                $this->markRelationAsLoaded($name);
             }
             return isset($this->relationValues[$name]);
         }
 
         return false;
+    }
+
+    /**
+     * Get table name
+     *
+     * @return string
+     */
+    public function getTableName()
+    {
+        return $this->tableName;
+    }
+
+    /**
+     * Get table name
+     *
+     * @return string
+     */
+    public static function tableName()
+    {
+        return with(new static)->getTableName();
+    }
+
+    /**
+     * Get Table Index
+     *
+     * @return string
+     */
+    public function getTableIndex()
+    {
+        return $this->tableIndex;
+    }
+
+    /**
+     * Get table index
+     *
+     * @return string
+     */
+    public static function tableIndex()
+    {
+        return with(new static)->getTableIndex();
+    }
+
+    public function getDBConfig()
+    {
+        return $this->DBConfig;
     }
 
     /**
@@ -187,238 +236,16 @@ class DBObject implements Interfaces\IDBObject
      * @param  string  $name variable name
      * @return boolean
      */
-    public function isDBVariable($name)
+    public function isDBVariable(string $name)
     {
         return in_array($name, $this->dbVariables);
-    }
-
-    /**
-     * @param string $name
-     */
-    private function getProtectedVariable($name)
-    {
-        // Variable exists, and is already loaded
-        if (isset($this->protectedValues[$name]) && $this->isProtectedVariableLoaded($name)) {
-            return $this->protectedValues[$name];
-        }
-        // Variable has not been loaded
-        if (!$this->isProtectedVariableLoaded($name)) {
-            if ($this->accessToProtectedVariable($name)) {
-                $this->markProtectedVariableAsLoaded($name);
-            }
-        }
-
-        if (isset($this->protectedValues[$name])) {
-            return $this->protectedValues[$name];
-        }
-
-        return null;
-    }
-
-    /**
-     * @param string $name
-     */
-    private function getRelation($name)
-    {
-        if (isset($this->relationValues[$name]) && $this->isRelationLoaded($name)) {
-            return $this->relationValues[$name];
-        }
-
-        if (!$this->isRelationLoaded($name)) {
-            if ($this->loadRelation($name)) {
-                $this->markRelationAsLoaded($name);
-            }
-        }
-
-        if (isset($this->relationValues[$name])) {
-            return $this->relationValues[$name];
-        }
-
-        return null;
-    }
-
-    /**
-     * Check if variable is predefined relation
-     * @param  string  $name variable name
-     * @return boolean
-     */
-    protected function isRelation($name)
-    {
-        return isset($this->relations[$name]);
-    }
-    /**
-     * Define object relations
-     *
-     * @return DBObject
-     */
-    protected function setRelations()
-    {
-        $this->relations = [];
-
-        return $this;
-    }
-
-    /**
-     * Define object exported variables
-     *
-     * @return DBObject
-     */
-    protected function setExportedVariables()
-    {
-        if (count($this->exportedVariables)) {
-            return $this;
-        }
-
-        $dbMappingExport = [];
-        foreach ($this->dbVariables as $field) {
-            $dbMappingExport[$field] = $field;
-        }
-        $this->exportedVariables = $dbMappingExport;
-
-        return $this;
-    }
-
-    /**
-     * Export DBObject to array
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        $this->setExportedVariables();
-        $result = [];
-        foreach ($this->exportedVariables as $sourceName => $destinationName) {
-            $omitEmpty  = false;
-            $castType   = null;
-            if (strpos($destinationName, ',') !== false) {
-                $splitted   = explode(',', $destinationName);
-                array_map(function ($item) use (&$castType, &$omitEmpty) {
-                    if ($item === 'omitempty') {
-                        $omitEmpty = true;
-                        return;
-                    }
-                    if (substr($item, 0, 5) === 'type:') {
-                        $castType = substr($item, 5);
-                    }
-                }, $splitted);
-
-                $destinationName = $splitted[0];
-            }
-
-            if ($destinationName === '-') {
-                continue;
-            }
-
-            if ($omitEmpty && empty($this->$sourceName)) {
-                continue;
-            }
-            $value = $this->$sourceName;
-            if ($castType !== null) {
-                settype($value, $castType);
-            }
-            $result[$destinationName] = $value;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Export DBObject to JSON format
-     *
-     * @return string
-     */
-    public function toJson()
-    {
-        return array_map('json_encode', $this->toArray());
-    }
-
-    /**
-     * Mark a protected variable as loaded
-     * @param  string $name varialbe name
-     * @return void
-     */
-    public function markProtectedVariableAsLoaded($name)
-    {
-        if ($this->isProtectedVariable($name)) {
-            $this->loadedProtectedVariables[$name] = true;
-        }
-    }
-
-    /**
-     * Mark a relation as loaded
-     * @param  string $name varialbe name
-     * @return void
-     */
-    protected function markRelationAsLoaded($name)
-    {
-        if ($this->isRelation($name)) {
-            $this->loadedRelations[$name] = true;
-        }
-    }
-     /**
-     * Check if a relation already have been loaded
-     * @param  string  $name Variable name
-     * @return boolean
-     */
-    protected function isRelationLoaded($name)
-    {
-        return isset($this->loadedRelations[$name]);
-    }
-
-    protected function loadRelation($name)
-    {
-        if (isset($this->relations[$name])) {
-            switch ($this->relations[$name]['type']) {
-                case self::RELATION_ONE_ONE:
-                    return $this->loadRelationOneOne($name);
-                case self::RELATION_ONE_MANY:
-                    return $this->loadRelationOneMany($name);
-                case self::RELATION_MANY_MANY:
-                    return $this->loadRelationManyMany($name);
-            }
-        }
-
-        return false;
-    }
-
-    private function loadRelationOneOne($name)
-    {
-        $target = $this->relations[$name]['target'];
-        $source = $this->relations[$name]['source'];
-        $this->relationValues[$name] = new $target();
-        $this->relationValues[$name]->load($this->$source);
-        
-        return true;
-    }
-
-    private function loadRelationOneMany($name)
-    {
-        $target         = $this->relations[$name]['target'];
-        $parentId       = $this->{$this->relations[$name]['source']};
-        $parentIdField  = isset($this->relations[$name]['target_field']) ? $this->relations[$name]['target_field'] : null;
-        $validate       = dataGet($this->relations[$name], 'validate', null);
-        
-        $this->relationValues[$name] = $target::loadForParentId($parentId, $parentIdField, $validate);
-
-        return true;
-    }
-
-    private function loadRelationManyMany($name)
-    {
-        $pivot      = $this->relations[$name]['pivot'];
-        $sourceType = $this->relations[$name]['source_type'];
-        $target     = dataGet($this->relations[$name], 'target');
-        $validate   = dataGet($this->relations[$name], 'validate', null);
-
-        $this->relationValues[$name] = $pivot::loadFor($sourceType, $this->{$this->relations[$name]['source']}, $target, $validate);
-        
-        return true;
     }
 
     private function resetLoadedVariables()
     {
         $this->loadedProtectedVariables = [];
         $this->loadedRelations          = [];
+        $this->loaded                   = false;
 
         return $this;
     }
@@ -443,31 +270,7 @@ class DBObject implements Interfaces\IDBObject
             || $this->isRelation($property)
             || property_exists($this, $property);
     }
-   
-   /**
-    * Check if variable is a protected variable
-    * @param  string  $name variable name
-    * @return boolean
-    */
-    public function isProtectedVariable($name)
-    {
-        return in_array($name, $this->protectedVariables);
-    }
 
-    
-
-    /**
-     * Check if a protected variable already have been loaded
-     * @param  string  $name Variable name
-     * @return boolean
-     */
-    protected function isProtectedVariableLoaded($name)
-    {
-        return isset($this->loadedProtectedVariables[$name]);
-    }
-
-    
-    
     /**
      * Load ORM from Database
      * @param  mixed $id SQL Table Unique id
@@ -478,34 +281,35 @@ class DBObject implements Interfaces\IDBObject
         $this->connectDB();
         $this->resetLoadedVariables();
 
-        if ($id != '') {
-            $query  = "SELECT *";
-            $query .= " FROM `" . static::TABLE_NAME ."`";
-            $query .= " WHERE";
-            $query .= "     `" . static::TABLE_INDEX . "` =  :id";
-            
-            $params         = [];
-            $params['id']   = $id;
-
-            return $this->loadFromSql($query, $params);
-        }
+        $query  = "SELECT *";
+        $query .= " FROM `" . $this->getTableName() ."`";
+        $query .= " WHERE";
+        $query .= "     `" . $this->getTableIndex() . "` =  :id";
         
-        return $this;
+        $params         = [];
+        $params['id']   = $id;
+
+        return $this->loadFromSql($query, $params);
     }
 
-    public function isLoaded()
+    /**
+     * Check if object is linked to entry in database
+     *
+     * @return boolean
+     */
+    public function isLoaded(): bool
     {
-        return $this->{static::TABLE_INDEX} !== null;
+        return $this->loaded;
     }
 
-    public function loadOrFail($id)
+    public function loadOrFail($index)
     {
-        $this->load($id);
-        if ($id == '' || $this->{static::TABLE_INDEX} != $id) {
+        $this->load($index);
+        if ($this->{$this->getTableIndex()} != $index) {
             throw (new Exception\ModelNotFoundException)->setModel(get_called_class());
-        } else {
-            return $this;
         }
+
+        return $this;
     }
 
     public static function loadOrCreate($arg)
@@ -516,34 +320,41 @@ class DBObject implements Interfaces\IDBObject
         return $obj;
     }
 
+    /**
+     * Load existing object by passing properties or instanciate if
+     *
+     * @param mixed $arg
+     * @return static
+     */
     public static function loadOrInstanciate($arg)
     {
+        $calledClass = get_called_class();
+        $obj = new $calledClass;
+        
+        // got only one parameter ? consider as table index value (id)
         if (!is_array($arg)) {
-            $arg = [static::TABLE_INDEX => $arg];
+            $arg = [$obj->getTableIndex() => $arg];
         }
+        
 
         $sql = "SELECT *";
-        $sql .= " FROM " . static::TABLE_NAME;
+        $sql .= " FROM `" . $obj->getTableName() . "`";
         $sql .= " WHERE ";
 
         $sqlArray   = [];
         $params     = [];
-        $i = 0;
+        $offset = 0;
         foreach ($arg as $key => $val) {
             if (is_null($val)) {
-                $sqlArray[] = '`' . $key . '` IS :arg' . $i;
+                $sqlArray[] = '`' . $key . '` IS :arg' . $offset;
             } else {
-                $sqlArray[] = '`' . $key . '`=:arg' . $i;
+                $sqlArray[] = '`' . $key . '`=:arg' . $offset;
             }
-            $params['arg' .$i] = $val;
-            $i++;
+            $params['arg' .$offset] = $val;
+            $offset++;
         }
         $sql .= implode(' AND ', $sqlArray);
 
-
-
-        $calledClass = get_called_class();
-        $obj = new $calledClass;
         if (!$obj->loadFromSql($sql, $params)) {
             foreach ($arg as $property => $value) {
                 $obj->$property = $value;
@@ -555,8 +366,9 @@ class DBObject implements Interfaces\IDBObject
     
     /**
      * @param string $sql
+     * @return static|bool
      */
-    public function loadFromSql($sql, $sqlParams = [])
+    public function loadFromSql(string $sql, $sqlParams = [])
     {
         $this->connectDB();
         $this->resetLoadedVariables();
@@ -567,7 +379,7 @@ class DBObject implements Interfaces\IDBObject
             foreach ($results as $key => $value) {
                 $this->$key = $value;
             }
-
+            $this->loaded = true;
             return $this;
         }
 
@@ -577,23 +389,40 @@ class DBObject implements Interfaces\IDBObject
     /**
      * Construct an DBObject from an array
      * @param  array $data  associative array
-     * @return DBObject       Built DBObject
+     * @return static       Built DBObject
      */
-    public static function instanciate($data = [])
+    public static function instanciate(array $data = [])
     {
         $calledClass    = get_called_class();
         $orm            = new $calledClass;
 
-        foreach ($data as $key => $val) {
-            if ($orm->propertyExists($key)) {
-                $orm->$key = $val;
-            }
-        }
-        
-        return $orm;
+        return $orm->hydrate($data);
     }
 
-    public static function create($data = [])
+    /**
+     * Hydrate object (set dbValues)
+     *
+     * @param array $data
+     * @return static
+     */
+    public function hydrate(array $data = [])
+    {
+        foreach ($data as $key => $val) {
+            if ($this->propertyExists($key)) {
+                $this->$key = $val;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Create an object and save it to database
+     *
+     * @param array $data
+     * @return static
+     */
+    public static function create(array $data = [])
     {
         $obj = static::instanciate($data);
         $obj->save();
@@ -611,12 +440,12 @@ class DBObject implements Interfaces\IDBObject
     {
         $this->connectDB();
 
-        if (static::TABLE_INDEX != '') {
-            $query  = "DELETE FROM `" . static::TABLE_NAME . "`";
-            $query .= " WHERE `" . static::TABLE_INDEX . "` = :id";
+        if ($this->getTableIndex() !== '') {
+            $query  = "DELETE FROM `" . $this->getTableName() . "`";
+            $query .= " WHERE `" . $this->getTableIndex() . "` = :id";
 
             $queryParams = [];
-            $queryParams['id'] = $this->{static::TABLE_INDEX};
+            $queryParams['id'] = $this->{$this->getTableIndex()};
             
             $this->dbLink->query($query, $queryParams);
         }
@@ -634,29 +463,16 @@ class DBObject implements Interfaces\IDBObject
         if (count($this->dbValues)) {
             $this->connectDB();
 
-            if ($this->{static::TABLE_INDEX} != '' && !$forceInsert) {
+            if ($this->isLoaded() && !$forceInsert) {
                 $this->update();
-                $insert = false;
-            } else {
-                $this->insert();
-                $insert = true;
+                return null;
             }
 
-            // Checking protected variables
-            foreach ($this->protectedVariables as $variable) {
-                // only if current protected_var is set
-                if (isset($this->protectedValues[$variable]) && $this->isProtectedVariableLoaded($variable)) {
-                    if ($this->protectedValues[$variable] instanceof Interfaces\ICollection) {
-                        if ($insert) {
-                            $this->protectedValues[$variable]->setParentIdForAll($this->id);
-                        }
-                        $this->protectedValues[$variable]->save();
-                    }
-                }
-            }
-        } else {
-            throw new \RuntimeException("Object " . get_called_class() . " has no properties to save");
+            $this->insert();
+            return null;
         }
+
+        throw new \RuntimeException("Object " . get_called_class() . " has no properties to save");
     }
 
     /**
@@ -669,7 +485,7 @@ class DBObject implements Interfaces\IDBObject
 
         $sqlParams = [];
 
-        $sql  = 'UPDATE `' . static::TABLE_NAME . '`';
+        $sql  = 'UPDATE `' . $this->getTableName() . '`';
         $sql .= ' SET ';
         
 
@@ -680,9 +496,9 @@ class DBObject implements Interfaces\IDBObject
             }
         }
         $sql  = substr($sql, 0, -2);
-        $sql .= " WHERE `" . static::TABLE_INDEX . "` = :SuricateTableIndex";
+        $sql .= " WHERE `" . $this->getTableIndex() . "` = :SuricateTableIndex";
 
-        $sqlParams[':SuricateTableIndex'] = $this->{static::TABLE_INDEX};
+        $sqlParams[':SuricateTableIndex'] = $this->{$this->getTableIndex()};
 
         $this->dbLink->query($sql, $sqlParams);
     }
@@ -698,7 +514,7 @@ class DBObject implements Interfaces\IDBObject
         
         $variables = array_diff($this->dbVariables, $this->readOnlyVariables);
 
-        $sql  = 'INSERT INTO `' . static::TABLE_NAME . '`';
+        $sql  = 'INSERT INTO `' . $this->getTableName() . '`';
         $sql .= '(`';
         $sql .= implode('`, `', $variables);
         $sql .= '`)';
@@ -710,26 +526,20 @@ class DBObject implements Interfaces\IDBObject
         foreach ($variables as $field) {
             $sqlParams[':' . $field] = $this->$field;
         }
-        
-        $this->dbLink->query($sql, $sqlParams);
 
-        $this->{static::TABLE_INDEX} = $this->dbLink->lastInsertId();
+        $this->dbLink->query($sql, $sqlParams);
+        $this->loaded = true;
+        $this->{$this->getTableIndex()} = $this->dbLink->lastInsertId();
     }
     
     protected function connectDB()
     {
         if (!$this->dbLink) {
             $this->dbLink = Suricate::Database();
-            if (static::DB_CONFIG != '') {
-                $this->dbLink->setConfig(static::DB_CONFIG);
+            if ($this->getDBConfig() !== '') {
+                $this->dbLink->setConfig($this->getDBConfig());
             }
         }
-    }
-    
-    
-    protected function accessToProtectedVariable($name)
-    {
-        return false;
     }
 
     public function validate()

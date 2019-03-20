@@ -1,10 +1,12 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate\Session;
 
 class Native extends \Suricate\Session
 {
     public function __construct()
     {
+        parent::__construct();
+
         $this->loadSession();
     }
 

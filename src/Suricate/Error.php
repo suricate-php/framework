@@ -1,15 +1,19 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate;
 
 use ErrorException;
-
+/**
+ * @property bool $report
+ * @property bool $dumpContext
+ * @property mixed $httpHandler Handler (object/closure/string) in charge of the error
+ */
 class Error extends Service
 {
-    protected $parametersList   = array(
+    protected $parametersList = [
         'report',
         'dumpContext',
         'httpHandler'
-        );
+    ];
 
     public static function handleException($e, $context = null)
     {
@@ -20,12 +24,15 @@ class Error extends Service
                 return;
             } elseif ($httpHandler != '') {
                 $httpHandler = explode('::', $httpHandler);
+                
                 if (count($httpHandler) > 1) {
-                    call_user_func($httpHandler, $e);
+                    $userFunc = $httpHandler;
                 } else {
-                    call_user_func(head($httpHandler), $e);
+                    $userFunc = head($httpHandler);
                 }
-
+                if (is_callable($userFunc)) {
+                    call_user_func($userFunc, $e);
+                }
                 return;
             }
             

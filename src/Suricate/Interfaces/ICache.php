@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate\Interfaces;
 
 interface ICache
@@ -8,4 +8,6 @@ interface ICache
     public function set(string $variable, $value, $expiry = null);
 
     public function get(string $variable);
+
+    public function delete(string $variable);
 }

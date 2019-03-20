@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate\Cache;
 
 use Suricate;
@@ -10,27 +10,30 @@ use Suricate;
  * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
  *
  * @property string $host           Memcache host (default: localhost)
- * @property string $port           Memcache port (default: 11211)
+ * @property int    $port           Memcache port (default: 11211)
  * @property int    $defaultExpiry  Key default expiry
- * @property string $useCompression Use memcache compression (default: false)
+ * @property bool   $useCompression Use memcache compression (default: false)
  */
 
 class Memcache extends Suricate\Cache
 {
-    protected $parametersList = array(
-                                    'host',
-                                    'port',
-                                    'defaultExpiry',
-                                    'useCompression'
-                                );
+    protected $parametersList = [
+        'host',
+        'port',
+        'defaultExpiry',
+        'useCompression'
+    ];
     private $handler;
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->handler          = false;
         $this->host             = 'localhost';
-        $this->port             = '11211';
+        $this->port             = 11211;
         $this->useCompression   = false;
+        $this->defaultExpiry    = 3600;
     }
     
     public function getHost()

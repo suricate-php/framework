@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 namespace Suricate;
 
 class Registry
 {
-    protected static $data = array();
+    protected static $data = [];
     protected static $context;
 
     public static function get($key, $defaultValue = null)
@@ -29,8 +29,18 @@ class Registry
 
     public static function set($key, $value)
     {
-        $data = &static::getFromContext(null);
+        $data = &static::getFromContext();
         $data[$key] = $value;
+    }
+
+    public static function setContext($context)
+    {
+        static::$context = $context;
+    }
+
+    public static function getContext()
+    {
+        return static::$context;
     }
 
     public static function exists($key)
@@ -44,17 +54,17 @@ class Registry
     {
         if (static::$context !== null) {
             if (!isset(static::$data[static::$context])) {
-                static::$data[static::$context] = array();
+                static::$data[static::$context] = [];
             }
             return static::$data[static::$context];
-        } else {
-            return static::$data;
         }
+
+        return static::$data;
     }
 
     public static function clean()
     {
         $data = &static::getFromContext();
-        $data = array();
+        $data = [];
     }
 }

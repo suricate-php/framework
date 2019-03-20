@@ -1,60 +1,77 @@
-<?php
+<?php declare(strict_types=1);
+namespace Suricate;
 /**
  * Suricate - Another micro PHP framework
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
  * @copyright   2013-2019 Mathieu LESNIAK
- * @version     0.1.16
+ * @version     0.2.0
  * @package     Suricate
  *
- * @method App          App() App() Get instance of App service
- * @method Database     Database() Database() Get instance of Database service
- * @method Error        Error() Error() Get instance of Error service
- * @method I18n         I18n() I18n() Get instance of I18n service
- * @method Request      Request() Request() Get instance of Request service
+ * @method static \Suricate\App             App($newInstance = false)             Get instance of App service
+ * @method static \Suricate\Cache           Cache($nezwInstance = false)          Get instance of Cache service
+ * @method static \Suricate\CacheMemcache   CacheMemcache($newInstance = false)   Get instance of CacheMemcache service
+ * @method static \Suricate\CacheMemcached  CacheMemcached($newInstance = false)  Get instance of CacheMemcached service
+ * @method static \Suricate\CacheApc        CacheApc($newInstance = false)        Get instance of CacheApc service
+ * @method static \Suricate\CacheFile       CacheFile($newInstance = false)       Get instance of CacheFile service
+ * @method static \Suricate\Curl            Curl($newInstance = false)            Get instance of Curl service
+ * @method static \Suricate\Database        Database($newInstance = false)        Get instance of Database service
+ * @method static \Suricate\Error           Error($newInstance = false)           Get instance of Error service
+ * @method static \Suricate\I18n            I18n($newInstance = false)            Get instance of I18n service
+ * @method static \Suricate\Logger          Logger($newInstance = false)          Get instance of Logger service
+ * @method static \Suricate\Request         Request($newInstance = false)         Get instance of Request service
+ * @method static \Suricate\Request         Response($newInstance = false)        Get instance of Request/Response service
+ * @method static \Suricate\Router          Router($newInstance = false)          Get instance of Router service
+ * @method static \Suricate\Session         Session($newInstance = false)         Get instance of Session service
+ * @method static \Suricate\SessionNative   SessionNative($newInstance = false)   Get instance of Session service
+ * @method static \Suricate\SessionCookie   SessionCookie($newInstance = false)   Get instance of Session service
+ * @method static \Suricate\SessionMemcache SessionMemcache($newInstance = false) Get instance of Session service
  */
-namespace Suricate;
+
 
 class Suricate
 {
-
-    const VERSION = '0.1.16';
+    const VERSION = '0.2.0';
 
     const CONF_DIR = '/conf/';
 
-    protected $router;
-
-    private $config;
-    private $configFile;
+    private $config  = [];
+    private $configFile = [];
 
     private $useAutoloader = false;
 
     private static $servicesContainer;
     private static $servicesRepository;
 
-    private $servicesList = array(
-        'Logger'            => '\Suricate\Logger',
+    private $servicesList = [
         'App'               => '\Suricate\App',
-        'I18n'              => '\Suricate\I18n',
-        'Error'             => '\Suricate\Error',
-        'Router'            => '\Suricate\Router',
-        'Request'           => '\Suricate\Request',
-        'Database'          => '\Suricate\Database',
         'Cache'             => '\Suricate\Cache',
         'CacheMemcache'     => '\Suricate\Cache\Memcache',
         'CacheMemcached'    => '\Suricate\Cache\Memcached',
         'CacheApc'          => '\Suricate\Cache\Apc',
         'CacheFile'         => '\Suricate\Cache\File',
         'Curl'              => '\Suricate\Curl',
+        'Database'          => '\Suricate\Database',
+        'Error'             => '\Suricate\Error',
+        'I18n'              => '\Suricate\I18n',
+        'Logger'            => '\Suricate\Logger',
+        'Request'           => '\Suricate\Request',
         'Response'          => '\Suricate\Request',
+        'Router'            => '\Suricate\Router',
         'Session'           => '\Suricate\Session',
         'SessionNative'     => '\Suricate\Session\Native',
         'SessionCookie'     => '\Suricate\Session\Cookie',
         'SessionMemcache'   => '\Suricate\Session\Memcache',
-    );
+    ];
 
 
-    public function __construct($paths = array(), $configFile = null)
+    /**
+     * Suricate contructor
+     *
+     * @param array $paths Application paths
+     * @param string|array|null $configFile path of configuration file(s)
+     */
+    public function __construct($paths = [], $configFile = null)
     {
         if ($configFile !== null) {
             $this->setConfigFile($configFile);
@@ -73,16 +90,21 @@ class Suricate
         }
 
         // Define error handler
-        set_exception_handler(array('\Suricate\Error', 'handleException'));
-        set_error_handler(array('\Suricate\Error', 'handleError'));
-        register_shutdown_function(array('\Suricate\Error', 'handleShutdownError'));
+        set_exception_handler(['\Suricate\Error', 'handleException']);
+        set_error_handler(['\Suricate\Error', 'handleError']);
+        register_shutdown_function(['\Suricate\Error', 'handleShutdownError']);
 
         self::$servicesRepository = new Container();
 
         $this->initServices();
     }
 
-    private function setAppPaths($paths = array())
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    private function setAppPaths($paths = [])
     {
         foreach ($paths as $key => $value) {
             $this->config['App']['path.' . $key] = realpath($value);
@@ -100,7 +122,7 @@ class Suricate
 
         self::$servicesRepository['Request']->parse();
         if (isset($this->config['App']['locale'])) {
-            $this->config['I18n'] = array('locale' => $this->config['App']['locale']);
+            $this->config['I18n'] = ['locale' => $this->config['App']['locale']];
         }
         // first sync, && init, dependency to Suricate::request
         self::$servicesContainer = clone self::$servicesRepository;
@@ -127,6 +149,11 @@ class Suricate
         self::$servicesContainer = clone self::$servicesRepository;
     }
 
+    public function hasService(string $serviceName): bool
+    {
+        return isset(self::$servicesContainer[$serviceName]);
+    }
+
     private function setConfigFile($configFile)
     {
         foreach ((array) $configFile as $file) {
@@ -134,8 +161,6 @@ class Suricate
                 $this->configFile[] = $file;
             }
         }
-        
-        
 
         return $this;
     }
@@ -145,11 +170,11 @@ class Suricate
      */
     private function loadConfig()
     {
-        $userConfig = array();
-        if ($this->configFile !== null) {
-            $userConfig = array();
+        $userConfig = [];
+        if (count($this->configFile)) {
+            $userConfig = [];
             foreach ($this->configFile as $configFile) {
-                $userConfig = array_merge_recursive($userConfig, parse_ini_file($configFile, true));
+                $userConfig = array_merge_recursive($userConfig, (array) parse_ini_file($configFile, true, INI_SCANNER_TYPED));
             }
 
             // Advanced ini parsing, split key with '.' into subarrays
@@ -181,8 +206,8 @@ class Suricate
 
     private function configureAppMode()
     {
-        $errorReporting     = false;
-        $errorDumpContext   = false;
+        $errorReporting     = true;
+        $errorDumpContext   = true;
         $logLevel           = Logger::LOGLEVEL_WARN;
         $logFile            = 'php://stdout';
         
@@ -240,7 +265,6 @@ class Suricate
     {
         return [
             'Router'    => [],
-            'Session'   => ['type' => 'native'],
             'Logger'    => [
                 'enabled'   => true,
             ],
@@ -257,8 +281,8 @@ class Suricate
     {
         if (isset($arguments[0]) && $arguments[0] === true) {
             return clone self::$servicesRepository[$name];
-        } else {
-            return self::$servicesContainer[$name];
         }
+
+        return self::$servicesContainer[$name];
     }
 }
