@@ -8,7 +8,7 @@ class DatabaseTest extends TestCase
     protected $className = '\Suricate\Database';
     protected $tableName = 'users';
 
-    protected function setupData()
+    protected function setupData(): void
     {
         $pdo = new PDO('sqlite:/tmp/test.db');
         $pdo->exec("DROP TABLE IF EXISTS `" . $this->tableName ."`");
