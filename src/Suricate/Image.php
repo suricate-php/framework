@@ -10,11 +10,10 @@ class Image
 
     private $width;
     private $height;
-    
 
     public function load($filename)
     {
-        if (is_file($filename) && $imgString = file_get_contents($filename)) {
+        if (is_file($filename) && ($imgString = file_get_contents($filename))) {
             $imgString = imagecreatefromstring($imgString);
             if ($imgString !== false) {
                 $this->source = $imgString;
@@ -25,10 +24,14 @@ class Image
                 return $this;
             }
 
-            throw new \InvalidArgumentException('Cannot load ' . $filename . ', not an image');
+            throw new \InvalidArgumentException(
+                'Cannot load ' . $filename . ', not an image'
+            );
         }
-        
-        throw new \InvalidArgumentException('Cannot load ' . $filename . ', file unreadable');
+
+        throw new \InvalidArgumentException(
+            'Cannot load ' . $filename . ', file unreadable'
+        );
     }
 
     public function getWidth()
@@ -53,9 +56,9 @@ class Image
 
     public function chain()
     {
-        $this->source   = $this->destination;
-        $this->width    = imagesx($this->source);
-        $this->height   = imagesy($this->source);
+        $this->source = $this->destination;
+        $this->width = imagesx($this->source);
+        $this->height = imagesy($this->source);
 
         return $this;
     }
@@ -64,9 +67,13 @@ class Image
     {
         if ($this->source) {
             if ($width == null) {
-                $width = intval(round(($height / $this->height) * $this->width, 0));
+                $width = intval(
+                    round(($height / $this->height) * $this->width, 0)
+                );
             } elseif ($height == null) {
-                $height = intval(round(($width / $this->width) * $this->height, 0));
+                $height = intval(
+                    round(($width / $this->width) * $this->height, 0)
+                );
             }
 
             $this->destination = imagecreatetruecolor($width, $height);
@@ -96,45 +103,74 @@ class Image
         $centerX = round($this->width / 2);
         $centerY = round($this->height / 2);
 
-        $cropWidthHalf  = round($width / 2);
+        $cropWidthHalf = round($width / 2);
         $cropHeightHalf = round($height / 2);
 
         $x1 = intval(max(0, $centerX - $cropWidthHalf));
         $y1 = intval(max(0, $centerY - $cropHeightHalf));
-        
+
         $this->destination = imagecreatetruecolor($width, $height);
         if ($this->destination === false) {
             throw new \RuntimeException("Can't create destination image");
         }
-        imagecopy($this->destination, $this->source, 0, 0, $x1, $y1, $width, $height);
+        imagecopy(
+            $this->destination,
+            $this->source,
+            0,
+            0,
+            $x1,
+            $y1,
+            $width,
+            $height
+        );
 
         return $this->chain();
     }
 
-    public function resizeCanvas($width, $height, $position = null, $color = [0, 0, 0])
-    {
+    public function resizeCanvas(
+        $width,
+        $height,
+        $position = null,
+        $color = [0, 0, 0]
+    ) {
         $this->destination = imagecreatetruecolor($width, $height);
         if ($this->destination === false) {
             throw new \RuntimeException("Can't create destination image");
         }
-        $colorRes = imagecolorallocate($this->destination, $color[0], $color[1], $color[2]);
+        $colorRes = imagecolorallocate(
+            $this->destination,
+            $color[0],
+            $color[1],
+            $color[2]
+        );
         $imageObj = new Image();
         $imageObj->width = $width;
         $imageObj->height = $height;
         imagefill($this->destination, 0, 0, $colorRes);
 
         if ($position !== null) {
-            list($x, $y) = $imageObj->getCoordinatesFromString($position, $this->width, $this->height);
+            list($x, $y) = $imageObj->getCoordinatesFromString(
+                $position,
+                $this->width,
+                $this->height
+            );
         } else {
             $x = 0;
             $y = 0;
         }
-        imagecopy($this->destination, $this->source, $x, $y, 0, 0, $this->width, $this->height);
+        imagecopy(
+            $this->destination,
+            $this->source,
+            $x,
+            $y,
+            0,
+            0,
+            $this->width,
+            $this->height
+        );
 
         return $this->chain();
     }
-
-    
 
     public function rotate()
     {
@@ -148,15 +184,24 @@ class Image
     {
     }
 
-    public function merge($source, $position = null, $x = null, $y = null, $percent = 100)
-    {
+    public function merge(
+        $source,
+        $position = null,
+        $x = null,
+        $y = null,
+        $percent = 100
+    ) {
         if ($source instanceof \Suricate\Image) {
         } else {
             $source = with(new Image())->load($source);
         }
 
         if ($position !== null) {
-            list($x, $y) = $this->getCoordinatesFromString($position, $source->width, $source->height);
+            list($x, $y) = $this->getCoordinatesFromString(
+                $position,
+                $source->width,
+                $source->height
+            );
         }
         $x = $x !== null ? $x : 0;
         $y = $y !== null ? $y : 0;
@@ -168,10 +213,28 @@ class Image
             throw new \RuntimeException("Can't create destination image");
         }
         // copying relevant section from background to the cut resource
-        imagecopy($cut, $this->destination, 0, 0, $x, $y, $source->getWidth(), $source->getHeight());
-        
+        imagecopy(
+            $cut,
+            $this->destination,
+            0,
+            0,
+            $x,
+            $y,
+            $source->getWidth(),
+            $source->getHeight()
+        );
+
         // copying relevant section from watermark to the cut resource
-        imagecopy($cut, $source->source, 0, 0, 0, 0, $source->getWidth(), $source->getHeight());
+        imagecopy(
+            $cut,
+            $source->source,
+            0,
+            0,
+            0,
+            0,
+            $source->getWidth(),
+            $source->getHeight()
+        );
 
         imagecopymerge(
             $this->destination,
@@ -203,7 +266,7 @@ class Image
         }
 
         $imageFont->apply($this->source, $x, $y);
-        
+
         return $this;
     }
 
@@ -219,8 +282,6 @@ class Image
 
         return $this;
     }
-
-    
 
     public function save($filename, $outputType = null, $quality = 70)
     {
@@ -248,11 +309,14 @@ class Image
         return $result;
     }
 
-    private function getCoordinatesFromString($position, $offsetWidth = 0, $offsetHeight = 0)
-    {
+    private function getCoordinatesFromString(
+        $position,
+        $offsetWidth = 0,
+        $offsetHeight = 0
+    ) {
         switch ($position) {
             case 'top':
-                $x = floor(($this->width / 2) - ($offsetWidth / 2));
+                $x = floor($this->width / 2 - $offsetWidth / 2);
                 $y = 0;
                 break;
             case 'top-right':
@@ -261,29 +325,29 @@ class Image
                 break;
             case 'left':
                 $x = 0;
-                $y = floor(($this->height / 2) - ($offsetHeight / 2));
+                $y = floor($this->height / 2 - $offsetHeight / 2);
                 break;
             case 'center':
-                $x = floor(($this->width / 2) - ($offsetWidth / 2));
-                $y = floor(($this->height / 2) - ($offsetHeight / 2));
+                $x = floor($this->width / 2 - $offsetWidth / 2);
+                $y = floor($this->height / 2 - $offsetHeight / 2);
                 break;
             case 'right':
                 $x = $this->width - $offsetWidth;
-                $y = floor(($this->height / 2) - ($offsetHeight / 2));
+                $y = floor($this->height / 2 - $offsetHeight / 2);
                 break;
             case 'bottom-left':
                 $x = 0;
                 $y = $this->height - $offsetHeight;
                 break;
             case 'bottom':
-                $x = floor(($this->width / 2) - ($offsetWidth / 2));
+                $x = floor($this->width / 2 - $offsetWidth / 2);
                 $y = $this->height - $offsetHeight;
                 break;
             case 'bottom-right':
                 $x = $this->width - $offsetWidth;
                 $y = $this->height - $offsetHeight;
                 break;
-            
+
             case 'top-left':
             default:
                 $x = 0;
@@ -291,6 +355,6 @@ class Image
                 break;
         }
 
-        return [$x, $y];
+        return [intval($x), intval($y)];
     }
 }

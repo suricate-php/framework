@@ -1,6 +1,7 @@
 <?php
 namespace Suricate;
 
-class Middleware implements \Suricate\Interfaces\IMiddleware {
-    public function call(&$reponse) {}
+abstract class Middleware implements \Suricate\Interfaces\IMiddleware
+{
+    abstract function call(Request &$request, Request &$reponse);
 }

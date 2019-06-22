@@ -5,18 +5,18 @@ namespace Suricate;
 class DBCollection extends Collection
 {
     /* @var string SQL table name */
-    protected $tableName        = '';
+    protected $tableName = '';
     /* @var string Item type stored in collection */
-    protected $itemsType        = '';
+    protected $itemsType = '';
     /* @var string Database configuration identifier */
-    protected $DBConfig         = '';
+    protected $DBConfig = '';
 
-    protected $mapping          = [];
-    protected $loadedValues     = [];
+    protected $mapping = [];
+    protected $loadedValues = [];
     protected $lazyLoad = false;
 
-    protected $dbLink               = false;
-    protected $itemOffset           = 0;
+    protected $dbLink = false;
+    protected $itemOffset = 0;
 
     /**
      * Get table name
@@ -89,9 +89,9 @@ class DBCollection extends Collection
 
     public function purgeItems()
     {
-        $this->items        = [];
-        $this->mapping      = [];
-        $this->itemOffset   = 0;
+        $this->items = [];
+        $this->mapping = [];
+        $this->itemOffset = 0;
     }
 
     /**
@@ -106,12 +106,15 @@ class DBCollection extends Collection
             return parent::offsetGet($offset);
         }
 
-        if (isset($this->loadedValues[$offset]) && $this->loadedValues[$offset]) {
+        if (
+            isset($this->loadedValues[$offset]) &&
+            $this->loadedValues[$offset]
+        ) {
             return $this->items[$offset];
         }
 
         $itemType = $this->itemsType;
-        $itemToLoad = new $itemType;
+        $itemToLoad = new $itemType();
         $itemToLoad->load($this->items[$offset]);
 
         $this->items[$offset] = $itemToLoad;
@@ -126,12 +129,12 @@ class DBCollection extends Collection
      */
     public static function loadAll()
     {
-        $calledClass    = get_called_class();
-        $collection     = new $calledClass;
+        $calledClass = get_called_class();
+        $collection = new $calledClass();
 
-        $sqlParams      = [];
+        $sqlParams = [];
 
-        $sql  = "SELECT *";
+        $sql = "SELECT *";
         $sql .= "   FROM `" . $collection->getTableName() . "`";
 
         $collection->loadFromSql($sql, $sqlParams);
@@ -148,7 +151,7 @@ class DBCollection extends Collection
     public static function buildFromSql($sql, $sqlParams = [])
     {
         $calledClass = get_called_class();
-        $collection = new $calledClass;
+        $collection = new $calledClass();
 
         $collection->loadFromSql($sql, $sqlParams);
 
@@ -164,8 +167,15 @@ class DBCollection extends Collection
      */
     public function loadFromSql($sql, $sqlParams = [])
     {
-        if (!in_array(Interfaces\IDBObject::class, class_implements($this->itemsType))) {
-            throw new \BadMethodCallException('Item type does not implement IDBObject interface');
+        if (
+            !in_array(
+                Interfaces\IDBObject::class,
+                class_implements($this->itemsType)
+            )
+        ) {
+            throw new \BadMethodCallException(
+                'Item type does not implement IDBObject interface'
+            );
         }
 
         $this->connectDB();
@@ -174,7 +184,9 @@ class DBCollection extends Collection
         if ($results !== false) {
             foreach ($results as $currentResult) {
                 $itemName = $this->getItemsType();
-                $this->addItem($itemName::instanciate($currentResult));
+                $item = $itemName::instanciate($currentResult);
+                $item->setLoaded();
+                $this->addItem($item);
             }
         }
 
@@ -183,19 +195,17 @@ class DBCollection extends Collection
 
     protected function addItemLink($linkId)
     {
-         $this->items[$this->itemOffset] = $linkId;
-         // add mapping between item->index and $position in items pool
-         $this->mapping[$this->itemOffset] = $linkId;
-         $this->loadedValues[$this->itemOffset] = false;
-         $this->itemOffset++;
+        $this->items[$this->itemOffset] = $linkId;
+        // add mapping between item->index and $position in items pool
+        $this->mapping[$this->itemOffset] = $linkId;
+        $this->loadedValues[$this->itemOffset] = false;
+        $this->itemOffset++;
     }
 
     public function lazyLoadFromSql($sql, $sqlParams = [])
     {
         $this->connectDB();
-        $results = $this->dbLink
-            ->query($sql, $sqlParams)
-            ->fetchAll();
+        $results = $this->dbLink->query($sql, $sqlParams)->fetchAll();
 
         if ($results !== false) {
             foreach ($results as $currentResult) {

@@ -8,27 +8,37 @@ class Route
     private $path;
     private $computedPath;
 
+    private $request;
+
     private $parametersDefinitions;
     public $parametersValues;
 
     public $isMatched;
     public $target;
     public $middlewares = [];
-    
-    public function __construct($name, $method, $path, $request, $routeTarget, $parametersDefinitions = [], $middleware = null)
-    {
-        $this->isMatched                = false;
-        $this->name                     = $name;
-        $this->method                   = array_map('strtolower', (array)$method);
-        $this->path                     = $path;
-        $this->target                   = $routeTarget;
-        $this->parametersDefinitions    = $parametersDefinitions;
-        $this->parametersValues         = [];
-        $this->middlewares              = (array)$middleware;
+
+    public function __construct(
+        $name,
+        $method,
+        $path,
+        Request $request,
+        $routeTarget,
+        $parametersDefinitions = [],
+        $middleware = null
+    ) {
+        $this->isMatched = false;
+        $this->name = $name;
+        $this->method = array_map('strtolower', (array) $method);
+        $this->path = $path;
+        $this->request = $request;
+        $this->target = $routeTarget;
+        $this->parametersDefinitions = $parametersDefinitions;
+        $this->parametersValues = [];
+        $this->middlewares = (array) $middleware;
 
         $this->setParameters();
         $this->computePath();
-        $this->match($request);
+        $this->match();
     }
 
     /**
@@ -40,46 +50,64 @@ class Route
         return $this->path;
     }
 
-    private function match($request)
+    private function match()
     {
-        $requestUri = $request->getRequestUri();
+        $requestUri = $this->request->getRequestUri();
         $pos = strpos($requestUri, '?');
         if ($pos !== false) {
             $requestUri = substr($requestUri, 0, $pos);
         }
 
-        if ($this->method === ['any']
-            || in_array(strtolower($request->getMethod()), $this->method)) {
+        if (
+            $this->method === ['any'] ||
+            in_array(strtolower($this->request->getMethod()), $this->method)
+        ) {
             // requestUri is matching pattern, set as matched route
-            if (preg_match('#^' . $this->computedPath . '$#', $requestUri, $matching)) {
-                foreach (array_keys($this->parametersDefinitions) as $currentParameter) {
-                    $this->parametersValues[$currentParameter] = isset($matching[$currentParameter]) ? $matching[$currentParameter] : null;
+            if (
+                preg_match(
+                    '#^' . $this->computedPath . '$#',
+                    $requestUri,
+                    $matching
+                )
+            ) {
+                foreach (
+                    array_keys($this->parametersDefinitions)
+                    as $currentParameter
+                ) {
+                    $this->parametersValues[$currentParameter] = isset(
+                        $matching[$currentParameter]
+                    )
+                        ? $matching[$currentParameter]
+                        : null;
                 }
 
-                $this->isMatched        = true;
+                $this->isMatched = true;
             }
         }
     }
 
     public function dispatch($response, $middlewares = [])
     {
-        $result     = false;
-        $callable   = $this->getCallable($response);
+        $result = false;
+        $callable = $this->getCallable($response);
         if (is_callable($callable)) {
             $this->middlewares = array_merge($middlewares, $this->middlewares);
-            
+
             // We found a valid method for this controller
             // Find parameters order
             $methodArguments = $this->getCallableArguments();
 
             // Calling $controller->method with arguments in right order
-            
+
             // Middleware stack processing
             foreach ($this->middlewares as $middleware) {
-                if (is_object($middleware) && ($middleware instanceOf Middleware)) {
-                    $middleware->call($response);
+                if (
+                    is_object($middleware) &&
+                    $middleware instanceof Middleware
+                ) {
+                    $middleware->call($this->request, $response);
                 } else {
-                    with(new $middleware)->call($response);
+                    with(new $middleware())->call($this->request, $response);
                 }
             }
 
@@ -106,17 +134,22 @@ class Route
     private function getCallableArguments()
     {
         if (count($this->target) > 1) {
-            $reflection = new \ReflectionMethod($this->target[0], $this->target[1]);
+            $reflection = new \ReflectionMethod(
+                $this->target[0],
+                $this->target[1]
+            );
         } else {
             $reflection = new \ReflectionFunction($this->target);
         }
-        
+
         $methodParameters = $reflection->getParameters();
         $methodArguments = [];
 
         foreach ($methodParameters as $index => $parameter) {
             if (isset($this->parametersValues[$parameter->name])) {
-                $methodArguments[$index] = urldecode($this->parametersValues[$parameter->name]);
+                $methodArguments[$index] = urldecode(
+                    $this->parametersValues[$parameter->name]
+                );
             } else {
                 // No value matching this parameter
                 $methodArguments[$index] = null;
@@ -149,8 +182,15 @@ class Route
         $this->computedPath = $this->path;
 
         // Assigning parameters
-        foreach ($this->parametersDefinitions as $parameterName => $parameterDefinition) {
-            $this->computedPath = str_replace(':' . $parameterName, '(?<' . $parameterName . '>' . $parameterDefinition . ')', $this->computedPath);
+        foreach (
+            $this->parametersDefinitions
+            as $parameterName => $parameterDefinition
+        ) {
+            $this->computedPath = str_replace(
+                ':' . $parameterName,
+                '(?<' . $parameterName . '>' . $parameterDefinition . ')',
+                $this->computedPath
+            );
         }
     }
 }

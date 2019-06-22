@@ -4,6 +4,7 @@ namespace Suricate;
 class PivotTable extends DBObject
 {
     protected $references = [];
+    protected $collectionClass = DBCollection::class;
 
     public function __construct()
     {
@@ -11,41 +12,61 @@ class PivotTable extends DBObject
 
         foreach ($this->references as $referenceName => $referenceData) {
             $this->relations[$referenceName] = [
-                'type' => self::RELATION_ONE_ONE, 'source' => $referenceData['key'], 'target' => $referenceData['type']
+                'type' => self::RELATION_ONE_ONE,
+                'source' => $referenceData['key'],
+                'target' => $referenceData['type']
             ];
         }
     }
 
-    public static function loadFor($relation, $parentId, $target = null, $validate = null)
+    public function getCollectionClass()
     {
-        $pivot = new static;
+        return $this->collectionClass;
+    }
+
+    public static function loadFor(
+        $relation,
+        $parentId,
+        $target = null,
+        $validate = null
+    ) {
+        $pivot = new static();
         $pivot->connectDB();
 
         $items = [];
         if ($target !== null) {
             $className = $pivot->getTargetForRelation($target);
-            $targetClass    = $className;
-            $sourceField    = $pivot->getSourceFieldForRelation($target);
-            
-            $query  = "SELECT t.* FROM " . $className::tableName() . " t";
+            $targetClass = $className;
+            $sourceField = $pivot->getSourceFieldForRelation($target);
+
+            $query = "SELECT t.* FROM " . $className::tableName() . " t";
             $query .= " LEFT JOIN " . $pivot->getTableName() . " p";
-            $query .= "     ON p.`" . $sourceField . "`=t." . $className::tableIndex();
+            $query .=
+                "     ON p.`" .
+                $sourceField .
+                "`=t." .
+                $className::tableIndex();
             $query .= " WHERE";
-            $query .= "     `" . $pivot->getSourceFieldForRelation($relation) . "` =  :id";
+            $query .=
+                "     `" .
+                $pivot->getSourceFieldForRelation($relation) .
+                "` =  :id";
             $query .= " GROUP BY t." . $targetClass::tableIndex();
         } else {
-            $query  = "SELECT *";
-            $query .= " FROM `" . $pivot->getTableName() ."`";
+            $query = "SELECT *";
+            $query .= " FROM `" . $pivot->getTableName() . "`";
             $query .= " WHERE";
-            $query .= "     `" . $pivot->getSourceFieldForRelation($relation) . "` =  :id";
+            $query .=
+                "     `" .
+                $pivot->getSourceFieldForRelation($relation) .
+                "` =  :id";
 
             $targetClass = $pivot;
         }
 
         $params = ['id' => $parentId];
 
-        $results = $pivot
-            ->dbLink
+        $results = $pivot->dbLink
             ->query($query, $params)
             ->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -53,7 +74,7 @@ class PivotTable extends DBObject
             $add = true;
 
             $itemToAdd = $targetClass::instanciate($result);
-            
+
             if ($validate !== null && is_callable($validate)) {
                 $add = $validate($itemToAdd);
             }
@@ -61,9 +82,9 @@ class PivotTable extends DBObject
                 $items[] = $itemToAdd;
             }
         }
-    
 
-        return new DBCollection($items);
+        $collectionClass = $pivot->getCollectionClass();
+        return new $collectionClass($items);
     }
 
     public function getSourceFieldForRelation($relationName)
@@ -72,7 +93,11 @@ class PivotTable extends DBObject
             return $this->relations[$relationName]['source'];
         }
 
-        throw new \InvalidArgumentException('Cannot get field for relation "' . $relationName . '" : Unknown relation');
+        throw new \InvalidArgumentException(
+            'Cannot get field for relation "' .
+                $relationName .
+                '" : Unknown relation'
+        );
     }
 
     public function getTargetForRelation($relationName)
@@ -81,6 +106,10 @@ class PivotTable extends DBObject
             return $this->relations[$relationName]['target'];
         }
 
-        throw new \InvalidArgumentException('Cannot get target for relation "' . $relationName . '" : Unknown relation');
+        throw new \InvalidArgumentException(
+            'Cannot get target for relation "' .
+                $relationName .
+                '" : Unknown relation'
+        );
     }
 }

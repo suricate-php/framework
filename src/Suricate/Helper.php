@@ -2,11 +2,11 @@
 use Suricate\Suricate;
 
 // Debug
-// 
+//
 if (!function_exists('_p')) {
     function _p()
     {
-        echo '<pre>' ."\n";
+        echo '<pre>' . "\n";
         foreach (func_get_args() as $var) {
             print_r($var);
             echo "\n";
@@ -30,7 +30,7 @@ if (!function_exists('_d')) {
 if (!function_exists('e')) {
     function e($str)
     {
-        return htmlentities($str, ENT_COMPAT, 'UTF-8');
+        return htmlentities((string) $str, ENT_COMPAT, 'UTF-8');
     }
 }
 
@@ -68,7 +68,7 @@ if (!function_exists('dataGet')) {
         if (is_null($key)) {
             return $target;
         }
-        
+
         foreach (explode('.', $key) as $segment) {
             if (is_array($target)) {
                 if (!array_key_exists($segment, $target)) {
@@ -82,10 +82,10 @@ if (!function_exists('dataGet')) {
                 }
                 $target = $target[$segment];
             } elseif (is_object($target)) {
-                if (!isset($target->{$segment})) {
+                if (!isset($target->$segment)) {
                     return value($default);
                 }
-                $target = $target->{$segment};
+                $target = $target->$segment;
             } else {
                 return value($default);
             }
@@ -133,7 +133,9 @@ if (!function_exists('snakeCase')) {
     {
         $replace = '$1' . $delimiter . '$2';
 
-        return ctype_lower($str) ? $str : strtolower((string) preg_replace('/(.)([A-Z])/', $replace, $str));
+        return ctype_lower($str)
+            ? $str
+            : strtolower((string) preg_replace('/(.)([A-Z])/', $replace, $str));
     }
 }
 
@@ -167,7 +169,10 @@ if (!function_exists('endsWith')) {
     function endsWith($haystack, $needles)
     {
         foreach ((array) $needles as $currentNeedle) {
-            if ($currentNeedle == substr($haystack, strlen($haystack) - strlen($currentNeedle))) {
+            if (
+                $currentNeedle ==
+                substr($haystack, strlen($haystack) - strlen($currentNeedle))
+            ) {
                 return true;
             }
         }
@@ -193,14 +198,19 @@ if (!function_exists('wordLimit')) {
     }
 }
 
-
 if (!function_exists('slug')) {
     function slug($str)
     {
         if (class_exists('Transliterator')) {
-            $translit = \Transliterator::create('Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC; [:Punctuation:] Remove; Lower();');
+            $translit = \Transliterator::create(
+                'Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC; [:Punctuation:] Remove; Lower();'
+            );
             if ($translit !== null) {
-                return preg_replace('/\s/', '-', (string) $translit->transliterate($str));
+                return preg_replace(
+                    '/\s/',
+                    '-',
+                    (string) $translit->transliterate($str)
+                );
             }
             throw new \RuntimeException("Cannot instanciate Transliterator");
         }
@@ -217,24 +227,24 @@ if (!function_exists('app')) {
 if (!function_exists('app_path')) {
     function app_path($str = '')
     {
-        return Suricate::App()->getParameter('path.app')
-            . ($str ? '/' . $str : $str);
+        return Suricate::App()->getParameter('path.app') .
+            ($str ? '/' . $str : $str);
     }
 }
 
 if (!function_exists('base_path')) {
     function base_path($str = '')
     {
-        return Suricate::App()->getParameter('path.base')
-            . ($str ? '/' . $str : $str);
+        return Suricate::App()->getParameter('path.base') .
+            ($str ? '/' . $str : $str);
     }
 }
 
 if (!function_exists('public_path')) {
     function public_path($str = '')
     {
-        return Suricate::App()->getParameter('path.public')
-            . ($str ? '/' . $str : $str);
+        return Suricate::App()->getParameter('path.public') .
+            ($str ? '/' . $str : $str);
     }
 }
 
@@ -286,7 +296,7 @@ if (!function_exists('generateUuid')) {
 
 /**
  TODO : implements i18n
-**/
+ **/
 if (!function_exists('niceTime')) {
     function niceTime($time)
     {
@@ -295,20 +305,20 @@ if (!function_exists('niceTime')) {
             return 'il y a moins d\'une minute.';
         } elseif ($delta < 120) {
             return 'il y a environ une minute.';
-        } elseif ($delta < (45 * 60)) {
+        } elseif ($delta < 45 * 60) {
             return 'il y a ' . floor($delta / 60) . ' minutes.';
-        } elseif ($delta < (120 * 60)) {
+        } elseif ($delta < 120 * 60) {
             return 'il y a environ une heure.';
-        } elseif ($delta < (24 * 60 * 60)) {
+        } elseif ($delta < 24 * 60 * 60) {
             return 'il y a environ ' . floor($delta / 3600) . ' heures.';
-        } elseif ($delta < (48 * 60 * 60)) {
+        } elseif ($delta < 48 * 60 * 60) {
             return 'hier.';
-        } elseif ($delta < 30 * 24 *3600) {
+        } elseif ($delta < 30 * 24 * 3600) {
             return 'il y a ' . floor($delta / 86400) . ' jours.';
         } elseif ($delta < 365 * 24 * 3600) {
-              return 'il y a ' . floor($delta / (24*3600*30)) . ' mois.';
+            return 'il y a ' . floor($delta / (24 * 3600 * 30)) . ' mois.';
         } else {
-            $diff = floor($delta / (24*3600*365));
+            $diff = floor($delta / (24 * 3600 * 365));
 
             if ($diff == 1) {
                 return 'il y a plus d\'un an.';
