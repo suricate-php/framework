@@ -5,7 +5,7 @@ namespace Suricate;
 class DBCollectionOneMany extends DBCollection
 {
     /* @var string Name of parent identifier field */
-    protected $parentIdField    = 'parent_id';
+    protected $parentIdField = 'parent_id';
 
     /* @var mixed parent identifier */
     protected $parentId;
@@ -16,7 +16,6 @@ class DBCollectionOneMany extends DBCollection
     /* @var mixed parent filtering value */
     protected $parentFilterType;
 
-   
     public function getParentIdField(): string
     {
         return $this->parentIdField;
@@ -43,18 +42,20 @@ class DBCollectionOneMany extends DBCollection
      */
     public static function loadAll()
     {
-        $calledClass    = get_called_class();
-        $collection     = new $calledClass;
+        $calledClass = get_called_class();
+        $collection = new $calledClass();
+        if ($collection->getParentFilterType()) {
+            $sql = "SELECT *";
+            $sql .= "   FROM `" . $collection->getTableName() . "`";
+            $sql .= "WHERE " . $collection->parentFilterName . "=:type";
 
-        $sql  = "SELECT *";
-        $sql .= "   FROM `" . $collection->getTableName() . "`";
-        $sql .= "WHERE " . $collection->parentFilterName . "=:type";
+            $sqlParams = ['type' => $collection->parentFilterType];
 
-        $sqlParams = ['type' => $collection->parentFilterType];
+            $collection->loadFromSql($sql, $sqlParams);
 
-        $collection->loadFromSql($sql, $sqlParams);
-
-        return $collection;
+            return $collection;
+        }
+        return parent::loadAll();
     }
 
     /**
@@ -63,20 +64,23 @@ class DBCollectionOneMany extends DBCollection
      * @param string       $parentIdField  Name of parent id referencing field
      * @param \Closure|null $validate       Callback use to validate add to items collection
      */
-    public static function loadForParentId($parentId, $parentIdField = null, $validate = null)
-    {
-        $calledClass   = get_called_class();
-        $collection     = new $calledClass;
+    public static function loadForParentId(
+        $parentId,
+        $parentIdField = null,
+        $validate = null
+    ) {
+        $calledClass = get_called_class();
+        $collection = new $calledClass();
 
         if ($parentId != '') {
-            $sqlParams     = [];
-            $dbHandler     = Suricate::Database(true);
+            $sqlParams = [];
+            $dbHandler = Suricate::Database(true);
 
             if ($collection->getDBConfig() !== '') {
                 $dbHandler->setConfig($collection->getDBConfig());
             }
 
-            $sql  = "SELECT *";
+            $sql = "SELECT *";
             $sql .= " FROM `" . $collection->getTableName() . "`";
             $sql .= " WHERE";
             if ($parentIdField !== null) {
@@ -86,7 +90,8 @@ class DBCollectionOneMany extends DBCollection
             }
 
             if ($collection->parentFilterType !== null) {
-                $sql .= "   AND " . $collection->parentFilterName . "=:parent_type";
+                $sql .=
+                    "   AND " . $collection->parentFilterName . "=:parent_type";
                 $sqlParams['parent_type'] = $collection->parentFilterType;
             }
 
@@ -116,7 +121,6 @@ class DBCollectionOneMany extends DBCollection
             $this->items[$key]->{$this->parentIdField} = $parentId;
         }
         return $this;
-
     }
 
     public function craftItem($itemData)
@@ -144,12 +148,12 @@ class DBCollectionOneMany extends DBCollection
     public function save()
     {
         // 1st step : delete all records for current parentId
-        $sql  = "DELETE FROM `" . $this->tableName . "`";
+        $sql = "DELETE FROM `" . $this->tableName . "`";
         $sql .= " WHERE";
         $sql .= "   `" . $this->parentIdField . "`=:parent_id";
 
         $sqlParams = ['parent_id' => $this->parentId];
-        
+
         $this->connectDB();
         $this->dbLink->query($sql, $sqlParams);
 
