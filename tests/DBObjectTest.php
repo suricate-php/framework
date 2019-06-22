@@ -18,8 +18,7 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
             ->getMockForAbstractClass();
 
         // set expectations for constructor calls
-        $mock->expects($this->once())
-            ->method('setRelations');
+        $mock->expects($this->once())->method('setRelations');
 
         // now call the constructor
         $reflectedClass = new ReflectionClass($classname);
@@ -67,9 +66,13 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
     public function testUndefinedGet()
     {
         $testDBO = new \Suricate\DBObject();
-        self::mockProperty($testDBO, 'dbVariables', ['id', 'name', 'last_update']);
+        self::mockProperty($testDBO, 'dbVariables', [
+            'id',
+            'name',
+            'last_update'
+        ]);
         $this->expectException(\InvalidArgumentException::class);
-        
+
         $testDBO->undefinedVar;
     }
 
@@ -77,8 +80,15 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
     {
         $testDBO = new \Suricate\DBObject();
         $testDBO->regularProperty = 42;
-        self::mockProperty($testDBO, 'dbVariables', ['id', 'name', 'not_loaded_var']);
-        self::mockProperty($testDBO, 'dbValues', ['id' => 1, 'name' => 'test name']);
+        self::mockProperty($testDBO, 'dbVariables', [
+            'id',
+            'name',
+            'not_loaded_var'
+        ]);
+        self::mockProperty($testDBO, 'dbValues', [
+            'id' => 1,
+            'name' => 'test name'
+        ]);
         $this->assertEquals($testDBO->id, 1);
         $this->assertNotEquals($testDBO->name, 'test name edited');
         $this->assertNull($testDBO->not_loaded_var);
@@ -94,8 +104,15 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
     public function testIsset()
     {
         $testDBO = new \Suricate\DBObject();
-        self::mockProperty($testDBO, 'dbVariables', ['id', 'name', 'not_loaded_var']);
-        self::mockProperty($testDBO, 'dbValues', ['id' => 1, 'name' => 'test name']);
+        self::mockProperty($testDBO, 'dbVariables', [
+            'id',
+            'name',
+            'not_loaded_var'
+        ]);
+        self::mockProperty($testDBO, 'dbValues', [
+            'id' => 1,
+            'name' => 'test name'
+        ]);
 
         $this->assertTrue(isset($testDBO->id));
         $this->assertFalse(isset($testDBO->undefVar));
@@ -107,10 +124,17 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
 
         $testDBO = new \Suricate\DBObject();
         self::mockProperty($testDBO, 'tableIndex', $testIndex);
-        self::mockProperty($testDBO, 'dbVariables', [$testIndex, 'name', 'not_loaded_var']);
+        self::mockProperty($testDBO, 'dbVariables', [
+            $testIndex,
+            'name',
+            'not_loaded_var'
+        ]);
         $this->assertFalse($testDBO->isLoaded());
 
-        self::mockProperty($testDBO, 'dbValues', [$testIndex => 1, 'name' => 'test name']);
+        self::mockProperty($testDBO, 'dbValues', [
+            $testIndex => 1,
+            'name' => 'test name'
+        ]);
         $this->assertFalse($testDBO->isLoaded());
 
         $this->setupData();
@@ -122,23 +146,39 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($dbo->isLoaded());
     }
 
+    public function testSetLoaded()
+    {
+        $testIndex = 'id';
+
+        $testDBO = new \Suricate\DBObject();
+        self::mockProperty($testDBO, 'tableIndex', $testIndex);
+        self::mockProperty($testDBO, 'dbVariables', [
+            $testIndex,
+            'name',
+            'not_loaded_var'
+        ]);
+        $this->assertFalse($testDBO->isLoaded());
+        $testDBO->setLoaded();
+        $this->assertTrue($testDBO->isLoaded());
+    }
+
     public function testProtected()
     {
         $testDBO = Category::instanciate([
             'id' => 1,
-            'name' => 'test record',
+            'name' => 'test record'
         ]);
         $reflector = new ReflectionClass(Category::class);
         $property = $reflector->getProperty('protectedValues');
         $property->setAccessible(true);
         $this->assertSame([], $property->getValue($testDBO));
         $this->assertNull($testDBO->unloadable);
-        
+
         $reflector = new ReflectionClass(Category::class);
         $property = $reflector->getProperty('protectedValues');
         $property->setAccessible(true);
         $this->assertSame([], $property->getValue($testDBO));
-        
+
         $reflector = new ReflectionClass(Category::class);
         $property = $reflector->getProperty('loadedProtectedVariables');
         $property->setAccessible(true);
@@ -158,16 +198,19 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
     {
         $testDBO = Category::instanciate([
             'id' => 1,
-            'name' => 'test record',
+            'name' => 'test record'
         ]);
 
         $reflector = new ReflectionClass(Category::class);
         $property = $reflector->getProperty('dbValues');
         $property->setAccessible(true);
-        $this->assertEquals([
-            'id' => 1,
-            'name' => 'test record',
-        ], $property->getValue($testDBO));
+        $this->assertEquals(
+            [
+                'id' => 1,
+                'name' => 'test record'
+            ],
+            $property->getValue($testDBO)
+        );
 
         $this->assertFalse($testDBO->isLoaded());
     }
@@ -182,7 +225,7 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
             'id' => 1,
             'name' => 'test record',
             'add_column' => 'test value',
-            'realProperty' => 'my string',
+            'realProperty' => 'my string'
         ]);
 
         $this->assertEquals($testDBO->realProperty, 'my string');
@@ -190,10 +233,13 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $reflector = new ReflectionClass(get_class($testDBO));
         $property = $reflector->getProperty('dbValues');
         $property->setAccessible(true);
-        $this->assertEquals([
-            'id' => 1,
-            'name' => 'test record',
-        ], $property->getValue($testDBO));
+        $this->assertEquals(
+            [
+                'id' => 1,
+                'name' => 'test record'
+            ],
+            $property->getValue($testDBO)
+        );
 
         $this->assertFalse($testDBO->isLoaded());
     }
@@ -204,10 +250,8 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
             ->setMethods(['setRelations'])
             ->getMock();
 
-        $mock
-            ->expects($this->once())
-            ->method('setRelations');
-        
+        $mock->expects($this->once())->method('setRelations');
+
         $mock->__wakeup();
     }
 
@@ -252,7 +296,6 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('Admin', $testDBO->category->name);
         $this->assertInstanceOf('\Suricate\DBObject', $testDBO->category);
 
-
         $relationsValues = $relationValuesRef->getValue($testDBO);
         $loadedRelations = $loadedRelationsRef->getValue($testDBO);
 
@@ -263,7 +306,10 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayHasKey('category', $loadedRelations);
 
         // Check return type of relation
-        $this->assertInstanceOf('\Suricate\DBObject', $relationsValues['category']);
+        $this->assertInstanceOf(
+            '\Suricate\DBObject',
+            $relationsValues['category']
+        );
 
         // Load new object
         $testDBO = $this->getDBOject();
@@ -305,7 +351,7 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(1, $testDBO->id);
 
         $this->assertEquals('John', $testDBO->name);
-        
+
         $this->assertInstanceOf('\Suricate\DBObject', $retVal);
     }
 
@@ -377,7 +423,9 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $testDBO->delete();
 
         $testDBO = $this->getDBOject();
-        $this->expectException(\Suricate\Exception\ModelNotFoundException::class);
+        $this->expectException(
+            \Suricate\Exception\ModelNotFoundException::class
+        );
         $testDBO->loadOrFail(55);
     }
 
@@ -391,7 +439,7 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
 
         $sql = "SELECT * FROM `users` WHERE id=:id";
         $params = ['id' => 1];
-        
+
         $retVal = $testDBO->loadFromSql($sql, $params);
         $this->assertInstanceOf('\Suricate\DBObject', $retVal);
         $this->assertTrue($testDBO->isLoaded());
@@ -410,11 +458,12 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         // Inject database handler
         $testDBO = $this->getDBOject();
 
-        
         $retVal = $testDBO->loadOrFail(1);
         $this->assertInstanceOf('\Suricate\DBObject', $retVal);
 
-        $this->expectException(\Suricate\Exception\ModelNotFoundException::class);
+        $this->expectException(
+            \Suricate\Exception\ModelNotFoundException::class
+        );
         $testDBO->loadOrFail(100);
     }
 
@@ -441,17 +490,26 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($testDBO->id, "102");
         $this->assertSame($testDBO->name, null);
 
-        $testDBO = Category::loadOrInstanciate(['id' => 102, 'name' => 'test name']);
+        $testDBO = Category::loadOrInstanciate([
+            'id' => 102,
+            'name' => 'test name'
+        ]);
         $this->assertFalse($testDBO->isLoaded());
         $this->assertSame($testDBO->id, "102");
         $this->assertSame($testDBO->name, 'test name');
 
-        $testDBO = Category::loadOrInstanciate(['id' => 101, 'name' => 'test name']);
+        $testDBO = Category::loadOrInstanciate([
+            'id' => 101,
+            'name' => 'test name'
+        ]);
         $this->assertFalse($testDBO->isLoaded());
         $this->assertSame($testDBO->id, "101");
         $this->assertSame($testDBO->name, 'test name');
 
-        $testDBO = Category::loadOrInstanciate(['id' => 101, 'name' => 'Employee']);
+        $testDBO = Category::loadOrInstanciate([
+            'id' => 101,
+            'name' => 'Employee'
+        ]);
         $this->assertTrue($testDBO->isLoaded());
         $this->assertSame($testDBO->id, "101");
         $this->assertSame($testDBO->name, 'Employee');
@@ -472,9 +530,7 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame($comparison->id, $testDBO->id);
         $this->assertSame($comparison->name, null);
-        
     }
-
 
     public function testToArray()
     {
@@ -484,12 +540,13 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         // Inject database handler
         $testDBO = $this->getDBOject();
         $testDBO->load(2);
-        
-        $this->assertSame([
-            'id' => '2',
-            'category_id' => '100',
-            'name' => 'Paul',
-            'date_added' => '2019-01-11 00:00:00',
+
+        $this->assertSame(
+            [
+                'id' => '2',
+                'category_id' => '100',
+                'name' => 'Paul',
+                'date_added' => '2019-01-11 00:00:00'
             ],
             $testDBO->toArray()
         );
@@ -497,16 +554,17 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $testDBO = $this->getDBOject();
         $testDBO->load(2);
         self::mockProperty($testDBO, 'exportedVariables', [
-            'id' => 'id', 
+            'id' => 'id',
             'category_id' => 'category_id,type:integer',
             'name' => ',omitempty',
-            'date_added' => '-']
-        );
+            'date_added' => '-'
+        ]);
         $testDBO->name = '';
 
-        $this->assertSame([
-            'id' => '2',
-            'category_id' => 100,
+        $this->assertSame(
+            [
+                'id' => '2',
+                'category_id' => 100
             ],
             $testDBO->toArray()
         );
@@ -531,7 +589,6 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
     {
         $testDBO = $this->getDBOject();
         $this->assertTrue($testDBO->validate());
-
     }
 
     public static function mockProperty($object, string $propertyName, $value)
@@ -549,24 +606,33 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $pdo = new PDO('sqlite:/tmp/test.db');
         $pdo->exec("DROP TABLE IF EXISTS `users`");
         $pdo->exec("DROP TABLE IF EXISTS `categories`");
-        $pdo->exec("CREATE TABLE `users` (`id` INTEGER PRIMARY KEY,`category_id` INTEGER, `name` varchar(50) DEFAULT NULL,`date_added` datetime NOT NULL)");
-        $pdo->exec("CREATE TABLE `categories` (`id` INTEGER PRIMARY KEY, `name` varchar(50) DEFAULT NULL, `parent_id` INTEGER DEFAULT NULL)");
-        
-        $stmt = $pdo->prepare("INSERT INTO `users` (name, category_id, date_added) VALUES (:name, :categoryid, :date)");
+        $pdo->exec(
+            "CREATE TABLE `users` (`id` INTEGER PRIMARY KEY,`category_id` INTEGER, `name` varchar(50) DEFAULT NULL,`date_added` datetime NOT NULL)"
+        );
+        $pdo->exec(
+            "CREATE TABLE `categories` (`id` INTEGER PRIMARY KEY, `name` varchar(50) DEFAULT NULL, `parent_id` INTEGER DEFAULT NULL)"
+        );
+
+        $stmt = $pdo->prepare(
+            "INSERT INTO `users` (name, category_id, date_added) VALUES (:name, :categoryid, :date)"
+        );
         $values = [
             ['John', 100, '2019-01-10 00:00:00'],
             ['Paul', 100, '2019-01-11 00:00:00'],
             ['Robert', 101, '2019-01-12 00:00:00']
         ];
         foreach ($values as $value) {
-            $stmt->execute(['name' => $value[0], 'categoryid' => $value[1], 'date' => $value[2]]);
+            $stmt->execute([
+                'name' => $value[0],
+                'categoryid' => $value[1],
+                'date' => $value[2]
+            ]);
         }
 
-        $stmt = $pdo->prepare("INSERT INTO `categories` (id, name) VALUES (:id, :name)");
-        $values = [
-            [100, 'Admin'],
-            [101, 'Employee']
-        ];
+        $stmt = $pdo->prepare(
+            "INSERT INTO `categories` (id, name) VALUES (:id, :name)"
+        );
+        $values = [[100, 'Admin'], [101, 'Employee']];
         foreach ($values as $value) {
             $stmt->execute(['id' => $value[0], 'name' => $value[1]]);
         }
@@ -577,7 +643,7 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $database = new \Suricate\Database();
         $database->configure([
             'type' => 'sqlite',
-            'file' => '/tmp/test.db',
+            'file' => '/tmp/test.db'
         ]);
 
         return $database;
@@ -589,7 +655,6 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         // Inject database handler
         $testDBO = new \Suricate\DBObject();
 
-
         $reflector = new ReflectionClass(get_class($testDBO));
         $property = $reflector->getProperty('dbLink');
         $property->setAccessible(true);
@@ -597,7 +662,12 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
 
         self::mockProperty($testDBO, 'tableName', $this->tableName);
         self::mockProperty($testDBO, 'tableIndex', 'id');
-        self::mockProperty($testDBO, 'dbVariables', ['id', 'category_id', 'name', 'date_added']);
+        self::mockProperty($testDBO, 'dbVariables', [
+            'id',
+            'category_id',
+            'name',
+            'date_added'
+        ]);
 
         return $testDBO;
     }
@@ -608,7 +678,6 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         // Inject database handler
         $testDBO = new \Suricate\DBObject();
 
-
         $reflector = new ReflectionClass(get_class($testDBO));
         $property = $reflector->getProperty('dbLink');
         $property->setAccessible(true);
@@ -616,7 +685,7 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
 
         self::mockProperty($testDBO, 'tableName', 'categories');
         self::mockProperty($testDBO, 'tableIndex', 'id');
-        self::mockProperty($testDBO, 'dbVariables', ['id','name']);
+        self::mockProperty($testDBO, 'dbVariables', ['id', 'name']);
 
         return $testDBO;
     }
