@@ -27,8 +27,9 @@ class Redis
     protected $redisFifoTimeout = 2;
 
     private $childSlots = [];
+    private $includedFiles = [];
 
-    /** @var Suricate\Logger $logger */
+    /** @var \Suricate\Logger $logger */
     private $logger;
     private $logPrefix = 'FATHER';
 
@@ -95,7 +96,7 @@ class Redis
             )
         );
         $this->log('Launching childrens');
-
+        $father = true;
         // Forking children
         for ($i = 0; $i < $this->maxChildren; $i++) {
             $pid = pcntl_fork();
@@ -205,7 +206,7 @@ class Redis
     /**
      * Compare included files modification times with original ones
      *
-     * @return void
+     * @return bool
      */
     private function checkIncludedFiles()
     {
