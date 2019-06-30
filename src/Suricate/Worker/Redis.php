@@ -77,6 +77,23 @@ class Redis
     }
 
     /**
+     * Enqueue a job into fifo
+     *
+     * @param mixed $payload
+     * @return void
+     */
+    public function enqueue($payload)
+    {
+        $redisSrv = new \Predis\Client([
+            'scheme' => 'tcp',
+            'host' => $this->redisHost,
+            'port' => $this->redisPort,
+            'read_write_timeout' => $this->redisFifoTimeout
+        ]);
+
+        $redisSrv->rpush("fifo:test", json_encode($payload));
+    }
+    /**
      * Worker main run function
      *
      * @return void
