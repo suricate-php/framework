@@ -25,5 +25,8 @@
     "phpstan/phpstan": "^0.11.0@dev",
     "phpmd/phpmd": "dev-master"
   },
+  "suggest": {
+    "predis/predis": "Necessary in order to use Redis worker"
+  },
   "license": "MIT"
 }
