@@ -91,7 +91,7 @@ class Redis
             'read_write_timeout' => $this->redisFifoTimeout
         ]);
 
-        $redisSrv->rpush("fifo:test", json_encode($payload));
+        $redisSrv->rpush($this->redisFifoName, json_encode($payload));
     }
     /**
      * Worker main run function
