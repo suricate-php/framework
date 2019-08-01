@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate;
 
 /**
@@ -15,10 +18,10 @@ class Cache extends Service implements Interfaces\ICache
     protected $parametersList = ['type'];
     public static $container;
     protected $cacheTypes = [
-        'memcache'  => 'Suricate\Suricate::CacheMemcache',
+        'memcache' => 'Suricate\Suricate::CacheMemcache',
         'memcached' => 'Suricate\Suricate::CacheMemcached',
-        'apc'       => 'Suricate\Suricate::CacheApc',
-        'file'      => 'Suricate\Suricate::CacheFile',
+        'apc' => 'Suricate\Suricate::CacheApc',
+        'file' => 'Suricate\Suricate::CacheFile'
     ];
 
     protected function init()
@@ -64,6 +67,12 @@ class Cache extends Service implements Interfaces\ICache
         return static::$container->get($variable);
     }
 
+    /**
+     * Delete a variable from cache
+     *
+     * @param string $variable The key to delete
+     * @return boolean
+     */
     public function delete(string $variable)
     {
         $this->init();

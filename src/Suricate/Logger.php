@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate;
 
 /**
@@ -14,27 +17,22 @@ namespace Suricate;
  */
 class Logger extends Service
 {
-    const LOGLEVEL_FATAL    = 0;
-    const LOGLEVEL_ERROR    = 1;
-    const LOGLEVEL_WARN     = 2;
-    const LOGLEVEL_INFO     = 3;
-    const LOGLEVEL_DEBUG    = 4;
+    const LOGLEVEL_FATAL = 0;
+    const LOGLEVEL_ERROR = 1;
+    const LOGLEVEL_WARN = 2;
+    const LOGLEVEL_INFO = 3;
+    const LOGLEVEL_DEBUG = 4;
 
-    protected $parametersList = [
-        'logfile',
-        'enabled',
-        'level',
-        'timestamp'
-    ];
+    protected $parametersList = ['logfile', 'enabled', 'level', 'timestamp'];
 
     private $resource;
 
     protected $levels = [
-        self::LOGLEVEL_FATAL    => 'FATAL',
-        self::LOGLEVEL_ERROR    => 'ERROR',
-        self::LOGLEVEL_WARN     => 'WARN',
-        self::LOGLEVEL_INFO     => 'INFO',
-        self::LOGLEVEL_DEBUG    => 'DEBUG'
+        self::LOGLEVEL_FATAL => 'FATAL',
+        self::LOGLEVEL_ERROR => 'ERROR',
+        self::LOGLEVEL_WARN => 'WARN',
+        self::LOGLEVEL_INFO => 'INFO',
+        self::LOGLEVEL_DEBUG => 'DEBUG'
     ];
 
     public function __construct()
@@ -52,7 +50,10 @@ class Logger extends Service
             if ($this->timestamp) {
                 $message = "[" . date('M d H:i:s') . "] " . $message;
             }
-            fputs($this->resource, '[' . $this->levels[$level] . '] '. (string) $message . PHP_EOL);
+            fputs(
+                $this->resource,
+                '[' . $this->levels[$level] . '] ' . (string) $message . PHP_EOL
+            );
         }
 
         return $this;

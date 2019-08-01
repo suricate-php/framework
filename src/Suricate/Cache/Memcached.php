@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate\Cache;
 
 use Suricate;
@@ -16,11 +19,7 @@ use Suricate;
 
 class Memcached extends Suricate\Cache
 {
-    protected $parametersList = [
-        'host',
-        'port',
-        'defaultExpiry',
-    ];
+    protected $parametersList = ['host', 'port', 'defaultExpiry'];
 
     private $handler;
 
@@ -28,12 +27,12 @@ class Memcached extends Suricate\Cache
     {
         parent::__construct();
 
-        $this->handler          = false;
-        $this->host             = 'localhost';
-        $this->port             = 11211;
-        $this->defaultExpiry    = 3600;
+        $this->handler = false;
+        $this->host = 'localhost';
+        $this->port = 11211;
+        $this->defaultExpiry = 3600;
     }
-    
+
     public function getHost()
     {
         return $this->host;
@@ -54,7 +53,7 @@ class Memcached extends Suricate\Cache
     public function setPort($port)
     {
         $this->port = $port;
-        
+
         return $this;
     }
 
@@ -69,7 +68,7 @@ class Memcached extends Suricate\Cache
 
         return $this;
     }
-    
+
     private function connect()
     {
         if ($this->handler === false) {
@@ -81,7 +80,9 @@ class Memcached extends Suricate\Cache
                     throw new \Exception('Can\'t connect to memcache server');
                 }
             } else {
-                throw new \BadMethodCallException('Can\'t find Memcached extension');
+                throw new \BadMethodCallException(
+                    'Can\'t find Memcached extension'
+                );
             }
         } else {
             return $this;

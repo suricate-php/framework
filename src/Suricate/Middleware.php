@@ -1,4 +1,5 @@
 <?php
+
 namespace Suricate;
 
 abstract class Middleware implements \Suricate\Interfaces\IMiddleware

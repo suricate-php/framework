@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate;
 
 /**
@@ -22,7 +25,7 @@ namespace Suricate;
 
 class Curl extends Service
 {
-    protected $parametersList   = [
+    protected $parametersList = [
         'userAgent',
         'timeout',
         'proxyHost',
@@ -33,7 +36,7 @@ class Curl extends Service
         'postFields',
         'login',
         'password',
-        'headers',
+        'headers'
     ];
 
     private $request;
@@ -46,9 +49,9 @@ class Curl extends Service
     {
         parent::__construct();
 
-        $this->request  = new Request();
+        $this->request = new Request();
         $this->response = new Request();
-        $this->headers  = [];
+        $this->headers = [];
     }
 
     public function setUrl($url)
@@ -86,10 +89,10 @@ class Curl extends Service
 
         return $this;
     }
-    
+
     public function send()
     {
-        $curlHandler     = curl_init($this->request->getUrl());
+        $curlHandler = curl_init($this->request->getUrl());
 
         if ($curlHandler === false) {
             throw new \Exception('Can\'t init curl');
@@ -97,10 +100,10 @@ class Curl extends Service
         $curlOptions = $this->generateCurlOptions();
         curl_setopt_array($curlHandler, $curlOptions);
 
-        $curlResponse       = curl_exec($curlHandler);
+        $curlResponse = curl_exec($curlHandler);
         if ($curlResponse === false) {
-            $this->errorMsg     = curl_error($curlHandler);
-            $this->errorCode    = curl_errno($curlHandler);
+            $this->errorMsg = curl_error($curlHandler);
+            $this->errorCode = curl_errno($curlHandler);
 
             return false;
         }
@@ -111,15 +114,19 @@ class Curl extends Service
 
         $this->responseData = curl_getinfo($curlHandler);
         $this->response->setUrl($this->responseData['url']);
-        $redirectCount      = curl_getinfo($curlHandler, CURLINFO_REDIRECT_COUNT);
+        $redirectCount = curl_getinfo($curlHandler, CURLINFO_REDIRECT_COUNT);
 
-        $splittedResponse   = explode("\r\n\r\n", $curlResponse, $redirectCount + 2);
-        $lastHeader         = $splittedResponse[$redirectCount];
-    
+        $splittedResponse = explode(
+            "\r\n\r\n",
+            $curlResponse,
+            $redirectCount + 2
+        );
+        $lastHeader = $splittedResponse[$redirectCount];
+
         // get headers out of response
         $headers = explode("\n", trim($lastHeader));
         array_shift($headers);
-    
+
         foreach ($headers as $headerLine) {
             preg_match('|^([\d\w\s_-]*):(.*)|', $headerLine, $matches);
             if (isset($matches[1])) {
@@ -127,10 +134,11 @@ class Curl extends Service
             }
         }
 
-
         // Reponse data
         $this->response->setHttpCode($this->responseData['http_code']);
-        $this->response->setBody(substr($curlResponse, $this->responseData['header_size']));
+        $this->response->setBody(
+            substr($curlResponse, $this->responseData['header_size'])
+        );
 
         return $this;
     }
@@ -138,22 +146,22 @@ class Curl extends Service
     private function generateCurlOptions()
     {
         $curlOptions = [
-            CURLOPT_RETURNTRANSFER  => true,
-            CURLOPT_HEADER          => true,
-            CURLINFO_HEADER_OUT     => true,
-            CURLOPT_FOLLOWLOCATION  => true,
-            CURLOPT_SSL_VERIFYPEER  => false,
-            CURLOPT_SSL_VERIFYHOST  => false
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER => true,
+            CURLINFO_HEADER_OUT => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false
         ];
-        
+
         $parametersMapping = [
-            CURLOPT_CONNECTTIMEOUT  => 'timeout',
-            CURLOPT_PROXY           => 'proxyHost',
-            CURLOPT_PROXYPORT       => 'proxyPort',
-            CURLOPT_REFERER         => 'referer',
-            CURLOPT_COOKIE          => 'cookie',
-            CURLOPT_USERAGENT       => 'userAgent',
-            CURLOPT_HTTPHEADER      => 'headers',
+            CURLOPT_CONNECTTIMEOUT => 'timeout',
+            CURLOPT_PROXY => 'proxyHost',
+            CURLOPT_PROXYPORT => 'proxyPort',
+            CURLOPT_REFERER => 'referer',
+            CURLOPT_COOKIE => 'cookie',
+            CURLOPT_USERAGENT => 'userAgent',
+            CURLOPT_HTTPHEADER => 'headers'
         ];
 
         foreach ($parametersMapping as $curlKey => $optionKey) {
@@ -170,7 +178,9 @@ class Curl extends Service
         } elseif ($this->request->getMethod() == Request::HTTP_METHOD_POST) {
             $curlOptions[CURLOPT_POST] = true;
             if ($this->getParameter('postFields') !== null) {
-                $curlOptions[CURLOPT_POSTFIELDS] = $this->getParameter('postFields');
+                $curlOptions[CURLOPT_POSTFIELDS] = $this->getParameter(
+                    'postFields'
+                );
             }
         } elseif ($this->request->getMethod() == Request::HTTP_METHOD_PUT) {
             $curlOptions[CURLOPT_PUT] = true;
@@ -193,7 +203,9 @@ class Curl extends Service
 
     public function getHttpCode()
     {
-        return isset($this->responseData['http_code']) ? $this->responseData['http_code'] : null;
+        return isset($this->responseData['http_code'])
+            ? $this->responseData['http_code']
+            : null;
     }
 
     public function getErrorMsg()

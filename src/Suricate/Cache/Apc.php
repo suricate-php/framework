@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate\Cache;
 
 use Suricate;
@@ -12,5 +15,4 @@ use Suricate;
 
 class Apc extends Suricate\Cache
 {
-    
 }

@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate;
 
 use Suricate\Traits\DBObjectRelations;
@@ -549,6 +552,12 @@ class DBObject implements Interfaces\IDBObject
         $this->{$this->getTableIndex()} = $this->dbLink->lastInsertId();
     }
 
+    /**
+     * Connect to DB layer
+     *
+     * @return void
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     protected function connectDB()
     {
         if (!$this->dbLink) {

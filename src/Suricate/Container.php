@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate;
 
 class Container implements \ArrayAccess
@@ -53,7 +56,6 @@ class Container implements \ArrayAccess
      */
     public function offsetSet($offset, $value)
     {
-
     }
 
     /**

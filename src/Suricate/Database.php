@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Suricate;
 
@@ -11,15 +13,12 @@ namespace Suricate;
  * @property array $configs array of predefined DB configurations
  */
 
-
 class Database extends Service
 {
     use Traits\DatabaseMySQL;
     use Traits\DatabaseSQLite;
 
-    protected $parametersList = [
-        'configs'
-    ];
+    protected $parametersList = ['configs'];
 
     /** @var string current configuration name */
     private $config;
@@ -102,17 +101,28 @@ class Database extends Service
         if ($this->config !== null && isset($this->configs[$this->config])) {
             $params = $this->configs[$this->config];
         } else {
-            $confs  = array_values($this->configs);
+            $confs = array_values($this->configs);
             $params = array_shift($confs);
         }
 
         $pdoAttributes = [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION];
         switch ($params['type']) {
             case 'mysql':
-                $this->configurePDOMySQL($params, $pdoDsn, $pdoUsername, $pdoPassword, $pdoAttributes);
+                $this->configurePDOMySQL(
+                    $params,
+                    $pdoDsn,
+                    $pdoUsername,
+                    $pdoPassword,
+                    $pdoAttributes
+                );
                 break;
             case 'sqlite':
-                $this->configurePDOSQLite($params, $pdoDsn, $pdoUsername, $pdoPassword);
+                $this->configurePDOSQLite(
+                    $params,
+                    $pdoDsn,
+                    $pdoUsername,
+                    $pdoPassword
+                );
                 break;
             default:
                 throw new \Exception('Unsupported PDO DB handler');

@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate;
 
 class Collection implements
@@ -80,18 +83,6 @@ class Collection implements
         return $this->items;
     }
 
-    /*
-
-    
-
-    public function getItemFromKey($key)
-    {
-        $invertedMapping = array_flip($this->mapping);
-        if (isset($invertedMapping[$key])) {
-            return $this->items[$invertedMapping[$key]];
-        }
-    }
-*/
     /**
      * Implementation of countable interface
      *

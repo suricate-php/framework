@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate;
 
 /**
@@ -13,15 +16,14 @@ namespace Suricate;
  * @property string $locale
  */
 
-
 class App extends Service
 {
-    const DEBUG_MODE        = 'debug';
-    const DEVELOPMENT_MODE  = 'development';
-    const PRELIVE_MODE      = 'prelive';
-    const PRODUCTION_MODE   = 'production';
+    const DEBUG_MODE = 'debug';
+    const DEVELOPMENT_MODE = 'development';
+    const PRELIVE_MODE = 'prelive';
+    const PRODUCTION_MODE = 'production';
 
-    protected $parametersList   = [
+    protected $parametersList = [
         'root',
         'mode',
         'url',
@@ -29,30 +31,50 @@ class App extends Service
         'path.app',
         'path.public',
         'path.base',
-        'base_uri',
+        'base_uri'
     ];
 
-    public function isDebug()
+    /**
+     * Check if app is in Debug mode
+     * @return bool
+     */
+    public function isDebug(): bool
     {
         return self::DEBUG_MODE == $this->mode;
     }
 
-    public function isDevelopment()
+    /**
+     * Check if app is in Development mode
+     * @return bool
+     */
+    public function isDevelopment(): bool
     {
         return self::DEVELOPMENT_MODE == $this->mode;
     }
 
-    public function isPrelive()
+    /**
+     * Check if app is in Prelive mode
+     * @return bool
+     */
+    public function isPrelive(): bool
     {
         return self::PRELIVE_MODE == $this->mode;
     }
 
-    public function isProduction()
+    /**
+     * Check if app is in Production mode
+     * @return bool
+     */
+    public function isProduction(): bool
     {
         return self::PRODUCTION_MODE == $this->mode;
     }
 
-    public function inMaintenance()
+    /**
+     * Check if app is in Maintenance mode
+     * @return bool
+     */
+    public function inMaintenance(): bool
     {
         return is_file($this->getParameter('path.app') . '/config/maintenance');
     }

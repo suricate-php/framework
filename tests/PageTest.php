@@ -3,23 +3,28 @@ class PageTest extends \PHPUnit\Framework\TestCase
 {
     public function testLanguage()
     {
+        $language = 'fr_FR';
         $page = new \Suricate\Page();
-        $page->setLanguage('fr_FR');
-        $this->assertAttributeEquals('fr_FR', 'language', $page);
+        $page->setLanguage($language);
+        $this->assertSame($language, $page->getLanguage());
     }
 
     public function testEncoding()
     {
+        $encoding = 'iso-8859-1';
+
         $page = new \Suricate\Page();
-        $page->setEncoding('iso-8859-1');
-        $this->assertAttributeEquals('iso-8859-1', 'encoding', $page);
+        $page->setEncoding($encoding);
+        $this->assertSame($encoding, $page->getEncoding());
     }
 
     public function testTitle()
     {
+        $title = 'My great webpage';
+
         $page = new \Suricate\Page();
-        $page->setTitle('My great webpage');
-        $this->assertAttributeEquals('My great webpage', 'title', $page);
+        $page->setTitle($title);
+        $this->assertSame($title, $page->getTitle());
     }
 
     public function testAddStylesheet()
@@ -31,24 +36,19 @@ class PageTest extends \PHPUnit\Framework\TestCase
         $property = $reflector->getProperty('stylesheets');
         $property->setAccessible(true);
 
-        $this->assertEquals(
-            $property->getValue($page),
-            [
-                'stylesheet-ref' => ['url' => '/my.css', 'media' => 'all'],
-            ]
-        );
-        $this->assertNotEquals(
-            $property->getValue($page),
-            [
-                'another-stylesheet' => ['url' => '/my-2.css', 'media' => 'all'],
-            ]
-        );
+        $this->assertEquals($property->getValue($page), [
+            'stylesheet-ref' => ['url' => '/my.css', 'media' => 'all']
+        ]);
+        $this->assertNotEquals($property->getValue($page), [
+            'another-stylesheet' => ['url' => '/my-2.css', 'media' => 'all']
+        ]);
     }
 
     public function testRender()
     {
         $page = new \Suricate\Page();
-        $this->assertEquals('<!DOCTYPE html>
+        $this->assertEquals(
+            '<!DOCTYPE html>
 <html lang="en">
 <head>
 <title></title>
@@ -56,10 +56,13 @@ class PageTest extends \PHPUnit\Framework\TestCase
 </head>
 <body>
 </body>
-</html>', $page->render());
+</html>',
+            $page->render()
+        );
 
         $page->setTitle('My Pageé');
-        $this->assertEquals('<!DOCTYPE html>
+        $this->assertEquals(
+            '<!DOCTYPE html>
 <html lang="en">
 <head>
 <title>My Page&eacute;</title>
@@ -67,12 +70,15 @@ class PageTest extends \PHPUnit\Framework\TestCase
 </head>
 <body>
 </body>
-</html>', $page->render());
+</html>',
+            $page->render()
+        );
 
         $page->addHtmlClass('class1');
         $page->addHtmlClass('class2');
 
-        $this->assertEquals('<!DOCTYPE html>
+        $this->assertEquals(
+            '<!DOCTYPE html>
 <html lang="en" class="class1 class2">
 <head>
 <title>My Page&eacute;</title>
@@ -80,7 +86,9 @@ class PageTest extends \PHPUnit\Framework\TestCase
 </head>
 <body>
 </body>
-</html>', $page->render());
+</html>',
+            $page->render()
+        );
 
         $page->addScript('script-id', 'http://scripturl.com');
         $page->addRss('rss-id', 'http://rssurl.com', 'RSS is not dead !');
@@ -89,7 +97,8 @@ class PageTest extends \PHPUnit\Framework\TestCase
         $page->addMetaProperty('metapropertyname', 'metapropertycontent');
         $page->addMetaLink('metalinkname', 'metalinktype', 'metalinkhref');
 
-        $this->assertEquals('<!DOCTYPE html>
+        $this->assertEquals(
+            '<!DOCTYPE html>
 <html lang="en" class="class1 class2">
 <head>
 <title>My Page&eacute;</title>
@@ -103,6 +112,8 @@ class PageTest extends \PHPUnit\Framework\TestCase
 </head>
 <body>
 </body>
-</html>', $page->render());
+</html>',
+            $page->render()
+        );
     }
 }

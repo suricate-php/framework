@@ -1,15 +1,23 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate\Exception;
 
 class HttpException extends \RuntimeException
 {
     private $statusCode;
     private $headers;
-    
-    public function __construct($statusCode, $message = null, \Exception $previous = null, array $headers = [], $code = 0)
-    {
-        $this->statusCode   = $statusCode;
-        $this->headers      = $headers;
+
+    public function __construct(
+        $statusCode,
+        $message = null,
+        \Exception $previous = null,
+        array $headers = [],
+        $code = 0
+    ) {
+        $this->statusCode = $statusCode;
+        $this->headers = $headers;
 
         parent::__construct($message, $code, $previous);
     }
