@@ -1,13 +1,16 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate\Traits;
 
 use Suricate\DBObject;
 
 trait DBObjectProtected
 {
-    protected $protectedVariables           = [];
-    protected $protectedValues              = [];
-    protected $loadedProtectedVariables     = [];
+    protected $protectedVariables = [];
+    protected $protectedValues = [];
+    protected $loadedProtectedVariables = [];
 
     /**
      * @param string $name
@@ -15,7 +18,10 @@ trait DBObjectProtected
     private function getProtectedVariable(string $name)
     {
         // Variable exists, and is already loaded
-        if (isset($this->protectedValues[$name]) && $this->isProtectedVariableLoaded($name)) {
+        if (
+            isset($this->protectedValues[$name]) &&
+            $this->isProtectedVariableLoaded($name)
+        ) {
             return $this->protectedValues[$name];
         }
         // Variable has not been loaded
@@ -47,10 +53,10 @@ trait DBObjectProtected
     }
 
     /**
-    * Check if variable is a protected variable
-    * @param  string  $name variable name
-    * @return boolean
-    */
+     * Check if variable is a protected variable
+     * @param  string  $name variable name
+     * @return boolean
+     */
     public function isProtectedVariable(string $name): bool
     {
         return in_array($name, $this->protectedVariables);

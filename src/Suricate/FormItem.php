@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate;
 
 /**
@@ -30,11 +33,11 @@ class FormItem
         'min',
         'step',
         'max',
-        'src',
+        'src'
     ];
     public $label;
-    public $objectHtmlValues            = [];
-    public static $encoding             = 'UTF-8';
+    public $objectHtmlValues = [];
+    public static $encoding = 'UTF-8';
 
     public function __construct($itemData = [])
     {
@@ -64,21 +67,26 @@ class FormItem
         return array_key_exists($name, $this->objectHtmlValues);
     }
 
-    public static function input($type, $name, $value = null, $label = null, $htmlAttributes = [])
-    {
-        $itemData           = [];
-        $itemData['type']   = $type;
-        $itemData['name']   = $name;
-        $itemData['value']  = $value;
-        $itemData['label']  = $label;
+    public static function input(
+        $type,
+        $name,
+        $value = null,
+        $label = null,
+        $htmlAttributes = []
+    ) {
+        $itemData = [];
+        $itemData['type'] = $type;
+        $itemData['name'] = $name;
+        $itemData['value'] = $value;
+        $itemData['label'] = $label;
         if ($label !== null && !isset($htmlAttributes['id'])) {
-            $itemData['id']     = $name;
+            $itemData['id'] = $name;
         }
         $itemData = array_merge($itemData, $htmlAttributes);
 
         $item = new FormItem($itemData);
 
-        $output  = $item->renderLabel();
+        $output = $item->renderLabel();
         $output .= '<input';
         $output .= $item->renderAttributes();
         $output .= '/>';
@@ -86,33 +94,66 @@ class FormItem
         return $output;
     }
 
-    public static function text($name, $value = null, $label = null, $htmlAttributes = [])
-    {
+    public static function text(
+        $name,
+        $value = null,
+        $label = null,
+        $htmlAttributes = []
+    ) {
         return static::input('text', $name, $value, $label, $htmlAttributes);
     }
 
-    public static function password($name, $value, $label = null, $htmlAttributes = [])
-    {
-        return static::input('password', $name, $value, $label, $htmlAttributes);
+    public static function password(
+        $name,
+        $value,
+        $label = null,
+        $htmlAttributes = []
+    ) {
+        return static::input(
+            'password',
+            $name,
+            $value,
+            $label,
+            $htmlAttributes
+        );
     }
 
-    public static function number($name, $value, $label = null, $htmlAttributes = [])
-    {
+    public static function number(
+        $name,
+        $value,
+        $label = null,
+        $htmlAttributes = []
+    ) {
         return static::input('number', $name, $value, $label, $htmlAttributes);
     }
 
-    public static function button($name, $value, $label = null, $htmlAttributes = [])
-    {
+    public static function button(
+        $name,
+        $value,
+        $label = null,
+        $htmlAttributes = []
+    ) {
         return static::input('button', $name, $value, $label, $htmlAttributes);
     }
 
-    public static function checkbox($name, $value = 1, $checked = false, $label = null, $htmlAttributes = [])
-    {
+    public static function checkbox(
+        $name,
+        $value = 1,
+        $checked = false,
+        $label = null,
+        $htmlAttributes = []
+    ) {
         if (!isset($htmlAttributes['checked']) && $checked) {
             $htmlAttributes['checked'] = 'checked';
         }
-        
-        return static::input('checkbox', $name, $value, $label, $htmlAttributes);
+
+        return static::input(
+            'checkbox',
+            $name,
+            $value,
+            $label,
+            $htmlAttributes
+        );
     }
 
     public static function file($name, $label = null, $htmlAttributes = [])
@@ -132,17 +173,22 @@ class FormItem
         return static::input('image', $name, null, null, $htmlAttributes);
     }
 
-    public static function radio($name, $availableValues = [], $value = null, $label = null, $htmlAttributes = [])
-    {
-        $itemData           = [];
-        $itemData['name']   = $name;
-        $itemData['value']  = $value;
-        $itemData['label']  = $label;
+    public static function radio(
+        $name,
+        $availableValues = [],
+        $value = null,
+        $label = null,
+        $htmlAttributes = []
+    ) {
+        $itemData = [];
+        $itemData['name'] = $name;
+        $itemData['value'] = $value;
+        $itemData['label'] = $label;
         $itemData = array_merge($itemData, $htmlAttributes);
 
         $item = new FormItem($itemData);
 
-        $output  = $item->renderLabel();
+        $output = $item->renderLabel();
         $output .= '<div class="radio-list">';
         foreach ($availableValues as $currentValue => $currentLabel) {
             $htmlAttributes = ['id' => $name . '-' . $currentValue];
@@ -150,7 +196,16 @@ class FormItem
                 $htmlAttributes['checked'] = 'checked';
             }
 
-            $output .= '<div class="radio-item">' . FormItem::input('radio', $name, $currentValue, $currentLabel, $htmlAttributes) . '</div>';
+            $output .=
+                '<div class="radio-item">' .
+                FormItem::input(
+                    'radio',
+                    $name,
+                    $currentValue,
+                    $currentLabel,
+                    $htmlAttributes
+                ) .
+                '</div>';
         }
         $output .= '</div>';
 
@@ -162,39 +217,85 @@ class FormItem
         return static::input('reset', null, $value, null, $htmlAttributes);
     }
 
-    public static function select($name, $availableValues = [], $value = null, $label = null, $htmlAttributes = [])
-    {
-        $itemData           = [];
-        $itemData['name']   = $name;
-        $itemData['value']  = $value;
-        $itemData['label']  = $label;
+    public static function select(
+        $name,
+        $availableValues = [],
+        $value = null,
+        $label = null,
+        $htmlAttributes = []
+    ) {
+        $itemData = [];
+        $itemData['name'] = $name;
+        $itemData['value'] = $value;
+        $itemData['label'] = $label;
         $itemData = array_merge($itemData, $htmlAttributes);
 
         $item = new FormItem($itemData);
 
-        $output  = $item->renderLabel();
+        $output = $item->renderLabel();
         $output .= '<select';
         $output .= $item->renderAttributes(true);
         $output .= '>';
         foreach ($availableValues as $currentKey => $currentOption) {
             if (is_array($currentOption)) {
-                $output .= '<optgroup label="' . htmlentities((string) $currentKey, ENT_COMPAT, static::$encoding) . '">';
+                $output .=
+                    '<optgroup label="' .
+                    htmlentities(
+                        (string) $currentKey,
+                        ENT_COMPAT,
+                        static::$encoding
+                    ) .
+                    '">';
                 foreach ($currentOption as $subKey => $subOption) {
                     if (is_array($value)) {
-                        $selected = in_array($subKey, $value) ? ' selected' : '';
+                        $selected = in_array($subKey, $value)
+                            ? ' selected'
+                            : '';
                     } else {
-                        $selected = ($subKey == $value) ? ' selected' : '';
+                        $selected = $subKey == $value ? ' selected' : '';
                     }
-                    $output .= '<option value="' . htmlentities((string) $subKey, ENT_COMPAT, static::$encoding) . '"' . $selected . '>' . htmlentities((string) $subOption, ENT_COMPAT, static::$encoding) . '</option>';
+                    $output .=
+                        '<option value="' .
+                        htmlentities(
+                            (string) $subKey,
+                            ENT_COMPAT,
+                            static::$encoding
+                        ) .
+                        '"' .
+                        $selected .
+                        '>' .
+                        htmlentities(
+                            (string) $subOption,
+                            ENT_COMPAT,
+                            static::$encoding
+                        ) .
+                        '</option>';
                 }
                 $output .= '</optgroup>';
             } else {
                 if (is_array($value)) {
-                    $selected = in_array($currentKey, $value) ? ' selected' : '';
+                    $selected = in_array($currentKey, $value)
+                        ? ' selected'
+                        : '';
                 } else {
-                    $selected = ($currentKey == $value) ? ' selected' : '';
+                    $selected = $currentKey == $value ? ' selected' : '';
                 }
-                $output .= '<option value="' . htmlentities((string) $currentKey, ENT_COMPAT, static::$encoding) . '"' . $selected . '>' . htmlentities((string) $currentOption, ENT_COMPAT, static::$encoding) . '</option>';
+                $output .=
+                    '<option value="' .
+                    htmlentities(
+                        (string) $currentKey,
+                        ENT_COMPAT,
+                        static::$encoding
+                    ) .
+                    '"' .
+                    $selected .
+                    '>' .
+                    htmlentities(
+                        (string) $currentOption,
+                        ENT_COMPAT,
+                        static::$encoding
+                    ) .
+                    '</option>';
             }
         }
 
@@ -203,25 +304,33 @@ class FormItem
         return $output;
     }
 
-    public static function submit($name, $value, $label = '', $htmlAttributes = [])
-    {
+    public static function submit(
+        $name,
+        $value,
+        $label = '',
+        $htmlAttributes = []
+    ) {
         return static::input('submit', $name, $value, $label, $htmlAttributes);
     }
 
-    public static function textarea($name, $value, $label = '', $htmlAttributes = [])
-    {
-        $itemData           = [];
-        $itemData['name']   = $name;
+    public static function textarea(
+        $name,
+        $value,
+        $label = '',
+        $htmlAttributes = []
+    ) {
+        $itemData = [];
+        $itemData['name'] = $name;
 
-        $itemData['label']  = $label;
+        $itemData['label'] = $label;
         if ($label !== null && !isset($htmlAttributes['id'])) {
-            $itemData['id']     = $name;
+            $itemData['id'] = $name;
         }
         $itemData = array_merge($itemData, $htmlAttributes);
 
         $item = new FormItem($itemData);
 
-        $output  = $item->renderLabel();
+        $output = $item->renderLabel();
         $output .= '<textarea';
         $output .= $item->renderAttributes(true);
         $output .= '>';
@@ -241,28 +350,54 @@ class FormItem
         return static::input('url', $name, $value, $label, $htmlAttributes);
     }
 
-    public static function email($name, $value, $label = '', $htmlAttributes = [])
-    {
+    public static function email(
+        $name,
+        $value,
+        $label = '',
+        $htmlAttributes = []
+    ) {
         return static::input('email', $name, $value, $label, $htmlAttributes);
     }
 
-    public static function search($name, $value, $label = '', $htmlAttributes = [])
-    {
+    public static function search(
+        $name,
+        $value,
+        $label = '',
+        $htmlAttributes = []
+    ) {
         return static::input('search', $name, $value, $label, $htmlAttributes);
     }
 
-    public static function date($name, $value, $label = '', $htmlAttributes = [])
-    {
+    public static function date(
+        $name,
+        $value,
+        $label = '',
+        $htmlAttributes = []
+    ) {
         return static::input('date', $name, $value, $label, $htmlAttributes);
     }
 
-    public static function dateTime($name, $value, $label = '', $htmlAttributes = [])
-    {
-        return static::input('datetime', $name, $value, $label, $htmlAttributes);
+    public static function dateTime(
+        $name,
+        $value,
+        $label = '',
+        $htmlAttributes = []
+    ) {
+        return static::input(
+            'datetime',
+            $name,
+            $value,
+            $label,
+            $htmlAttributes
+        );
     }
 
-    public static function time($name, $value, $label = '', $htmlAttributes = [])
-    {
+    public static function time(
+        $name,
+        $value,
+        $label = '',
+        $htmlAttributes = []
+    ) {
         return static::input('time', $name, $value, $label, $htmlAttributes);
     }
 
@@ -272,7 +407,10 @@ class FormItem
         if ($this->label != '') {
             $output .= '<label';
             if ($this->id != '') {
-                $output .= ' for="' . htmlentities($this->id, ENT_COMPAT, static::$encoding) . '"';
+                $output .=
+                    ' for="' .
+                    htmlentities($this->id, ENT_COMPAT, static::$encoding) .
+                    '"';
             }
             $output .= '>';
             $output .= $this->label;
@@ -288,7 +426,16 @@ class FormItem
         foreach ($this->objectHtmlProperties as $currentAttribute) {
             if (!($currentAttribute == 'value' && $skipValue)) {
                 if ($this->$currentAttribute !== null) {
-                    $output .= ' ' . $currentAttribute . '="' . htmlentities((string) $this->$currentAttribute, ENT_COMPAT, static::$encoding) . '"';
+                    $output .=
+                        ' ' .
+                        $currentAttribute .
+                        '="' .
+                        htmlentities(
+                            (string) $this->$currentAttribute,
+                            ENT_COMPAT,
+                            static::$encoding
+                        ) .
+                        '"';
                 }
             }
         }

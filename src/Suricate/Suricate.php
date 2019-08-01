@@ -1,5 +1,9 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate;
+
 /**
  * Suricate - Another micro PHP framework
  *
@@ -28,14 +32,13 @@ namespace Suricate;
  * @method static \Suricate\SessionMemcache SessionMemcache($newInstance = false) Get instance of Session service
  */
 
-
 class Suricate
 {
-    const VERSION = '0.2.0';
+    const VERSION = '0.2.4';
 
     const CONF_DIR = '/conf/';
 
-    private $config  = [];
+    private $config = [];
     private $configFile = [];
 
     private $useAutoloader = false;
@@ -44,39 +47,40 @@ class Suricate
     private static $servicesRepository;
 
     private $servicesList = [
-        'App'               => '\Suricate\App',
-        'Cache'             => '\Suricate\Cache',
-        'CacheMemcache'     => '\Suricate\Cache\Memcache',
-        'CacheMemcached'    => '\Suricate\Cache\Memcached',
-        'CacheApc'          => '\Suricate\Cache\Apc',
-        'CacheFile'         => '\Suricate\Cache\File',
-        'Curl'              => '\Suricate\Curl',
-        'Database'          => '\Suricate\Database',
-        'Error'             => '\Suricate\Error',
-        'I18n'              => '\Suricate\I18n',
-        'Logger'            => '\Suricate\Logger',
-        'Request'           => '\Suricate\Request',
-        'Response'          => '\Suricate\Request',
-        'Router'            => '\Suricate\Router',
-        'Session'           => '\Suricate\Session',
-        'SessionNative'     => '\Suricate\Session\Native',
-        'SessionCookie'     => '\Suricate\Session\Cookie',
-        'SessionMemcache'   => '\Suricate\Session\Memcache',
+        'App' => '\Suricate\App',
+        'Cache' => '\Suricate\Cache',
+        'CacheMemcache' => '\Suricate\Cache\Memcache',
+        'CacheMemcached' => '\Suricate\Cache\Memcached',
+        'CacheApc' => '\Suricate\Cache\Apc',
+        'CacheFile' => '\Suricate\Cache\File',
+        'Curl' => '\Suricate\Curl',
+        'Database' => '\Suricate\Database',
+        'Error' => '\Suricate\Error',
+        'I18n' => '\Suricate\I18n',
+        'Logger' => '\Suricate\Logger',
+        'Request' => '\Suricate\Request',
+        'Response' => '\Suricate\Request',
+        'Router' => '\Suricate\Router',
+        'Session' => '\Suricate\Session',
+        'SessionNative' => '\Suricate\Session\Native',
+        'SessionCookie' => '\Suricate\Session\Cookie',
+        'SessionMemcache' => '\Suricate\Session\Memcache'
     ];
-
 
     /**
      * Suricate contructor
      *
      * @param array $paths Application paths
      * @param string|array|null $configFile path of configuration file(s)
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function __construct($paths = [], $configFile = null)
     {
         if ($configFile !== null) {
             $this->setConfigFile($configFile);
         }
-       
+
         // Load helpers
         require_once __DIR__ . DIRECTORY_SEPARATOR . 'Helper.php';
 
@@ -122,24 +126,31 @@ class Suricate
 
         self::$servicesRepository['Request']->parse();
         if (isset($this->config['App']['locale'])) {
-            $this->config['I18n'] = ['locale' => $this->config['App']['locale']];
+            $this->config['I18n'] = [
+                'locale' => $this->config['App']['locale']
+            ];
         }
         // first sync, && init, dependency to Suricate::request
         self::$servicesContainer = clone self::$servicesRepository;
 
         foreach (array_keys($this->servicesList) as $serviceName) {
             if (isset($this->config[$serviceName])) {
-                self::$servicesRepository[$serviceName]->configure($this->config[$serviceName]);
+                self::$servicesRepository[$serviceName]->configure(
+                    $this->config[$serviceName]
+                );
 
                 /**
                  TODO : remove sync in service creation
-                */
+                 */
                 self::$servicesContainer = clone self::$servicesRepository;
             }
         }
 
         if (isset($this->config['Constants'])) {
-            foreach ($this->config['Constants'] as $constantName => $constantValue) {
+            foreach (
+                $this->config['Constants']
+                as $constantName => $constantValue
+            ) {
                 $constantName = strtoupper($constantName);
                 define($constantName, $constantValue);
             }
@@ -174,7 +185,10 @@ class Suricate
         if (count($this->configFile)) {
             $userConfig = [];
             foreach ($this->configFile as $configFile) {
-                $userConfig = array_merge_recursive($userConfig, (array) parse_ini_file($configFile, true, INI_SCANNER_TYPED));
+                $userConfig = array_merge_recursive(
+                    $userConfig,
+                    (array) parse_ini_file($configFile, true, INI_SCANNER_TYPED)
+                );
             }
 
             // Advanced ini parsing, split key with '.' into subarrays
@@ -183,7 +197,8 @@ class Suricate
                     if (stripos($name, '.') !== false) {
                         $subkeys = explode('.', $name);
                         unset($userConfig[$section][$name]);
-                        $str = "['" . implode("']['", $subkeys) . "'] = \$value;";
+                        $str =
+                            "['" . implode("']['", $subkeys) . "'] = \$value;";
                         eval("\$userConfig[\$section]" . $str);
                     }
                 }
@@ -192,7 +207,10 @@ class Suricate
 
         foreach ($this->getDefaultConfig() as $context => $directives) {
             if (isset($userConfig[$context])) {
-                $this->config[$context] = array_merge($directives, $userConfig[$context]);
+                $this->config[$context] = array_merge(
+                    $directives,
+                    $userConfig[$context]
+                );
                 unset($userConfig[$context]);
             } else {
                 $this->config[$context] = $directives;
@@ -206,36 +224,36 @@ class Suricate
 
     private function configureAppMode()
     {
-        $errorReporting     = true;
-        $errorDumpContext   = true;
-        $logLevel           = Logger::LOGLEVEL_WARN;
-        $logFile            = 'php://stdout';
-        
+        $errorReporting = true;
+        $errorDumpContext = true;
+        $logLevel = Logger::LOGLEVEL_WARN;
+        $logFile = 'php://stdout';
+
         if (isset($this->config['App']['mode'])) {
             switch ($this->config['App']['mode']) {
                 case App::DEVELOPMENT_MODE:
-                    $errorReporting     = true;
-                    $errorDumpContext   = true;
-                    $logLevel           = Logger::LOGLEVEL_INFO;
-                    $logFile            = 'php://stdout';
+                    $errorReporting = true;
+                    $errorDumpContext = true;
+                    $logLevel = Logger::LOGLEVEL_INFO;
+                    $logFile = 'php://stdout';
                     break;
                 case App::DEBUG_MODE:
-                    $errorReporting     = true;
-                    $errorDumpContext   = true;
-                    $logLevel           = Logger::LOGLEVEL_DEBUG;
-                    $logFile            = 'php://stdout';
+                    $errorReporting = true;
+                    $errorDumpContext = true;
+                    $logLevel = Logger::LOGLEVEL_DEBUG;
+                    $logFile = 'php://stdout';
                     break;
                 case App::PRELIVE_MODE:
-                    $errorReporting     = true;
-                    $errorDumpContext   = false;
-                    $logLevel           = Logger::LOGLEVEL_WARN;
-                    $logFile            = 'php://stderr';
+                    $errorReporting = true;
+                    $errorDumpContext = false;
+                    $logLevel = Logger::LOGLEVEL_WARN;
+                    $logFile = 'php://stderr';
                     break;
                 case App::PRODUCTION_MODE:
-                    $errorReporting     = false;
-                    $errorDumpContext   = false;
-                    $logLevel           = Logger::LOGLEVEL_WARN;
-                    $logFile            = 'php://stderr';
+                    $errorReporting = false;
+                    $errorDumpContext = false;
+                    $logLevel = Logger::LOGLEVEL_WARN;
+                    $logFile = 'php://stderr';
                     break;
             }
         }
@@ -252,10 +270,10 @@ class Suricate
             $errorDumpContext = $this->config['Error']['dumpContext'];
         }
 
-        $this->config['Logger']['level']        = $logLevel;
-        $this->config['Logger']['logfile']      = $logFile;
-        $this->config['Error']['report']        = $errorReporting;
-        $this->config['Error']['dumpContext']   =  $errorDumpContext;
+        $this->config['Logger']['level'] = $logLevel;
+        $this->config['Logger']['logfile'] = $logFile;
+        $this->config['Error']['report'] = $errorReporting;
+        $this->config['Error']['dumpContext'] = $errorDumpContext;
     }
     /**
      * Default setup template
@@ -264,11 +282,11 @@ class Suricate
     private function getDefaultConfig()
     {
         return [
-            'Router'    => [],
-            'Logger'    => [
-                'enabled'   => true,
+            'Router' => [],
+            'Logger' => [
+                'enabled' => true
             ],
-            'App'       => ['base_uri' => '/'],
+            'App' => ['base_uri' => '/']
         ];
     }
 

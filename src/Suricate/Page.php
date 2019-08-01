@@ -1,16 +1,19 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate;
 
 class Page
 {
     protected $title;
-    protected $encoding       = 'utf-8';
-    protected $language       = 'en_US';
-    protected $stylesheets    = [];
-    protected $metas          = [];
-    protected $scripts        = [];
-    protected $rss            = [];
-    protected $htmlClass      = [];
+    protected $encoding = 'utf-8';
+    protected $language = 'en_US';
+    protected $stylesheets = [];
+    protected $metas = [];
+    protected $scripts = [];
+    protected $rss = [];
+    protected $htmlClass = [];
 
     public function __construct()
     {
@@ -30,6 +33,16 @@ class Page
     }
 
     /**
+     * Get language passed to html tag
+     *
+     * @return string
+     */
+    public function getLanguage(): string
+    {
+        return $this->language;
+    }
+
+    /**
      * Set encoding passed to html and rss tags
      *
      * @param string $encoding Encoding to set
@@ -40,6 +53,16 @@ class Page
         $this->encoding = $encoding;
 
         return $this;
+    }
+
+    /**
+     * Get encoding passed to html and rss tags
+     *
+     * @return string
+     */
+    public function getEncoding(): string
+    {
+        return $this->encoding;
     }
 
     /**
@@ -55,10 +78,16 @@ class Page
         return $this;
     }
 
-    //
-    // Stylesheets
-    //
-    
+    /**
+     * Get title of the page
+     *
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
     /**
      * Add a stylesheet
      * @param string $identifier Unique stylesheet identifier
@@ -66,8 +95,11 @@ class Page
      * @param string $media      Stylesheet media (default: all)
      * @return Page
      */
-    public function addStylesheet(string $identifier, string  $url, string $media = 'all'): Page
-    {
+    public function addStylesheet(
+        string $identifier,
+        string $url,
+        string $media = 'all'
+    ): Page {
         $this->stylesheets[$identifier] = [
             'url' => $url,
             'media' => $media
@@ -102,7 +134,7 @@ class Page
         return $this;
     }
 
-     /**
+    /**
      * Add a RSS Feed
      * @param string $id  Unique stylesheet identifier
      * @param string $url Feed URL
@@ -123,7 +155,10 @@ class Page
             $output .= ' id="' . $id . '"';
             $output .= ' href="' . $rss['url'] . '"';
             $output .= ' type="application/rss+xml"';
-            $output .= ' media="' . htmlentities($rss['title'], ENT_COMPAT, $this->encoding) . '"';
+            $output .=
+                ' media="' .
+                htmlentities($rss['title'], ENT_COMPAT, $this->encoding) .
+                '"';
             $output .= '/>' . "\n";
         }
         return $output;
@@ -142,9 +177,13 @@ class Page
     protected function renderScripts()
     {
         $output = '';
-        
+
         foreach ($this->scripts as $currentScriptUrl) {
-            $output .= '<script type="text/javascript" src="' . $currentScriptUrl . '"></script>' . "\n";
+            $output .=
+                '<script type="text/javascript" src="' .
+                $currentScriptUrl .
+                '"></script>' .
+                "\n";
         }
 
         return $output;
@@ -167,7 +206,11 @@ class Page
 
     public function addMetaLink($name, $type, $href)
     {
-        $this->metas[$name] = ['href' => $href, 'type' => 'rel', 'relType' => $type];
+        $this->metas[$name] = [
+            'href' => $href,
+            'type' => 'rel',
+            'relType' => $type
+        ];
     }
 
     protected function renderMetas()
@@ -175,11 +218,29 @@ class Page
         $output = '';
         foreach ($this->metas as $name => $metaData) {
             if ($metaData['type'] == 'name') {
-                $output .= '<meta name="' . $name . '" content="' . $metaData['content'] . '"/>' . "\n";
+                $output .=
+                    '<meta name="' .
+                    $name .
+                    '" content="' .
+                    $metaData['content'] .
+                    '"/>' .
+                    "\n";
             } elseif ($metaData['type'] == 'property') {
-                $output .= '<meta property="' . $name . '" content="' . $metaData['content'] . '"/>' . "\n";
+                $output .=
+                    '<meta property="' .
+                    $name .
+                    '" content="' .
+                    $metaData['content'] .
+                    '"/>' .
+                    "\n";
             } elseif ($metaData['type'] == 'rel') {
-                $output .= '<link rel="' . $metaData['relType'] . '" href="' . $metaData['href'] . '"/>'."\n";
+                $output .=
+                    '<link rel="' .
+                    $metaData['relType'] .
+                    '" href="' .
+                    $metaData['href'] .
+                    '"/>' .
+                    "\n";
             }
         }
 
@@ -188,20 +249,36 @@ class Page
 
     public function render($content = '')
     {
-        $htmlClass = count($this->htmlClass) ? ' class="' . implode(' ', array_keys($this->htmlClass)) .'"' : '';
-        $output  = '<!DOCTYPE html>' . "\n";
-        $output .= '<html lang="' . substr($this->language, 0, 2) . '"' . $htmlClass . '>' . "\n";
+        $htmlClass = count($this->htmlClass)
+            ? ' class="' . implode(' ', array_keys($this->htmlClass)) . '"'
+            : '';
+        $output = '<!DOCTYPE html>' . "\n";
+        $output .=
+            '<html lang="' .
+            substr($this->language, 0, 2) .
+            '"' .
+            $htmlClass .
+            '>' .
+            "\n";
         $output .= '<head>' . "\n";
-        $output .= '<title>' . htmlentities((string) $this->title, ENT_COMPAT, $this->encoding) . '</title>' . "\n";
-        $output .= '<meta http-equiv="Content-Type" content="text/html; charset=' . $this->encoding . '" />'."\n";
-        $output .=  $this->renderMetas();
-        $output .=  $this->renderStylesheets();
-        $output .=  $this->renderScripts();
-        $output .=  $this->renderRss();
+        $output .=
+            '<title>' .
+            htmlentities((string) $this->title, ENT_COMPAT, $this->encoding) .
+            '</title>' .
+            "\n";
+        $output .=
+            '<meta http-equiv="Content-Type" content="text/html; charset=' .
+            $this->encoding .
+            '" />' .
+            "\n";
+        $output .= $this->renderMetas();
+        $output .= $this->renderStylesheets();
+        $output .= $this->renderScripts();
+        $output .= $this->renderRss();
         $output .= '</head>' . "\n";
         $output .= '<body>' . "\n";
         $output .= $content;
-        $output .= '</body>'."\n";
+        $output .= '</body>' . "\n";
         $output .= '</html>';
 
         return $output;

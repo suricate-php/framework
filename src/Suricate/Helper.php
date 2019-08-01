@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 use Suricate\Suricate;
 
 // Debug
@@ -262,6 +265,15 @@ if (!function_exists('getPostParam')) {
     }
 }
 
+if (!function_exists('getEnvParam')) {
+    function getEnvParam($param, $defaultValue = null)
+    {
+        $env = getenv($param);
+
+        return $env === false ? $defaultValue : $env;
+    }
+}
+
 if (!function_exists('getParam')) {
     function getParam($param, $defaultValue = null)
     {
@@ -269,6 +281,12 @@ if (!function_exists('getParam')) {
     }
 }
 
+/**
+ * i18n
+ *
+ * @return void
+ * @SuppressWarnings(PHPMD.StaticAccess)
+ */
 if (!function_exists('i18n')) {
     function i18n()
     {

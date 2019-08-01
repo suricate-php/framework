@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate\Cache;
 
 use Suricate;
@@ -15,19 +18,16 @@ use Suricate;
 
 class File extends Suricate\Cache
 {
-    protected $parametersList = [
-        'path',
-        'defaultExpiry',
-    ];
+    protected $parametersList = ['path', 'defaultExpiry'];
     private $handler;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->handler          = false;
-        $this->path             = app_path() . '/storage/app/';
-        $this->defaultExpiry    = 3600;
+        $this->handler = false;
+        $this->path = app_path() . '/storage/app/';
+        $this->defaultExpiry = 3600;
     }
 
     public function getDefaultExpiry()
@@ -41,7 +41,7 @@ class File extends Suricate\Cache
 
         return $this;
     }
-    
+
     /**
      * Put a value into memcache
      * @param string $variable Variable name
@@ -55,14 +55,21 @@ class File extends Suricate\Cache
         }
         $fp = fopen($this->path . $variable, 'w');
         if ($fp === false) {
-            throw new \Exception("Cannot open cache file " . $this->path . $variable);
+            throw new \Exception(
+                "Cannot open cache file " . $this->path . $variable
+            );
         }
         fputs($fp, $value);
         fclose($fp);
         if ($expiry !== null) {
-            $fp = fopen($this->path . $variable .'.expiry', 'w');
+            $fp = fopen($this->path . $variable . '.expiry', 'w');
             if ($fp === false) {
-                throw new \Exception("Cannot open cache file " . $this->path . $variable .'.expiry');
+                throw new \Exception(
+                    "Cannot open cache file " .
+                        $this->path .
+                        $variable .
+                        '.expiry'
+                );
             }
             fputs($fp, (string) (time() + $expiry));
             fclose($fp);
@@ -73,12 +80,14 @@ class File extends Suricate\Cache
     {
         if (is_readable($this->path . $variable)) {
             if (is_readable($this->path . $variable . '.expiry')) {
-                $expiry = file_get_contents($this->path . $variable . '.expiry');
-                $hasExpired = (time() - (int) $expiry) > 0 ? 1 : -1;
+                $expiry = file_get_contents(
+                    $this->path . $variable . '.expiry'
+                );
+                $hasExpired = time() - (int) $expiry > 0 ? 1 : -1;
             } else {
                 $hasExpired = 0;
             }
-            
+
             if ($hasExpired < 0) {
                 return file_get_contents($this->path . $variable);
             } elseif ($hasExpired > 0) {

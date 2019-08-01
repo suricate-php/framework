@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Suricate;
 
@@ -258,6 +260,12 @@ class DBCollection extends Collection
         return $this;
     }
 
+    /**
+     * Connect to database layer
+     *
+     * @return void
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     protected function connectDB()
     {
         if (!$this->dbLink) {

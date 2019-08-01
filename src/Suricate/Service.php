@@ -1,11 +1,14 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate;
 
 use InvalidArgumentException;
 
 class Service implements Interfaces\IService
 {
-    protected $parametersList   = [];
+    protected $parametersList = [];
     protected $parametersValues = [];
 
     public function __construct()
@@ -23,7 +26,12 @@ class Service implements Interfaces\IService
             return null;
         }
 
-        throw new InvalidArgumentException("Unknown configuration property " . get_called_class() . '->' .$variable);
+        throw new InvalidArgumentException(
+            "Unknown configuration property " .
+                get_called_class() .
+                '->' .
+                $variable
+        );
     }
 
     public function __set($variable, $value)
@@ -34,7 +42,12 @@ class Service implements Interfaces\IService
             return $this;
         }
 
-        throw new InvalidArgumentException("Unknown configuration property " . get_called_class() . '->' . $variable);
+        throw new InvalidArgumentException(
+            "Unknown configuration property " .
+                get_called_class() .
+                '->' .
+                $variable
+        );
     }
 
     public function configure($parameters = [])

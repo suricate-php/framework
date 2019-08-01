@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate;
 
 use Exception;
@@ -11,6 +14,12 @@ class Session extends Service implements Interfaces\ISession
     protected $parametersList = ['type'];
     private static $container;
 
+    /**
+     * Initialize session handler
+     *
+     * @return void
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     protected function init()
     {
         if (self::$container === null) {
@@ -31,7 +40,7 @@ class Session extends Service implements Interfaces\ISession
             }
         }
     }
-    
+
     /**
      * Get instance of session driver used
      * @return Session driver instance

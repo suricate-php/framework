@@ -1,16 +1,20 @@
 <?php
-use \Suricate\Registry;
+
+use Suricate\Registry;
 
 class RegistryTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetSet()
     {
+        // test fallback return
         $retVal = Registry::get('index', 'fallback');
         $this->assertEquals($retVal, 'fallback');
 
+        // test non existent value
         $retVal = Registry::exists('index');
         $this->assertFalse($retVal);
 
+        // test existing value, no fallback
         Registry::set('index', 'myNewVal');
         $retVal = Registry::get('index', 'fallback');
         $this->assertEquals($retVal, 'myNewVal');
@@ -55,7 +59,7 @@ class RegistryTest extends \PHPUnit\Framework\TestCase
         Registry::setContext(null);
         $retVal = Registry::get('index', 'fallback');
         $this->assertEquals($retVal, 'myNewVal');
-        
+
         Registry::setContext("test-context");
         Registry::clean();
         $retVal = Registry::get('index', 'fallback');

@@ -1,20 +1,27 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate\Traits;
 
 trait DatabaseSQLite
 {
-    private function configurePDOSQLite($params, &$pdoDsn, &$pdoUsername, &$pdoPassword)
-    {
+    private function configurePDOSQLite(
+        $params,
+        &$pdoDsn,
+        &$pdoUsername,
+        &$pdoPassword
+    ) {
         $defaultParams = [
-            'username'  => null,
-            'password'  => null,
-            'memory'    => null,
-            'file'      => null,
+            'username' => null,
+            'password' => null,
+            'memory' => null,
+            'file' => null
         ];
 
         $params = array_merge($defaultParams, $params);
-        
-        $pdoDsn         = 'sqlite';
+
+        $pdoDsn = 'sqlite';
 
         if ($params['memory']) {
             $pdoDsn .= '::memory:';
@@ -26,7 +33,7 @@ trait DatabaseSQLite
             }
         }
 
-        $pdoUsername    = $params['username'];
-        $pdoPassword    = $params['password'];
+        $pdoUsername = $params['username'];
+        $pdoPassword = $params['password'];
     }
 }

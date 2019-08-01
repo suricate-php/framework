@@ -1,22 +1,28 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate\Traits;
 
 use Suricate\DBObject;
 
 trait DBObjectRelations
 {
-    protected $relations                    = [];
-    protected $relationValues               = [];
-    protected $loadedRelations              = [];
+    protected $relations = [];
+    protected $relationValues = [];
+    protected $loadedRelations = [];
 
     /**
      * Get relation from its name
-     * 
+     *
      * @param string $name
      */
     protected function getRelation($name)
     {
-        if (isset($this->relationValues[$name]) && $this->isRelationLoaded($name)) {
+        if (
+            isset($this->relationValues[$name]) &&
+            $this->isRelationLoaded($name)
+        ) {
             return $this->relationValues[$name];
         }
 
@@ -64,7 +70,7 @@ trait DBObjectRelations
             $this->loadedRelations[$name] = true;
         }
     }
-     /**
+    /**
      * Check if a relation already have been loaded
      * @param  string  $name Variable name
      * @return boolean
@@ -119,12 +125,18 @@ trait DBObjectRelations
      */
     private function loadRelationOneMany($name)
     {
-        $target         = $this->relations[$name]['target'];
-        $parentId       = $this->{$this->relations[$name]['source']};
-        $parentIdField  = isset($this->relations[$name]['target_field']) ? $this->relations[$name]['target_field'] : null;
-        $validate       = dataGet($this->relations[$name], 'validate', null);
-        
-        $this->relationValues[$name] = $target::loadForParentId($parentId, $parentIdField, $validate);
+        $target = $this->relations[$name]['target'];
+        $parentId = $this->{$this->relations[$name]['source']};
+        $parentIdField = isset($this->relations[$name]['target_field'])
+            ? $this->relations[$name]['target_field']
+            : null;
+        $validate = dataGet($this->relations[$name], 'validate', null);
+
+        $this->relationValues[$name] = $target::loadForParentId(
+            $parentId,
+            $parentIdField,
+            $validate
+        );
     }
 
     /**
@@ -135,11 +147,16 @@ trait DBObjectRelations
      */
     private function loadRelationManyMany($name)
     {
-        $pivot      = $this->relations[$name]['pivot'];
+        $pivot = $this->relations[$name]['pivot'];
         $sourceType = $this->relations[$name]['source_type'];
-        $target     = dataGet($this->relations[$name], 'target');
-        $validate   = dataGet($this->relations[$name], 'validate', null);
+        $target = dataGet($this->relations[$name], 'target');
+        $validate = dataGet($this->relations[$name], 'validate', null);
 
-        $this->relationValues[$name] = $pivot::loadFor($sourceType, $this->{$this->relations[$name]['source']}, $target, $validate);
+        $this->relationValues[$name] = $pivot::loadFor(
+            $sourceType,
+            $this->{$this->relations[$name]['source']},
+            $target,
+            $validate
+        );
     }
 }

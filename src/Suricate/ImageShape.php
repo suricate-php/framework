@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate;
 
 class ImageShape
@@ -22,7 +25,12 @@ class ImageShape
 
     public function createColor()
     {
-        return imagecolorallocate($this->image, $this->color[0], $this->color[1], $this->color[2]);
+        return imagecolorallocate(
+            $this->image,
+            $this->color[0],
+            $this->color[1],
+            $this->color[2]
+        );
     }
 
     public function drawLine($x1, $y1, $x2, $y2)

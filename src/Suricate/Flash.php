@@ -1,18 +1,21 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate;
 
 class Flash
 {
-    const TYPE_SUCCESS  = 'success';
-    const TYPE_INFO     = 'info';
-    const TYPE_ERROR    = 'error';
-    const TYPE_DATA     = 'data';
+    const TYPE_SUCCESS = 'success';
+    const TYPE_INFO = 'info';
+    const TYPE_ERROR = 'error';
+    const TYPE_DATA = 'data';
 
     public static $types = [
         self::TYPE_SUCCESS,
         self::TYPE_INFO,
         self::TYPE_ERROR,
-        self::TYPE_DATA,
+        self::TYPE_DATA
     ];
 
     private static $items = [];
@@ -40,17 +43,22 @@ class Flash
         self::read();
 
         $availableTypes = [
-            self::TYPE_SUCCESS   => 'success',
-            self::TYPE_INFO      => 'info',
-            self::TYPE_ERROR     => 'danger'
+            self::TYPE_SUCCESS => 'success',
+            self::TYPE_INFO => 'info',
+            self::TYPE_ERROR => 'danger'
         ];
 
         $output = '';
         foreach ($availableTypes as $type => $displayAlias) {
             $currentMessage = self::getMessages($type);
-            
+
             if (count($currentMessage)) {
-                $output .= '<div class="alert alert-' . $displayAlias . '">' . implode('<br/>', (array) $currentMessage) . '</div>';
+                $output .=
+                    '<div class="alert alert-' .
+                    $displayAlias .
+                    '">' .
+                    implode('<br/>', (array) $currentMessage) .
+                    '</div>';
             }
         }
 
@@ -67,8 +75,10 @@ class Flash
     {
         self::read();
 
-        if (isset(self::$items[self::TYPE_DATA])
-            && array_key_exists($key, self::$items[self::TYPE_DATA])) {
+        if (
+            isset(self::$items[self::TYPE_DATA]) &&
+            array_key_exists($key, self::$items[self::TYPE_DATA])
+        ) {
             return self::$items[self::TYPE_DATA][$key];
         }
 
@@ -107,8 +117,14 @@ class Flash
         if (in_array($type, static::$types)) {
             $currentSessionData = Suricate::Session()->read('flash');
 
-            if (isset($currentSessionData[$type]) && is_array($currentSessionData[$type])) {
-                $newData = array_merge($currentSessionData[$type], (array) $message);
+            if (
+                isset($currentSessionData[$type]) &&
+                is_array($currentSessionData[$type])
+            ) {
+                $newData = array_merge(
+                    $currentSessionData[$type],
+                    (array) $message
+                );
             } else {
                 $newData = (array) $message;
             }

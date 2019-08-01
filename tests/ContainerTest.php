@@ -8,8 +8,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
             'b' => 3,
             5 => 'z'
         ]);
-        
-        
+
         $this->assertTrue($testContainer->offsetExists('a'));
         $this->assertTrue($testContainer->offsetExists(5));
         $this->assertFalse($testContainer->offsetExists('c'));
@@ -26,8 +25,8 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
             'a' => 1,
             'b' => 3,
             5 => 'z'
-        ]);        
-        
+        ]);
+
         $this->assertEquals($testContainer['a'], 1);
         $this->assertEquals($testContainer[5], 'z');
 
@@ -44,7 +43,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         ];
 
         $warehouse = ['zz' => 'my_value'];
-        
+
         $testContainer = new \Suricate\Container($payload);
 
         $reflector = new ReflectionClass(get_class($testContainer));
@@ -65,8 +64,6 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $property->setAccessible(true);
 
         $this->assertEquals($warehouse, $property->getValue($testContainer));
-
-
     }
 
     public function testContainerUnset()
@@ -78,12 +75,11 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         ];
 
         $testContainer = new \Suricate\Container($payload);
-        $this->assertAttributeEquals($payload, 'content', $testContainer);
+        $this->assertSame(1, $testContainer['a']);
+        $this->assertSame(3, $testContainer['b']);
+        $this->assertSame('z', $testContainer['5']);
         unset($testContainer['b']);
-        $this->assertAttributeEquals( [
-            'a' => 1,
-            5 => 'z'
-        ], 'content', $testContainer);
+        $this->assertFalse($testContainer->offsetExists('b'));
     }
 
     public function testContainerWarehouse()
@@ -92,6 +88,6 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
 
         $testContainer = new \Suricate\Container([]);
         $testContainer->setWarehouse($warehouse);
-        $this->assertEquals($testContainer['test'], new \stdClass);
+        $this->assertEquals($testContainer['test'], new \stdClass());
     }
 }

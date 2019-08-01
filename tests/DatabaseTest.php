@@ -2,7 +2,6 @@
 
 use PHPUnit\Framework\TestCase;
 
-
 class DatabaseTest extends TestCase
 {
     protected $className = '\Suricate\Database';
@@ -11,9 +10,17 @@ class DatabaseTest extends TestCase
     protected function setupData()
     {
         $pdo = new PDO('sqlite:/tmp/test.db');
-        $pdo->exec("DROP TABLE IF EXISTS `" . $this->tableName ."`");
-        $pdo->exec("CREATE TABLE `" .$this->tableName. "` (`id` INTEGER PRIMARY KEY,`name` varchar(50) DEFAULT NULL,`date_added` datetime NOT NULL)");
-        $stmt = $pdo->prepare("INSERT INTO `" . $this->tableName . "` (name, date_added) VALUES (:name, :date)");
+        $pdo->exec("DROP TABLE IF EXISTS `" . $this->tableName . "`");
+        $pdo->exec(
+            "CREATE TABLE `" .
+                $this->tableName .
+                "` (`id` INTEGER PRIMARY KEY,`name` varchar(50) DEFAULT NULL,`date_added` datetime NOT NULL)"
+        );
+        $stmt = $pdo->prepare(
+            "INSERT INTO `" .
+                $this->tableName .
+                "` (name, date_added) VALUES (:name, :date)"
+        );
         $values = [
             ['John', '2019-01-10 00:00:00'],
             ['Paul', '2019-01-11 00:00:00'],
@@ -30,13 +37,13 @@ class DatabaseTest extends TestCase
         $database = new $className();
         $database->configure([
             'type' => 'sqlite',
-            'file' => '/tmp/test.db',
+            'file' => '/tmp/test.db'
         ]);
 
         return $database;
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->setupData();
     }
@@ -71,7 +78,7 @@ class DatabaseTest extends TestCase
         $className = $this->className;
         $configs = [
             'test1' => ['type' => 'sqlite', 'memory' => true],
-            'test2' => ['type' => 'mysql'],
+            'test2' => ['type' => 'mysql']
         ];
 
         $database = new $className();
@@ -98,7 +105,7 @@ class DatabaseTest extends TestCase
         $className = $this->className;
         $database = new $className();
         $database->configure([
-            'type' => 'my-pdo-handler',
+            'type' => 'my-pdo-handler'
         ]);
         $this->expectException(\Exception::class);
         $database->query("SELECT * FROM users");
@@ -107,11 +114,25 @@ class DatabaseTest extends TestCase
     public function testFetchAll()
     {
         $database = $this->getDatabase();
-        $queryResult = $database->query("SELECT * FROM `" . $this->tableName . "`");
+        $queryResult = $database->query(
+            "SELECT * FROM `" . $this->tableName . "`"
+        );
         $this->assertEquals($queryResult->fetchAll(), [
-            ['id' => '1', 'name' => 'John', 'date_added' => '2019-01-10 00:00:00'],
-            ['id' => '2', 'name' => 'Paul', 'date_added' => '2019-01-11 00:00:00'],
-            ['id' => '3', 'name' => 'Robert', 'date_added' => '2019-01-12 00:00:00'],
+            [
+                'id' => '1',
+                'name' => 'John',
+                'date_added' => '2019-01-10 00:00:00'
+            ],
+            [
+                'id' => '2',
+                'name' => 'Paul',
+                'date_added' => '2019-01-11 00:00:00'
+            ],
+            [
+                'id' => '3',
+                'name' => 'Robert',
+                'date_added' => '2019-01-12 00:00:00'
+            ]
         ]);
     }
 
@@ -120,11 +141,32 @@ class DatabaseTest extends TestCase
         $database = $this->getDatabase();
         $database->query("SELECT * FROM `" . $this->tableName . "`");
         // Record 1
-        $this->assertSame(['id' => '1', 'name' => 'John', 'date_added' => '2019-01-10 00:00:00'], $database->fetch());
+        $this->assertSame(
+            [
+                'id' => '1',
+                'name' => 'John',
+                'date_added' => '2019-01-10 00:00:00'
+            ],
+            $database->fetch()
+        );
         // Record 2
-        $this->assertSame(['id' => '2', 'name' => 'Paul', 'date_added' => '2019-01-11 00:00:00'], $database->fetch());
+        $this->assertSame(
+            [
+                'id' => '2',
+                'name' => 'Paul',
+                'date_added' => '2019-01-11 00:00:00'
+            ],
+            $database->fetch()
+        );
         // Record 3
-        $this->assertSame(['id' => '3', 'name' => 'Robert', 'date_added' => '2019-01-12 00:00:00'], $database->fetch());
+        $this->assertSame(
+            [
+                'id' => '3',
+                'name' => 'Robert',
+                'date_added' => '2019-01-12 00:00:00'
+            ],
+            $database->fetch()
+        );
         // No more records
         $this->assertFalse($database->fetch());
     }
@@ -134,7 +176,7 @@ class DatabaseTest extends TestCase
         $database = $this->getDatabase();
         $database->query("SELECT * FROM `" . $this->tableName . "`");
         $result = $database->fetchObject();
-        $expected = new \stdClass;
+        $expected = new \stdClass();
         $expected->id = '1';
         $expected->name = 'John';
         $expected->date_added = '2019-01-10 00:00:00';
@@ -156,8 +198,16 @@ class DatabaseTest extends TestCase
     public function testLastInsertId()
     {
         $database = $this->getDatabase();
-        $database->query("INSERT INTO `" . $this->tableName . "` (name, date_added) VALUES ('Rodrigo', '2019-01-13 00:00:00')");
-        $this->assertSame('4', $database->lastInsertId(), 'Test last inserted id');
+        $database->query(
+            "INSERT INTO `" .
+                $this->tableName .
+                "` (name, date_added) VALUES ('Rodrigo', '2019-01-13 00:00:00')"
+        );
+        $this->assertSame(
+            '4',
+            $database->lastInsertId(),
+            'Test last inserted id'
+        );
     }
 
     public function testGetColumnCount()
@@ -167,7 +217,7 @@ class DatabaseTest extends TestCase
         $this->assertEquals(3, $database->getColumnCount());
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if (is_file('/tmp/test.db')) {
             unlink('/tmp/test.db');

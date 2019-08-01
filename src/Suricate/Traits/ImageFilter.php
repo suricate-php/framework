@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate\Traits;
 
 trait ImageFilter
@@ -84,12 +87,9 @@ trait ImageFilter
     {
         $args = func_get_args();
         $filterType = array_shift($args);
-        
+
         if (in_array($filterType, $this->filters)) {
-            $params = [
-                $this->source,
-                constant($filterType)
-            ];
+            $params = [$this->source, constant($filterType)];
             $params = array_values(array_merge($params, $args));
 
             call_user_func_array('imagefilter', $params);
@@ -97,6 +97,8 @@ trait ImageFilter
             return $this;
         }
 
-        throw new \InvalidArgumentException('Unknown filter type ' . $filterType);
+        throw new \InvalidArgumentException(
+            'Unknown filter type ' . $filterType
+        );
     }
 }

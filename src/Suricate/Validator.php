@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate;
 
 /**
@@ -40,6 +43,13 @@ class Validator
         $this->createChecks();
     }
 
+    /**
+     * Initialize checks
+     *
+     * @return void
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     */
     private function createChecks()
     {
         $this->checks['equalTo'] = function ($value, $compare) {
@@ -105,7 +115,9 @@ class Validator
                 case 'string':
                     return is_string($value);
                 default:
-                    throw new \InvalidArgumentException('Unknown type to check ' . $type);
+                    throw new \InvalidArgumentException(
+                        'Unknown type to check ' . $type
+                    );
             }
         };
 
@@ -122,7 +134,8 @@ class Validator
         };
 
         $this->checks['regexp'] = function ($value, $regexp) {
-            return filter_var($value, FILTER_VALIDATE_REGEXP, $regexp) !== false;
+            return filter_var($value, FILTER_VALIDATE_REGEXP, $regexp) !==
+                false;
         };
 
         $this->checks['longerThan'] = function ($value, $length) {
@@ -144,7 +157,7 @@ class Validator
         $this->checks['contains'] = function ($value, $toFind) {
             return strpos($value, $toFind) !== false;
         };
-        
+
         $this->checks['alnum'] = function ($value) {
             return ctype_alnum($value);
         };
@@ -156,7 +169,7 @@ class Validator
         $this->checks['digit'] = function ($value) {
             return ctype_digit($value);
         };
-        
+
         $this->checks['lower'] = function ($value) {
             return ctype_lower($value);
         };
@@ -183,15 +196,17 @@ class Validator
             $this->index = $index;
 
             return $this;
-        } 
+        }
         if (array_key_exists($index, $this->datas)) {
             $this->value = $this->datas[$index];
             $this->index = $index;
 
             return $this;
         }
-        
-        throw new \InvalidArgumentException('Index / Property "' . $index . '" does not exists');
+
+        throw new \InvalidArgumentException(
+            'Index / Property "' . $index . '" does not exists'
+        );
     }
 
     public function callValidate()
@@ -200,7 +215,7 @@ class Validator
         if (count($args) < 1) {
             throw new \InvalidArgumentException('bad number of arguments');
         }
-        
+
         $method = array_shift($args);
         if (is_callable($method)) {
             $this->index = null;
@@ -210,7 +225,6 @@ class Validator
         }
 
         throw new \InvalidArgumentException('Bad method');
-
     }
 
     public function __call($method, $parameters)
@@ -226,8 +240,8 @@ class Validator
 
             // Negation check
             if (substr(strtolower($method), 0, 3) == 'not') {
-                $negation   = true;
-                $method     = lcFirst(substr($method, 3));
+                $negation = true;
+                $method = lcFirst(substr($method, 3));
             } else {
                 $negation = false;
             }
@@ -242,7 +256,10 @@ class Validator
 
             array_unshift($parameters, $this->value);
 
-            $validation = (bool) (call_user_func_array($validator, $parameters) ^ $negation);
+            $validation = (bool) (call_user_func_array(
+                $validator,
+                $parameters
+            ) ^ $negation);
             if (!$validation) {
                 if ($stopOnError) {
                     $this->stop = true;
@@ -260,7 +277,6 @@ class Validator
 
     public function getErrors($index = null)
     {
-
         if ($index === null) {
             return $this->errors;
         } else {

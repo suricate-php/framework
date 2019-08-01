@@ -1,9 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Suricate\Traits;
 
 trait DBObjectExport
 {
-    protected $exportedVariables            = [];
+    protected $exportedVariables = [];
 
     /**
      * Define object exported variables
@@ -35,10 +38,10 @@ trait DBObjectExport
         $this->setExportedVariables();
         $result = [];
         foreach ($this->exportedVariables as $sourceName => $destinationName) {
-            $omitEmpty  = false;
-            $castType   = null;
+            $omitEmpty = false;
+            $castType = null;
             if (strpos($destinationName, ',') !== false) {
-                $splitted   = explode(',', $destinationName);
+                $splitted = explode(',', $destinationName);
                 array_map(function ($item) use (&$castType, &$omitEmpty) {
                     if ($item === 'omitempty') {
                         $omitEmpty = true;
