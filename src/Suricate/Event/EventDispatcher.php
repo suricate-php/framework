@@ -74,8 +74,8 @@ class EventDispatcher extends \Suricate\Service
     /**
      * Dispatch an event
      *
-     * @param string|\Suricate\Event $event   Event to be dispatched
-     * @param mixed                  $payload Optionnal event payload
+     * @param string|\Suricate\Event\Event $event   Event to be dispatched
+     * @param mixed                        $payload Optionnal event payload
      * @return void
      */
     public function fire($event, $payload = null)
