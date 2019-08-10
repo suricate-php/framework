@@ -3,6 +3,9 @@
 use Suricate\EventDispatcher;
 
 require_once 'stubs/Event.php';
+require_once 'stubs/EventListener1.php';
+require_once 'stubs/EventListener2.php';
+require_once 'stubs/EventListener3.php';
 
 /**
  * @SuppressWarnings("StaticAccess")
@@ -66,6 +69,35 @@ class EventDispatcherTest extends \PHPUnit\Framework\TestCase
         ];
         $this->assertSame($result, $property->getValue($dispatcher));
     }
+
+    public function testFire()
+    {
+        $dispatcher = new EventDispatcher();
+        $dispatcher->addListener('test.event', 'EventListener1');
+        $dispatcher->addListener('test.event', 'EventListener2');
+        $dispatcher->fire('test.event', 'payload_string');
+        $this->expectOutputString(
+            "payload for listerner1 is : payload_string\npayload for listerner2 is : payload_string\n"
+        );
+    }
+
+    public function testFireObjet()
+    {
+        $dispatcher = new EventDispatcher();
+        $dispatcher->addListener('my.test.event', 'EventListener3');
+        $dispatcher->addListener('test.event', 'EventListener2');
+        $dispatcher->fire(new TestEvent());
+        $this->expectOutputString("payload for listerner3 is : lorem ipsum\n");
+    }
+
+    public function testFireException()
+    {
+        $dispatcher = new EventDispatcher();
+        $this->expectException('InvalidArgumentException');
+
+        $dispatcher->fire(new \Stdclass());
+    }
+
     public function testGetImpactedListeners()
     {
         $dispatcher = new EventDispatcher();
