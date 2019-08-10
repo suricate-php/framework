@@ -17,6 +17,8 @@ class LoggerTest extends \PHPUnit\Framework\TestCase
             ->expects($this->once())
             ->method('log')
             ->with($message, Logger::LOGLEVEL_FATAL);
+
+        /** @scrutinizer ignore-call */
         $mock->fatal($message);
     }
 
@@ -30,6 +32,8 @@ class LoggerTest extends \PHPUnit\Framework\TestCase
             ->expects($this->once())
             ->method('log')
             ->with($message, Logger::LOGLEVEL_ERROR);
+
+        /** @scrutinizer ignore-call */
         $mock->error($message);
     }
 
@@ -43,6 +47,8 @@ class LoggerTest extends \PHPUnit\Framework\TestCase
             ->expects($this->once())
             ->method('log')
             ->with($message, Logger::LOGLEVEL_WARN);
+
+        /** @scrutinizer ignore-call */
         $mock->warn($message);
     }
 
@@ -56,6 +62,8 @@ class LoggerTest extends \PHPUnit\Framework\TestCase
             ->expects($this->once())
             ->method('log')
             ->with($message, Logger::LOGLEVEL_INFO);
+
+        /** @scrutinizer ignore-call */
         $mock->info($message);
     }
 
@@ -69,6 +77,8 @@ class LoggerTest extends \PHPUnit\Framework\TestCase
             ->expects($this->once())
             ->method('log')
             ->with($message, Logger::LOGLEVEL_DEBUG);
+
+        /** @scrutinizer ignore-call */
         $mock->debug($message);
     }
 }

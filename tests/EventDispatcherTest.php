@@ -95,7 +95,10 @@ class EventDispatcherTest extends \PHPUnit\Framework\TestCase
         $dispatcher = new EventDispatcher();
         $this->expectException('InvalidArgumentException');
 
-        $dispatcher->fire(new \Stdclass());
+        $dispatcher->fire(
+            /** @scrutinizer ignore-type */
+            new \Stdclass()
+        );
     }
 
     public function testGetImpactedListeners()
