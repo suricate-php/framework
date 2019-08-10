@@ -9,6 +9,27 @@ require_once 'stubs/Event.php';
  */
 class EventDispatcherTest extends \PHPUnit\Framework\TestCase
 {
+    public function testConfigure()
+    {
+        $parameters = [
+            [
+                'event' => 'my.event',
+                'listeners' => ['listener1', 'listener2', 'listener3|50']
+            ]
+        ];
+        $dispatcher = new EventDispatcher();
+        $dispatcher->configure($parameters);
+
+        $reflector = new ReflectionClass(get_class($dispatcher));
+        $property = $reflector->getProperty('listeners');
+        $property->setAccessible(true);
+
+        $result = [
+            'my.event' => [0 => ['listener1', 'listener2'], 50 => ['listener3']]
+        ];
+        $this->assertSame($result, $property->getValue($dispatcher));
+    }
+
     public function testAddListener()
     {
         $dispatcher = new EventDispatcher();
