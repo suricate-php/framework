@@ -21,7 +21,7 @@ namespace Suricate;
  * @method static \Suricate\Curl            Curl($newInstance = false)            Get instance of Curl service
  * @method static \Suricate\Database        Database($newInstance = false)        Get instance of Database service
  * @method static \Suricate\Error           Error($newInstance = false)           Get instance of Error service
- * @method static \Suricate\EventDispatcher EventDispatcher($newInstance = false) Get instance of EventDispatcher service
+ * @method static \Suricate\Event\EventDispatcher EventDispatcher($newInstance = false) Get instance of EventDispatcher service
  * @method static \Suricate\I18n            I18n($newInstance = false)            Get instance of I18n service
  * @method static \Suricate\Logger          Logger($newInstance = false)          Get instance of Logger service
  * @method static \Suricate\Request         Request($newInstance = false)         Get instance of Request service
@@ -57,7 +57,7 @@ class Suricate
         'Curl' => '\Suricate\Curl',
         'Database' => '\Suricate\Database',
         'Error' => '\Suricate\Error',
-        'EventDispatcher' => '\Suricate\EventDispatcher',
+        'EventDispatcher' => '\Suricate\Event\EventDispatcher',
         'I18n' => '\Suricate\I18n',
         'Logger' => '\Suricate\Logger',
         'Request' => '\Suricate\Request',
