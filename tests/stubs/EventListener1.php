@@ -1,6 +1,6 @@
 <?php
 
-class EventListener1
+class EventListener1 extends \Suricate\Event\EventListener
 {
     protected $payload;
 

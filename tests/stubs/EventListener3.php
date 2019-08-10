@@ -1,6 +1,6 @@
 <?php
 
-class EventListener3
+class EventListener3 extends \Suricate\Event\EventListener
 {
     protected $payload;
 
@@ -9,7 +9,7 @@ class EventListener3
         $this->payload = $payload;
     }
 
-    public function handle()
+    public function handle(): ?bool
     {
         echo "payload for listerner3 is : " .
             $this->payload->getEventContent() .

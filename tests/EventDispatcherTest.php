@@ -1,6 +1,6 @@
 <?php
 
-use Suricate\EventDispatcher;
+use Suricate\Event\EventDispatcher;
 
 require_once 'stubs/Event.php';
 require_once 'stubs/EventListener1.php';
