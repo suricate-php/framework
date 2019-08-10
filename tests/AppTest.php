@@ -1,12 +1,11 @@
 <?php
 class AppTest extends \PHPUnit\Framework\TestCase
 {
-    
     public function testIsDebug()
     {
         $app = new \Suricate\App();
         $app->mode = \Suricate\App::DEBUG_MODE;
-        
+
         $this->assertTrue($app->isDebug());
     }
 
@@ -14,7 +13,7 @@ class AppTest extends \PHPUnit\Framework\TestCase
     {
         $app = new \Suricate\App();
         $app->mode = \Suricate\App::DEVELOPMENT_MODE;
-        
+
         $this->assertTrue($app->isDevelopment());
     }
 
@@ -22,7 +21,7 @@ class AppTest extends \PHPUnit\Framework\TestCase
     {
         $app = new \Suricate\App();
         $app->mode = \Suricate\App::PRELIVE_MODE;
-        
+
         $this->assertTrue($app->isPrelive());
     }
 
@@ -30,7 +29,7 @@ class AppTest extends \PHPUnit\Framework\TestCase
     {
         $app = new \Suricate\App();
         $app->mode = \Suricate\App::PRODUCTION_MODE;
-        
+
         $this->assertTrue($app->isProduction());
     }
 }

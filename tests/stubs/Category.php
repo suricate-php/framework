@@ -11,20 +11,13 @@ class Category extends \Suricate\DBObject
         $database = new \Suricate\Database();
         $database->configure([
             'type' => 'sqlite',
-            'file' => '/tmp/test.db',
+            'file' => '/tmp/test.db'
         ]);
         $this->dbLink = $database;
 
-        $this->dbVariables = [
-            'id',
-            'name',
-            'parent_id',
-        ];
+        $this->dbVariables = ['id', 'name', 'parent_id'];
 
-        $this->protectedVariables = [
-            'prot_var',
-            'unloadable',
-        ];
+        $this->protectedVariables = ['prot_var', 'unloadable'];
     }
 
     protected function accessToProtectedVariable(string $name): bool

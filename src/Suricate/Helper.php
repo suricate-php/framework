@@ -346,3 +346,10 @@ if (!function_exists('niceTime')) {
         }
     }
 }
+
+if (!function_exists('dispatchEvent')) {
+    function dispatchEvent($event, $payload = null)
+    {
+        Suricate::EventDispatcher()->fire($event, $payload);
+    }
+}

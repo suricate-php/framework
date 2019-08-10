@@ -190,7 +190,7 @@ class Router extends Service
                 $hasRoute = true;
 
                 Suricate::Logger()->debug(
-                    'Route "' .
+                    '[router] Route "' .
                         $route->getPath() .
                         '" matched, target: ' .
                         json_encode($route->target)
@@ -207,7 +207,7 @@ class Router extends Service
 
         // No route matched
         if (!$hasRoute) {
-            Suricate::Logger()->debug('No route found');
+            Suricate::Logger()->debug('[router] No route found');
             app()->abort('404');
         }
 

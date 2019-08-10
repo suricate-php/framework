@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * @SuppressWarnings("TooManyPublicMethods")
+ **/
 class HelperTest extends \PHPUnit\Framework\TestCase
 {
     public function testDataGetKeyIsNull()
@@ -12,7 +16,9 @@ class HelperTest extends \PHPUnit\Framework\TestCase
 
     public function testP()
     {
-        $this->expectOutputString("<pre>\n1\n</pre><pre>\nArray\n(\n    [a] => 1\n)\n\n</pre>");
+        $this->expectOutputString(
+            "<pre>\n1\n</pre><pre>\nArray\n(\n    [a] => 1\n)\n\n</pre>"
+        );
         _p(1);
 
         _p(['a' => 1]);
@@ -41,7 +47,7 @@ class HelperTest extends \PHPUnit\Framework\TestCase
         $value = 1;
         $this->assertSame(1, value($value));
 
-        $value = function() {
+        $value = function () {
             return 2;
         };
         $this->assertSame(2, value($value));
@@ -67,8 +73,12 @@ class HelperTest extends \PHPUnit\Framework\TestCase
         $haystack = 'this is not a long sentence';
         $this->assertTrue(startsWith($haystack, 'this'));
 
-        $this->assertTrue(startsWith($haystack, ['these', 'short', 'sentence', 'this']));
-        $this->assertFalse(startsWith($haystack, ['these', 'short', 'wordlist']));
+        $this->assertTrue(
+            startsWith($haystack, ['these', 'short', 'sentence', 'this'])
+        );
+        $this->assertFalse(
+            startsWith($haystack, ['these', 'short', 'wordlist'])
+        );
     }
 
     public function testEndsWith()
@@ -76,7 +86,9 @@ class HelperTest extends \PHPUnit\Framework\TestCase
         $haystack = 'this is not a long sentence';
         $this->assertTrue(endsWith($haystack, 'sentence'));
 
-        $this->assertTrue(endsWith($haystack, ['these', 'short', 'sentence', 'this']));
+        $this->assertTrue(
+            endsWith($haystack, ['these', 'short', 'sentence', 'this'])
+        );
         $this->assertFalse(endsWith($haystack, ['these', 'short', 'wordlist']));
     }
 
@@ -87,6 +99,10 @@ class HelperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('this...', wordLimit($haystack, 5));
         $this->assertEquals('this is...', wordLimit($haystack, 8));
         $this->assertEquals('this??', wordLimit($haystack, 4, '??'));
+        $this->assertEquals(
+            'this is not a long sentence',
+            wordLimit($haystack, 100)
+        );
     }
 
     public function testApp()
@@ -99,7 +115,10 @@ class HelperTest extends \PHPUnit\Framework\TestCase
         $str = 'This is a long sentence in an URL';
         $this->assertEquals(slug($str), 'this-is-a-long-sentence-in-an-url');
         $str = 'Une chaîne accentuée_et_des underscores';
-        $this->assertEquals(slug($str), 'une-chaine-accentueeetdes-underscores');
+        $this->assertEquals(
+            slug($str),
+            'une-chaine-accentueeetdes-underscores'
+        );
     }
     public function testNiceTime()
     {
@@ -107,22 +126,21 @@ class HelperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(niceTime($time), 'il y a moins d\'une minute.');
         $time = time() - 115;
         $this->assertEquals(niceTime($time), 'il y a environ une minute.');
-        $time = time() - 60*40;
+        $time = time() - 60 * 40;
         $this->assertEquals(niceTime($time), 'il y a 40 minutes.');
-        $time = time() - 60*65;
+        $time = time() - 60 * 65;
         $this->assertEquals(niceTime($time), 'il y a environ une heure.');
-        $time = time() - 60*60*14;
+        $time = time() - 60 * 60 * 14;
         $this->assertEquals(niceTime($time), 'il y a environ 14 heures.');
-        $time = time() - 60*64*30;
+        $time = time() - 60 * 64 * 30;
         $this->assertEquals(niceTime($time), 'hier.');
-        $time = time() - 60*60*24*17;
+        $time = time() - 60 * 60 * 24 * 17;
         $this->assertEquals(niceTime($time), 'il y a 17 jours.');
-        $time = time() - 60*60*24*65;
+        $time = time() - 60 * 60 * 24 * 65;
         $this->assertEquals(niceTime($time), 'il y a 2 mois.');
-        $time = time() - 60*60*24*375;
+        $time = time() - 60 * 60 * 24 * 375;
         $this->assertEquals(niceTime($time), 'il y a plus d\'un an.');
-        $time = time() - 60*60*24*800;
+        $time = time() - 60 * 60 * 24 * 800;
         $this->assertEquals(niceTime($time), 'il y a plus de 2 ans.');
     }
-
 }

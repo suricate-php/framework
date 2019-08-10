@@ -1,7 +1,8 @@
 <?php
 
-use \Suricate\Session;
-use \Suricate\Suricate;
+use Suricate\Session;
+use Suricate\Suricate;
+
 /**
  * @SuppressWarnings("StaticAccess")
  */
@@ -10,7 +11,10 @@ class SessionTest extends \PHPUnit\Framework\TestCase
     public function testNative()
     {
         new \Suricate\Suricate([], './tests/stubs/session.ini');
-        $this->assertInstanceOf(Session\Native::class, Suricate::Session()->getInstance());
+        $this->assertInstanceOf(
+            Session\Native::class,
+            Suricate::Session()->getInstance()
+        );
         $this->assertSame(session_id(), Suricate::Session()->getId());
         $oldSessionId = session_id();
         Suricate::Session()->regenerate();
@@ -33,6 +37,4 @@ class SessionTest extends \PHPUnit\Framework\TestCase
         $this->assertNull(Suricate::Session()->read("key"));
         $this->assertNotEquals($oldSessionId, $newSessionId);
     }
-    
-    
 }

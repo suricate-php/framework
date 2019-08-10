@@ -35,11 +35,6 @@ class Logger extends Service
         self::LOGLEVEL_DEBUG => 'DEBUG'
     ];
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function log($message, $level)
     {
         if ($this->resource == null && $this->logfile !== null) {

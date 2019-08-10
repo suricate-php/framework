@@ -2,6 +2,9 @@
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @SuppressWarnings("TooManyPublicMethods")
+ **/
 class DatabaseTest extends TestCase
 {
     protected $className = '\Suricate\Database';
