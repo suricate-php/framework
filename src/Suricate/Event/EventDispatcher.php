@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Suricate;
+namespace Suricate\Event;
 
-class EventDispatcher extends Service
+use Suricate\Suricate;
+
+class EventDispatcher extends \Suricate\Service
 {
     /**
      * Array of declared listeners
@@ -60,7 +62,7 @@ class EventDispatcher extends Service
      */
     public function addListener($event, string $listener, int $priority = 0)
     {
-        $eventType = is_subclass_of($event, '\Suricate\Event')
+        $eventType = is_subclass_of($event, '\Suricate\Event\Event')
             ? $event::getEventType()
             : $event;
 
@@ -81,7 +83,10 @@ class EventDispatcher extends Service
         $eventType = null;
         $eventPayload = null;
 
-        if (is_object($event) && is_subclass_of($event, '\Suricate\Event')) {
+        if (
+            is_object($event) &&
+            is_subclass_of($event, '\Suricate\Event\Event')
+        ) {
             $eventType = $event::getEventType();
             $eventPayload = $event;
         }
