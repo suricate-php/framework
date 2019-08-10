@@ -108,7 +108,7 @@ class EventDispatcher extends Service
             );
 
             $result = with(new $listener($eventPayload))->handle();
-            if (!$result) {
+            if ($result === false) {
                 Suricate::Logger()->debug(
                     sprintf(
                         '[event] stop propagation of event "%s"',
