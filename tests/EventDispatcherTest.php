@@ -45,6 +45,30 @@ class EventDispatcherTest extends \PHPUnit\Framework\TestCase
         ];
         $this->assertSame($result, $property->getValue($dispatcher));
     }
+    public function testGetImpactedListeners()
+    {
+        $dispatcher = new EventDispatcher();
+
+        $dispatcher->addListener('dummy.event', '\MyProject\MyListener', 12);
+        $dispatcher->addListener('dummy.event', '\MyProject\MyListener2', 10);
+        $dispatcher->addListener('another.event', '\MyProject\MyListener3', 12);
+
+        $reflection = new \ReflectionClass(get_class($dispatcher));
+        $method = $reflection->getMethod('getImpactedListeners');
+        $method->setAccessible(true);
+        $methodResult = $method->invoke($dispatcher, 'dummy.event');
+
+        $this->assertSame(
+            ['\MyProject\MyListener2', '\MyProject\MyListener'],
+            $methodResult
+        );
+
+        $methodResult = $method->invoke($dispatcher, 'dummy.event');
+        $this->assertSame(
+            ['\MyProject\MyListener2', '\MyProject\MyListener'],
+            $methodResult
+        );
+    }
 
     public function testSortListeners()
     {
