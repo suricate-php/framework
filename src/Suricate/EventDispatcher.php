@@ -144,11 +144,10 @@ class EventDispatcher extends Service
      */
     protected function sortListeners(string $eventType)
     {
-        $listeners = isset($this->listeners[$eventType])
-            ? $this->listeners[$eventType]
-            : [];
-
-        ksort($listeners);
-        $this->sortedListeners[$eventType] = flatten($listeners);
+        if (isset($this->listeners[$eventType])) {
+            $listeners = $this->listeners[$eventType];
+            ksort($listeners);
+            $this->sortedListeners[$eventType] = flatten($listeners);
+        }
     }
 }
