@@ -1,9 +1,13 @@
 <?php
+
+/**
+ * @SuppressWarnings("TooManyPublicMethods")
+ **/
 class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     public function testConstruct()
     {
-        $arr = array(1,2,3);
+        $arr = [1, 2, 3];
         $collection = new \Suricate\Collection($arr);
         $this->assertEquals($arr, $collection->getItems());
     }
@@ -17,26 +21,31 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testUnique()
     {
-        $arr = array(1, 2, 1, 3);
+        $arr = [1, 2, 1, 3];
         $collection = new \Suricate\Collection($arr);
-        $this->assertEquals([0 => 1, 1 => 2, 3 => 3], $collection->unique()->getItems());
+        $this->assertEquals(
+            [0 => 1, 1 => 2, 3 => 3],
+            $collection->unique()->getItems()
+        );
     }
 
     public function testCount()
     {
-        $arr = array(1, 2, 3);
+        $arr = [1, 2, 3];
         $collection = new \Suricate\Collection($arr);
         $this->assertEquals(3, $collection->count());
     }
 
     public function testPaginate()
     {
-        $arr = array(1, 2, 3, 4, 5);
+        $arr = [1, 2, 3, 4, 5];
         $collection = new \Suricate\Collection($arr);
-        
 
         $collection->paginate(1, 3);
-        $this->assertEquals(['page' => 3, 'nbItems' => 5, 'nbPages' => 5], $collection->pagination);
+        $this->assertEquals(
+            ['page' => 3, 'nbItems' => 5, 'nbPages' => 5],
+            $collection->pagination
+        );
         $this->assertEquals([3], $collection->getItems());
     }
 
@@ -45,12 +54,18 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $arr = [
             ['id' => 40, 'name' => 'name 1'],
             ['id' => 20, 'name' => 'name 2'],
-            ['id' => 35, 'name' => 'name 3'],
+            ['id' => 35, 'name' => 'name 3']
         ];
         $collection = new \Suricate\Collection($arr);
 
-        $this->assertEquals([40 => 'name 1', 20 => 'name 2', 35 =>'name 3'], $collection->getPossibleValuesFor('name', 'id'));
-        $this->assertEquals(['name 1', 'name 2', 'name 3'], $collection->getPossibleValuesFor('name'));
+        $this->assertEquals(
+            [40 => 'name 1', 20 => 'name 2', 35 => 'name 3'],
+            $collection->getPossibleValuesFor('name', 'id')
+        );
+        $this->assertEquals(
+            ['name 1', 'name 2', 'name 3'],
+            $collection->getPossibleValuesFor('name')
+        );
     }
 
     public function testFirst()
@@ -69,7 +84,6 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $collection = new \Suricate\Collection($arr);
         $this->assertEquals(3, $collection->last());
 
-
         $collection = new \Suricate\Collection();
         $this->assertEquals(null, $collection->last());
     }
@@ -87,7 +101,6 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         ];
         $collection = new \Suricate\Collection($arr);
         $this->assertEquals(15, $collection->sum('id'));
-
     }
 
     public function testHas()
@@ -112,13 +125,16 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $collection->prepend(99);
         $this->assertEquals([99, 4, 5, 6], $collection->getItems());
     }
-    
+
     public function testPut()
     {
         $arr = array('a' => 1, 'b' => 2, 'c' => 3);
         $collection = new \Suricate\Collection($arr);
         $collection->put('z', 99);
-        $this->assertEquals(['a' => 1, 'b' => 2, 'c' => 3, 'z' => 99], $collection->getItems());
+        $this->assertEquals(
+            ['a' => 1, 'b' => 2, 'c' => 3, 'z' => 99],
+            $collection->getItems()
+        );
     }
 
     public function testShift()
@@ -144,7 +160,10 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $arr = array('a' => 1, 'b' => 2, 'c' => 3);
         $collection = new \Suricate\Collection($arr);
         $reversed = $collection->reverse();
-        $this->assertEquals(['c' => 3, 'b' => 2, 'a' => 1], $reversed->getItems());
+        $this->assertEquals(
+            ['c' => 3, 'b' => 2, 'a' => 1],
+            $reversed->getItems()
+        );
     }
 
     public function testReduce()
@@ -158,7 +177,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             return $carry;
         };
         $reduced = $collection->reduce($callback);
-    
+
         $this->assertEquals(6, $reduced);
 
         // reduce with initial value
@@ -170,7 +189,7 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             return $carry;
         };
         $reduced = $collection->reduce($callback, 100);
-    
+
         $this->assertEquals(106, $reduced);
     }
 
@@ -180,24 +199,24 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $arr = ['a' => 1, 'b' => 2, 'c' => 3];
         $collection = new \Suricate\Collection($arr);
         $sliced = $collection->slice(1, 2);
-    
+
         $this->assertEquals(['b' => 2, 'c' => 3], $sliced->getItems());
 
         // Slice with numeric keys
         $arr = [1, 2, 3];
         $collection = new \Suricate\Collection($arr);
         $sliced = $collection->slice(1, 2);
-    
+
         $this->assertEquals([2, 3], $sliced->getItems());
 
         // Slice preserve keys
         $arr = [1, 2, 3];
         $collection = new \Suricate\Collection($arr);
         $sliced = $collection->slice(1, 2, true);
-    
+
         $this->assertEquals([1 => 2, 2 => 3], $sliced->getItems());
     }
-    
+
     public function testTake()
     {
         $arr = array('a' => 1, 'b' => 2, 'c' => 3);
@@ -212,9 +231,11 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $collection = new \Suricate\Collection($arr);
         $this->assertEquals(
             ['b' => 2],
-            $collection->filter(function ($value) {
-                return ($value % 2) === 0;
-            })->getItems()
+            $collection
+                ->filter(function ($value) {
+                    return $value % 2 === 0;
+                })
+                ->getItems()
         );
     }
 
@@ -233,10 +254,8 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
             ['id' => 3, 'name' => 'wxcvbn']
         ];
         $collection = new \Suricate\Collection($arr);
-        $this->assertEquals([
-            'azerty',
-            'qsdfg',
-            'wxcvbn'],
+        $this->assertEquals(
+            ['azerty', 'qsdfg', 'wxcvbn'],
             $collection->getValuesFor('name')
         );
     }

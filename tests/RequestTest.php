@@ -9,19 +9,21 @@ class RequestTest extends \PHPUnit\Framework\TestCase
         $request = new Suricate\Request();
         $request->parse();
 
-        $this->assertEquals('/myDir/myPage.php?arg=1&argtwo=2', $request->getRequestUri());
+        $this->assertEquals(
+            '/myDir/myPage.php?arg=1&argtwo=2',
+            $request->getRequestUri()
+        );
         $this->assertEquals('/myDir/myPage.php', $request->getPath());
         $this->assertEquals('arg=1&argtwo=2', $request->getQuery());
         $this->assertEquals('PUT', $request->getMethod());
         $this->assertNotEquals('GET', $request->getMethod());
-    
+
         unset($_SERVER['REQUEST_METHOD']);
         $_POST['_method'] = 'DELETE';
 
         $request->parse();
         $this->assertEquals('DELETE', $request->getMethod());
         $this->assertNotEquals('PUT', $request->getMethod());
-
     }
 
     public function testBody()
@@ -34,13 +36,16 @@ class RequestTest extends \PHPUnit\Framework\TestCase
 
     public function testParams()
     {
-        $_POST['test']  = "myVar";
+        $_POST['test'] = "myVar";
         $_GET['getVar'] = 1;
 
         $request = new Suricate\Request();
         $this->assertEquals('myVar', $request->getPostParam('test'));
         $this->assertNotEquals('tttt', $request->getPostParam('test'));
-        $this->assertEquals('defaultValue', $request->getPostParam("unknown-var", 'defaultValue'));
+        $this->assertEquals(
+            'defaultValue',
+            $request->getPostParam("unknown-var", 'defaultValue')
+        );
 
         $this->assertTrue($request->hasParam('test'));
         $this->assertFalse($request->hasParam('unknown-var'));
@@ -49,7 +54,10 @@ class RequestTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(1, $request->getParam('getVar'));
         $this->assertEquals('myVar', $request->getParam('test'));
         $this->assertNotEquals('tttt', $request->getParam('test'));
-        $this->assertEquals('defaultValue', $request->getParam("unknown-var", 'defaultValue'));
+        $this->assertEquals(
+            'defaultValue',
+            $request->getParam("unknown-var", 'defaultValue')
+        );
     }
 
     public function testHeaders()
@@ -57,19 +65,31 @@ class RequestTest extends \PHPUnit\Framework\TestCase
         $request = new Suricate\Request();
         $request->setHeaders(array('my-header' => 'myValue'));
 
-        $this->assertEquals(array('my-header' => 'myValue'), $request->getHeaders());
+        $this->assertEquals(
+            array('my-header' => 'myValue'),
+            $request->getHeaders()
+        );
 
         $request->addHeader('my-header', 'myNewValue');
-        $this->assertEquals(array('my-header' => 'myNewValue'), $request->getHeaders());
+        $this->assertEquals(
+            array('my-header' => 'myNewValue'),
+            $request->getHeaders()
+        );
 
         $request->setHeaders(array());
         $this->assertEquals(array(), $request->getHeaders());
 
         $request->setContentType('text/xml');
-        $this->assertEquals(array('Content-type' =>'text/xml'), $request->getHeaders());
+        $this->assertEquals(
+            array('Content-type' => 'text/xml'),
+            $request->getHeaders()
+        );
 
         $request->setContentType('text/xml', 'utf8');
-        $this->assertEquals(array('Content-type' =>'text/xml; charset=utf8'), $request->getHeaders());
+        $this->assertEquals(
+            array('Content-type' => 'text/xml; charset=utf8'),
+            $request->getHeaders()
+        );
     }
 
     public function testMethod()
@@ -89,7 +109,7 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     public function testHttp()
     {
         $request = new Suricate\Request();
-        
+
         $request->setHttpCode(200);
         $this->assertTrue($request->isOk());
         $this->assertFalse($request->isClientError());
@@ -133,6 +153,6 @@ class RequestTest extends \PHPUnit\Framework\TestCase
         $request = new Suricate\Request();
         $request->setUrl('https://www.google.fr');
         $this->assertEquals('https://www.google.fr', $request->getUrl());
-        $this->assertNotEquals('https://www.yahoo.fr', $request->getUrl());   
+        $this->assertNotEquals('https://www.yahoo.fr', $request->getUrl());
     }
 }

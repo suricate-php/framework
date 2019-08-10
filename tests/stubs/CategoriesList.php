@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 class CategoriesList extends \Suricate\DBCollection
 {
@@ -12,7 +14,7 @@ class CategoriesList extends \Suricate\DBCollection
         $database = new \Suricate\Database();
         $database->configure([
             'type' => 'sqlite',
-            'file' => '/tmp/test.db',
+            'file' => '/tmp/test.db'
         ]);
         $this->dbLink = $database;
     }

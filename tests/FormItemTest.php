@@ -1,6 +1,6 @@
 <?php
 
-use \Suricate\FormItem;
+use Suricate\FormItem;
 
 /**
  * @SuppressWarnings("StaticAccess")
@@ -98,10 +98,7 @@ class FormItemTest extends \PHPUnit\Framework\TestCase
     public function testInputReset()
     {
         $res = FormItem::reset('val');
-        $this->assertEquals(
-            '<input type="reset" value="val"/>',
-            $res
-        );
+        $this->assertEquals('<input type="reset" value="val"/>', $res);
     }
 
     public function testInputSelect()
@@ -112,19 +109,34 @@ class FormItemTest extends \PHPUnit\Framework\TestCase
             $res
         );
 
-        $res = FormItem::select('my-input-name', ["é\"" => ['a', 'b'], 2, 3 => ['c', 'd']], 2, 'Mon input');
+        $res = FormItem::select(
+            'my-input-name',
+            ["é\"" => ['a', 'b'], 2, 3 => ['c', 'd']],
+            2,
+            'Mon input'
+        );
         $this->assertEquals(
             '<label>Mon input</label><select name="my-input-name"><optgroup label="&eacute;&quot;"><option value="0">a</option><option value="1">b</option></optgroup><option value="0">2</option><optgroup label="3"><option value="0">c</option><option value="1">d</option></optgroup></select>',
             $res
         );
 
-        $res = FormItem::select('my-input-name', ["é\"" => ['a', 'b'], 2, 3 => ['c', 'd']], 'c', 'Mon input');
+        $res = FormItem::select(
+            'my-input-name',
+            ["é\"" => ['a', 'b'], 2, 3 => ['c', 'd']],
+            'c',
+            'Mon input'
+        );
         $this->assertEquals(
             '<label>Mon input</label><select name="my-input-name"><optgroup label="&eacute;&quot;"><option value="0" selected>a</option><option value="1">b</option></optgroup><option value="0" selected>2</option><optgroup label="3"><option value="0" selected>c</option><option value="1">d</option></optgroup></select>',
             $res
         );
 
-        $res = FormItem::select('my-input-name', [1, 2, 3], [2, 1], 'Mon input');
+        $res = FormItem::select(
+            'my-input-name',
+            [1, 2, 3],
+            [2, 1],
+            'Mon input'
+        );
         $this->assertEquals(
             '<label>Mon input</label><select name="my-input-name"><option value="0">1</option><option value="1" selected>2</option><option value="2" selected>3</option></select>',
             $res
@@ -151,7 +163,10 @@ class FormItemTest extends \PHPUnit\Framework\TestCase
 
     public function testInputImage()
     {
-        $res = FormItem::image('my-input-name', "https://gsuite.google.com/img/icons/product-lockup.png");
+        $res = FormItem::image(
+            'my-input-name',
+            "https://gsuite.google.com/img/icons/product-lockup.png"
+        );
         $this->assertEquals(
             '<input type="image" name="my-input-name" src="https://gsuite.google.com/img/icons/product-lockup.png"/>',
             $res

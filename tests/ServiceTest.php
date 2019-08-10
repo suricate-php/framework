@@ -1,7 +1,6 @@
 <?php
 class ServiceTest extends \PHPUnit\Framework\TestCase
 {
-    
     public function testGetException()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -20,9 +19,15 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
     {
         $testService = new \Suricate\Service();
 
-        self::mockProperty($testService, 'parametersList', ['param_1', 'param_2']);
+        self::mockProperty($testService, 'parametersList', [
+            'param_1',
+            'param_2'
+        ]);
         $this->assertNull($testService->param_1);
-        self::mockProperty($testService, 'parametersValues', ['param_1' => 'value1', 'param_2' => 'value2']);
+        self::mockProperty($testService, 'parametersValues', [
+            'param_1' => 'value1',
+            'param_2' => 'value2'
+        ]);
         $this->assertNotNull($testService->param_1);
         $this->assertEquals($testService->param_1, 'value1');
     }
@@ -31,7 +36,10 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
     {
         $testService = new \Suricate\Service();
 
-        self::mockProperty($testService, 'parametersList', ['param_1', 'param_2']);
+        self::mockProperty($testService, 'parametersList', [
+            'param_1',
+            'param_2'
+        ]);
         $this->assertNull($testService->param_1);
         $testService->param_1 = 'new_value';
         $this->assertEquals($testService->param_1, 'new_value');
@@ -41,7 +49,10 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
     {
         $testService = new \Suricate\Service();
 
-        self::mockProperty($testService, 'parametersList', ['param_1', 'param_2']);
+        self::mockProperty($testService, 'parametersList', [
+            'param_1',
+            'param_2'
+        ]);
         $testService->configure(['param_1' => 'value1', 'param_2' => 'value2']);
 
         $this->assertEquals($testService->param_1, 'value1');

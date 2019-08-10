@@ -2,6 +2,8 @@
 
 use Suricate\Registry;
 
+/**
+ * @SuppressWarnings("StaticAccess") */
 class RegistryTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetSet()

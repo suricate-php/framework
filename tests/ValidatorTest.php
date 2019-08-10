@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * @SuppressWarnings("TooManyPublicMethods")
+ **/
 class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     public function testValidateTrue()
@@ -10,7 +14,6 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, count($validator->getErrors()));
         $this->assertTrue($validator->pass());
         $this->assertFalse($validator->fails());
-
     }
 
     public function testValidateFalse()

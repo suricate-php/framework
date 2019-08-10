@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @SuppressWarnings("StaticAccess")
  */
@@ -10,11 +11,17 @@ class CurlTest extends \PHPUnit\Framework\TestCase
         $reflection = new \ReflectionClass(get_class($handler));
         $property = $reflection->getProperty('response');
         $property->setAccessible(true);
-        $this->assertInstanceOf(\Suricate\Request::class, $property->getValue($handler));
+        $this->assertInstanceOf(
+            \Suricate\Request::class,
+            $property->getValue($handler)
+        );
 
         $property = $reflection->getProperty('request');
         $property->setAccessible(true);
-        $this->assertInstanceOf(\Suricate\Request::class, $property->getValue($handler));
+        $this->assertInstanceOf(
+            \Suricate\Request::class,
+            $property->getValue($handler)
+        );
     }
 
     public function testGetSetUrl()
@@ -50,8 +57,14 @@ class CurlTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame([], $handler->headers);
         $handler->addHeader('Content-type: application/json');
-        $this->assertSame(['Content-type: application/json'], $handler->headers);
+        $this->assertSame(
+            ['Content-type: application/json'],
+            $handler->headers
+        );
         $handler->addHeader('Content-length: 42');
-        $this->assertSame(['Content-type: application/json', 'Content-length: 42'], $handler->headers);
+        $this->assertSame(
+            ['Content-type: application/json', 'Content-length: 42'],
+            $handler->headers
+        );
     }
 }

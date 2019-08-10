@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * @SuppressWarnings("TooManyPublicMethods")
+ **/
 class HelperTest extends \PHPUnit\Framework\TestCase
 {
     public function testDataGetKeyIsNull()
