@@ -355,6 +355,21 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf('\Suricate\DBObject', $retVal);
     }
 
+    public function testSetInsertIgnore()
+    {
+        $testDBO = $this->getDBOject();
+        $reflectionClass = new \ReflectionClass($testDBO);
+
+        $property = $reflectionClass->getProperty('insertIgnore');
+        $property->setAccessible(true);
+
+        $this->assertFalse($property->getValue($testDBO));
+        $retVal = $testDBO->setInsertIgnore(true);
+        $this->assertInstanceOf('\Suricate\DBObject', $retVal);
+
+        $this->assertTrue($property->getValue($testDBO));
+    }
+
     public function testSaveUpdate()
     {
         // Prepare database

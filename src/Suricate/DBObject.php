@@ -56,6 +56,13 @@ class DBObject implements Interfaces\IDBObject
 
     protected $dbLink = false;
 
+    /**
+     * INSERT IGNORE toggle flag
+     *
+     * @var boolean
+     */
+    protected $insertIgnore = false;
+
     protected $validatorMessages = [];
 
     public function __construct()
@@ -470,6 +477,13 @@ class DBObject implements Interfaces\IDBObject
         }
     }
 
+    public function setInsertIgnore(bool $flag)
+    {
+        $this->insertIgnore = $flag;
+
+        return $this;
+    }
+
     /**
      * Save current object into db
      *
@@ -533,8 +547,9 @@ class DBObject implements Interfaces\IDBObject
         $this->connectDB();
 
         $variables = array_diff($this->dbVariables, $this->readOnlyVariables);
+        $ignoreFlag = $this->insertIgnore ? 'IGNORE ' : '';
 
-        $sql = 'INSERT INTO `' . $this->getTableName() . '`';
+        $sql = 'INSERT ' . $ignoreFlag . 'INTO `' . $this->getTableName() . '`';
         $sql .= '(`';
         $sql .= implode('`, `', $variables);
         $sql .= '`)';
