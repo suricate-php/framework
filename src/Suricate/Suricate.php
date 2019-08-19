@@ -9,11 +9,11 @@ namespace Suricate;
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
  * @copyright   2013-2019 Mathieu LESNIAK
- * @version     0.3.0
+ * @version     0.3.2
  * @package     Suricate
  *
  * @method static \Suricate\App             App($newInstance = false)             Get instance of App service
- * @method static \Suricate\Cache           Cache($nezwInstance = false)          Get instance of Cache service
+ * @method static \Suricate\Cache           Cache($newInstance = false)           Get instance of Cache service
  * @method static \Suricate\CacheMemcache   CacheMemcache($newInstance = false)   Get instance of CacheMemcache service
  * @method static \Suricate\CacheMemcached  CacheMemcached($newInstance = false)  Get instance of CacheMemcached service
  * @method static \Suricate\CacheApc        CacheApc($newInstance = false)        Get instance of CacheApc service
@@ -35,7 +35,7 @@ namespace Suricate;
 
 class Suricate
 {
-    const VERSION = '0.2.4';
+    const VERSION = '0.3.2';
 
     const CONF_DIR = '/conf/';
 
