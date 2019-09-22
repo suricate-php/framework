@@ -35,7 +35,7 @@ namespace Suricate;
 
 class Suricate
 {
-    const VERSION = '0.3.3';
+    const VERSION = '0.3.4';
 
     const CONF_DIR = '/conf/';
 
@@ -195,8 +195,7 @@ class Suricate
 
             // Advanced ini parsing, split key with '.' into subarrays
             foreach ($userConfig as $section => $configData) {
-                foreach (array_keys($configData) as $name) {
-                    $name = (string) $name;
+                foreach ($configData as $name => $value) {
                     if (stripos($name, '.') !== false) {
                         $subkeys = explode('.', $name);
                         unset($userConfig[$section][$name]);
