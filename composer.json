@@ -29,5 +29,10 @@
   "suggest": {
     "predis/predis": "Necessary in order to use Redis worker"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "config": {
+    "platform": {
+      "php": "7.1.0"
+    }
+  }
 }
