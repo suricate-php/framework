@@ -9,13 +9,12 @@ class ImageFont
     const FONTTYPE_INTERNAL = 1;
     const FONTTYPE_TTF = 2;
 
-    private $color;
+    private $color = [0, 0, 0];
     private $text;
     private $angle = 0;
     private $size = 8;
     private $fontType;
     private $font;
-    private $image;
 
     public function __construct($text = '')
     {
@@ -25,12 +24,10 @@ class ImageFont
     public function font($fontFile)
     {
         if (is_int($fontFile)) {
-            $this->fontType = self::FONTTYPE_INTERNAL;
-        } else {
-            $this->fontType = self::FONTTYPE_TTF;
+            $this->font = self::FONTTYPE_INTERNAL;
+            return;
         }
-
-        $this->font = $fontFile;
+        $this->font = self::FONTTYPE_TTF;
     }
 
     public function size($size)
@@ -47,9 +44,11 @@ class ImageFont
         return $this;
     }
 
-    public function color($color)
+    public function color(array $color)
     {
         $this->color = $color;
+
+        return $this;
     }
 
     private function createColor($image)
