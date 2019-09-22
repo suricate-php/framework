@@ -23,11 +23,11 @@ class ImageFont
 
     public function font($fontFile)
     {
-        if (is_int($fontFile)) {
-            $this->font = self::FONTTYPE_INTERNAL;
-            return;
-        }
-        $this->font = self::FONTTYPE_TTF;
+        $this->fontType = is_int($fontFile)
+            ? self::FONTTYPE_INTERNAL
+            : self::FONTTYPE_TTF;
+
+        $this->font = $fontFile;
     }
 
     public function size($size)
