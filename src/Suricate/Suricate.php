@@ -196,6 +196,7 @@ class Suricate
             // Advanced ini parsing, split key with '.' into subarrays
             foreach ($userConfig as $section => $configData) {
                 foreach (array_keys($configData) as $name) {
+                    $name = (string) $name;
                     if (stripos($name, '.') !== false) {
                         $subkeys = explode('.', $name);
                         unset($userConfig[$section][$name]);
