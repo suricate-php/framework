@@ -289,11 +289,12 @@ class Image
     public function save($filename, $outputType = null, $quality = 70)
     {
         $result = false;
-        if ($outputType === null) {
-            $extension = pathinfo($filename, PATHINFO_EXTENSION);
-        } else {
-            $extension = $outputType;
-        }
+
+        $extension =
+            $outputType === null
+                ? pathinfo($filename, PATHINFO_EXTENSION)
+                : $outputType;
+
         if ($extension !== false) {
             switch (strtolower($extension)) {
                 case 'jpg':
@@ -305,6 +306,9 @@ class Image
                     break;
                 case 'gif':
                     $result = imagegif($this->source, $filename);
+                    break;
+                case 'webp':
+                    $result = imagewebp($this->source, $filename, $quality);
                     break;
             }
         }
