@@ -9,7 +9,7 @@ namespace Suricate;
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
  * @copyright   2013-2019 Mathieu LESNIAK
- * @version     0.3.2
+ * @version     0.3.5
  * @package     Suricate
  *
  * @method static \Suricate\App             App($newInstance = false)             Get instance of App service
@@ -35,6 +35,7 @@ namespace Suricate;
 
 class Suricate
 {
+
     const VERSION = '0.3.6';
 
     const CONF_DIR = '/conf/';
