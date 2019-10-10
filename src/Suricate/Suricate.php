@@ -35,7 +35,7 @@ namespace Suricate;
 
 class Suricate
 {
-    const VERSION = '0.3.4';
+    const VERSION = '0.3.6';
 
     const CONF_DIR = '/conf/';
 
