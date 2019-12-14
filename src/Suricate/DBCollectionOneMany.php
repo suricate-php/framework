@@ -104,6 +104,7 @@ class DBCollectionOneMany extends DBCollection
                 foreach ($results as $currentResult) {
                     $itemName = $collection->getItemsType();
                     $item = $itemName::instanciate($currentResult);
+                    $item->setLoaded();
                     if ($validate === null || $validate($item)) {
                         $collection->addItem($item);
                     }
