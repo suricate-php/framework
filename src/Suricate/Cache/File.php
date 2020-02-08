@@ -43,7 +43,7 @@ class File extends Suricate\Cache
     }
 
     /**
-     * Put a value into memcache
+     * Put a value into cache
      * @param string $variable Variable name
      * @param mixed $value    Value
      * @param int $expiry   Cache expiry
