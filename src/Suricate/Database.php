@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Suricate;
 
+use Exception;
+use PDO;
+
 /**
  * Database extension for Suricate
  *
@@ -125,16 +128,16 @@ class Database extends Service
                 );
                 break;
             default:
-                throw new \Exception('Unsupported PDO DB handler');
+                throw new Exception('Unsupported PDO DB handler');
         }
 
         try {
-            $this->handler = new \PDO($pdoDsn, $pdoUsername, $pdoPassword);
+            $this->handler = new PDO($pdoDsn, $pdoUsername, $pdoPassword);
             foreach ($pdoAttributes as $attributeKey => $attributeValue) {
                 $this->handler->setAttribute($attributeKey, $attributeValue);
             }
-        } catch (\Exception $e) {
-            throw new \Exception("Cannot connect to database");
+        } catch (Exception $e) {
+            throw new Exception("Cannot connect to database");
         }
     }
 
@@ -155,12 +158,12 @@ class Database extends Service
         return $this;
     }
 
-    public function fetchAll($mode = \PDO::FETCH_ASSOC)
+    public function fetchAll($mode = PDO::FETCH_ASSOC)
     {
         return $this->statement->fetchAll($mode);
     }
 
-    public function fetch($mode = \PDO::FETCH_ASSOC)
+    public function fetch($mode = PDO::FETCH_ASSOC)
     {
         return $this->statement->fetch($mode);
     }
@@ -172,7 +175,7 @@ class Database extends Service
 
     public function fetchObject()
     {
-        return $this->statement->fetch(\PDO::FETCH_OBJ);
+        return $this->statement->fetch(PDO::FETCH_OBJ);
     }
 
     /**

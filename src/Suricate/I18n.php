@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Suricate;
 
+use DirectoryIterator;
+
 /**
  * Translation extension for Suricate
  *
@@ -28,7 +30,7 @@ class I18n extends Service
         $langDir = app_path() . DIRECTORY_SEPARATOR . $this->baseLocaleDir;
 
         $langList = [];
-        $iterator = new \DirectoryIterator($langDir);
+        $iterator = new DirectoryIterator($langDir);
 
         foreach ($iterator as $currentFile) {
             if (

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Suricate\Cache;
 
 use Suricate;
+use Predis\Client;
 use \Exception;
 use \BadMethodCallException;
 
@@ -119,19 +120,19 @@ class Redis extends Suricate\Cache
     {
         if ($this->handler === false) {
             if (class_exists('\Predis\Client')) {
-                $this->handler = new \Predis\Client([
+                $this->handler = new Client([
                     'scheme' => 'tcp',
                     'host' => $this->host,
                     'port' => $this->port
                 ]);
                 if ($this->handler->connect() === false) {
-                    throw new \Exception('Can\'t connect to redis server');
+                    throw new Exception('Can\'t connect to redis server');
                 }
 
                 return $this;
             }
 
-            throw new \BadMethodCallException('Can\'t find Redis extension');
+            throw new BadMethodCallException('Can\'t find Redis extension');
         }
 
         return $this;

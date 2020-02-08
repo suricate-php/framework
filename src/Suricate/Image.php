@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Suricate;
 
+use InvalidArgumentException;
+use RuntimeException;
+
 class Image
 {
     use Traits\ImageFilter;
@@ -27,12 +30,12 @@ class Image
                 return $this;
             }
 
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Cannot load ' . $filename . ', not an image'
             );
         }
 
-        throw new \InvalidArgumentException(
+        throw new InvalidArgumentException(
             'Cannot load ' . $filename . ', file unreadable'
         );
     }
@@ -81,7 +84,7 @@ class Image
 
             $this->destination = imagecreatetruecolor($width, $height);
             if ($this->destination === false) {
-                throw new \RuntimeException("Can't create destination image");
+                throw new RuntimeException("Can't create destination image");
             }
             imagecopyresampled(
                 $this->destination,
@@ -114,7 +117,7 @@ class Image
 
         $this->destination = imagecreatetruecolor($width, $height);
         if ($this->destination === false) {
-            throw new \RuntimeException("Can't create destination image");
+            throw new RuntimeException("Can't create destination image");
         }
         imagecopy(
             $this->destination,
@@ -138,7 +141,7 @@ class Image
     ) {
         $this->destination = imagecreatetruecolor($width, $height);
         if ($this->destination === false) {
-            throw new \RuntimeException("Can't create destination image");
+            throw new RuntimeException("Can't create destination image");
         }
         $colorRes = imagecolorallocate(
             $this->destination,
@@ -213,7 +216,7 @@ class Image
         // creating a cut resource
         $cut = imagecreatetruecolor($source->getWidth(), $source->getHeight());
         if ($cut === false) {
-            throw new \RuntimeException("Can't create destination image");
+            throw new RuntimeException("Can't create destination image");
         }
         // copying relevant section from background to the cut resource
         imagecopy(

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Suricate\Cache;
 
 use Suricate;
+use Exception;
 
 /**
  * File cache extension for Suricate
@@ -55,7 +56,7 @@ class File extends Suricate\Cache
         }
         $fp = fopen($this->path . $variable, 'w');
         if ($fp === false) {
-            throw new \Exception(
+            throw new Exception(
                 "Cannot open cache file " . $this->path . $variable
             );
         }
@@ -64,7 +65,7 @@ class File extends Suricate\Cache
         if ($expiry !== null) {
             $fp = fopen($this->path . $variable . '.expiry', 'w');
             if ($fp === false) {
-                throw new \Exception(
+                throw new Exception(
                     "Cannot open cache file " .
                         $this->path .
                         $variable .
@@ -79,18 +80,19 @@ class File extends Suricate\Cache
     public function get(string $variable)
     {
         if (is_readable($this->path . $variable)) {
+            $hasExpired = 0;
             if (is_readable($this->path . $variable . '.expiry')) {
                 $expiry = file_get_contents(
                     $this->path . $variable . '.expiry'
                 );
                 $hasExpired = time() - (int) $expiry > 0 ? 1 : -1;
-            } else {
-                $hasExpired = 0;
             }
 
             if ($hasExpired < 0) {
                 return file_get_contents($this->path . $variable);
-            } elseif ($hasExpired > 0) {
+            }
+
+            if ($hasExpired > 0) {
                 unlink($this->path . $variable . '.expiry');
             }
         }
