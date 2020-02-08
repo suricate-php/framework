@@ -107,7 +107,12 @@ class Suricate
         $this->initServices();
     }
 
-    public function getConfig()
+    /**
+     * Get app configuration
+     *
+     * @return array
+     */
+    public function getConfig(): array
     {
         return $this->config;
     }
