@@ -67,7 +67,7 @@ class Route
     /**
      * Get route method
      *
-     * @return string
+     * @return array
      */
     public function getMethod(): array
     {
