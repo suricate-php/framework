@@ -16,6 +16,7 @@ namespace Suricate;
  * @method static \Suricate\Cache           Cache($newInstance = false)           Get instance of Cache service
  * @method static \Suricate\CacheMemcache   CacheMemcache($newInstance = false)   Get instance of CacheMemcache service
  * @method static \Suricate\CacheMemcached  CacheMemcached($newInstance = false)  Get instance of CacheMemcached service
+ * @method static \Suricate\CacheRedis      CacheRedis($newInstance = false)      Get instance of CacheRedis service
  * @method static \Suricate\CacheApc        CacheApc($newInstance = false)        Get instance of CacheApc service
  * @method static \Suricate\CacheFile       CacheFile($newInstance = false)       Get instance of CacheFile service
  * @method static \Suricate\Curl            Curl($newInstance = false)            Get instance of Curl service
@@ -35,8 +36,7 @@ namespace Suricate;
 
 class Suricate
 {
-
-    const VERSION = '0.3.6';
+    const VERSION = '0.4.0';
 
     const CONF_DIR = '/conf/';
 
@@ -53,6 +53,7 @@ class Suricate
         'Cache' => '\Suricate\Cache',
         'CacheMemcache' => '\Suricate\Cache\Memcache',
         'CacheMemcached' => '\Suricate\Cache\Memcached',
+        'CacheRedis' => '\Suricate\Cache\Redis',
         'CacheApc' => '\Suricate\Cache\Apc',
         'CacheFile' => '\Suricate\Cache\File',
         'Curl' => '\Suricate\Curl',
