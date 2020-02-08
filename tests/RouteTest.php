@@ -22,7 +22,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
         );
 
         $this->assertEquals($path, $route->getPath());
-        $this->assertEquals('any', $route->getMethod());
+        $this->assertEquals(['any'], $route->getMethod());
         $this->assertEquals($name, $route->getName());
     }
 }
