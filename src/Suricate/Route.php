@@ -45,12 +45,53 @@ class Route
     }
 
     /**
-     * Get route path
+     * Get route name
+     *
      * @return string
      */
-    public function getPath()
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Get route path
+     *
+     * @return string
+     */
+    public function getPath(): string
     {
         return $this->path;
+    }
+
+    /**
+     * Get route method
+     *
+     * @return array
+     */
+    public function getMethod(): array
+    {
+        return $this->method;
+    }
+
+    /**
+     * Get parameters definition
+     *
+     * @return array
+     */
+    public function getParameters(): array
+    {
+        return $this->parametersDefinitions;
+    }
+
+    /**
+     * Get route target
+     *
+     * @return array|null
+     */
+    public function getTarget(): ?array
+    {
+        return $this->target;
     }
 
     private function match()

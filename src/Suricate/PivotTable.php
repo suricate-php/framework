@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Suricate;
 
+use InvalidArgumentException;
+use PDO;
+
 class PivotTable extends DBObject
 {
     protected $references = [];
@@ -71,7 +74,7 @@ class PivotTable extends DBObject
 
         $results = $pivot->dbLink
             ->query($query, $params)
-            ->fetchAll(\PDO::FETCH_ASSOC);
+            ->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($results as $result) {
             $add = true;
@@ -96,7 +99,7 @@ class PivotTable extends DBObject
             return $this->relations[$relationName]['source'];
         }
 
-        throw new \InvalidArgumentException(
+        throw new InvalidArgumentException(
             'Cannot get field for relation "' .
                 $relationName .
                 '" : Unknown relation'
@@ -109,7 +112,7 @@ class PivotTable extends DBObject
             return $this->relations[$relationName]['target'];
         }
 
-        throw new \InvalidArgumentException(
+        throw new InvalidArgumentException(
             'Cannot get target for relation "' .
                 $relationName .
                 '" : Unknown relation'

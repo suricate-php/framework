@@ -9,4 +9,5 @@ parameters:
 		- '#Instantiated class Predis\\Client not found.#'
 		- '#Call to method rpush\(\) on an unknown class Predis\\Client.#'
 		- '#Call to method blpop\(\) on an unknown class Predis\\Client.#'
+		- '#Call to method connect\(\) on an unknown class Predis\\Client.#'
 
