@@ -155,7 +155,13 @@ class Redis extends Suricate\Cache
             $expiry = $this->defaultExpiry;
         }
 
-        return $this->handler->set($keyname, $value, $expiry);
+        $retVal = $this->handler->set($keyname, $value);
+        $expireRetVal = true;
+        if ($expiry !== -1) {
+            $this->handler->expire($keyname, $expiry);
+        }
+
+        return $retVal && $expireRetVal;
     }
 
     /**
