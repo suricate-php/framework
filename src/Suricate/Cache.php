@@ -21,7 +21,8 @@ class Cache extends Service implements Interfaces\ICache
         'memcache' => 'Suricate\Suricate::CacheMemcache',
         'memcached' => 'Suricate\Suricate::CacheMemcached',
         'apc' => 'Suricate\Suricate::CacheApc',
-        'file' => 'Suricate\Suricate::CacheFile'
+        'file' => 'Suricate\Suricate::CacheFile',
+        'redis' => 'Suricate\Suricate::CacheRedis'
     ];
 
     protected function init()
