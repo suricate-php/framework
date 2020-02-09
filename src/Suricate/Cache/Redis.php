@@ -24,6 +24,7 @@ class Redis extends Suricate\Cache
 {
     protected $parametersList = ['host', 'port', 'defaultExpiry'];
 
+    /** @var Client|false $handler */
     private $handler;
 
     public function __construct()
@@ -120,14 +121,15 @@ class Redis extends Suricate\Cache
     {
         if ($this->handler === false) {
             if (class_exists('\Predis\Client')) {
-                $this->handler = new Client([
+                $redisHandler = new Client([
                     'scheme' => 'tcp',
                     'host' => $this->host,
                     'port' => $this->port
                 ]);
-                if ($this->handler->connect() === false) {
+                if ($redisHandler->connect() === false) {
                     throw new Exception('Can\'t connect to redis server');
                 }
+                $this->handler = $redisHandler;
 
                 return $this;
             }
@@ -151,6 +153,9 @@ class Redis extends Suricate\Cache
     public function set(string $keyname, $value, $expiry = null)
     {
         $this->connect();
+        if ($this->handler === false) {
+            return false;
+        }
 
         if ($expiry === null) {
             $expiry = $this->defaultExpiry;
@@ -172,12 +177,16 @@ class Redis extends Suricate\Cache
      * @throws Exception
      * @throws BadMethodCallException
      *
-     * @return string
+     * @return string|null
      */
-    public function get(string $keyname): string
+    public function get(string $keyname): ?string
     {
         $this->connect();
-        return $this->handler->get($keyname);
+        if ($this->handler) {
+            return $this->handler->get($keyname);
+        }
+
+        return null;
     }
 
     /**
@@ -192,6 +201,10 @@ class Redis extends Suricate\Cache
     public function delete(string $keyname): bool
     {
         $this->connect();
-        return $this->handler->delete($keyname);
+        if ($this->handler) {
+            return (bool) $this->handler->del([$keyname]);
+        }
+
+        return false;
     }
 }
