@@ -118,7 +118,10 @@ class Error extends Service
             echo '</html>';
         } else {
             if ($e->getCode() <= 1) {
-                $err = new Exception\HttpException('500');
+                $err = new Exception\HttpException(
+                    '500',
+                    'Internal server error'
+                );
                 $this->displayGenericHttpExceptionPage($err);
             }
         }
