@@ -11,6 +11,7 @@ class Route
     private $path;
     private $computedPath;
 
+    /** @var Request $request */
     private $request;
 
     private $parametersDefinitions;
@@ -20,6 +21,17 @@ class Route
     public $target;
     public $middlewares = [];
 
+    /**
+     * Route constructor
+     *
+     * @param string        $name                  Route name
+     * @param string|array  $method                Method accepted for route
+     * @param string        $path                  Route path
+     * @param Request       $request               Request
+     * @param array|null    $routeTarget           Route target
+     * @param array         $parametersDefinitions Parameters definition
+     * @param mixed         $middleware            Middleware
+     */
     public function __construct(
         $name,
         $method,
@@ -92,6 +104,16 @@ class Route
     public function getTarget(): ?array
     {
         return $this->target;
+    }
+
+    /**
+     * Get HTTP request
+     *
+     * @return Request
+     */
+    public function getRequest(): Request
+    {
+        return $this->request;
     }
 
     private function match()
