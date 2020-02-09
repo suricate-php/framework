@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Suricate;
 
+use Exception;
+
 /**
  * Cache
  *
@@ -32,7 +34,7 @@ class Cache extends Service implements Interfaces\ICache
                 static::$container = $this->cacheTypes[$this->type](true);
                 return;
             }
-            throw new \Exception("Unknown cache type " . $this->type);
+            throw new Exception("Unknown cache type " . $this->type);
         }
     }
 
