@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Suricate\Traits;
 
+use InvalidArgumentException;
+
 trait ImageFilter
 {
     private $filters = [
@@ -97,7 +99,7 @@ trait ImageFilter
             return $this;
         }
 
-        throw new \InvalidArgumentException(
+        throw new InvalidArgumentException(
             'Unknown filter type ' . $filterType
         );
     }
