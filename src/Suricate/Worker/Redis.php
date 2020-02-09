@@ -191,7 +191,7 @@ class Redis
 
         while (true) {
             $result = $redisSrv->blpop(
-                $this->redisFifoName,
+                [$this->redisFifoName],
                 $this->redisFifoTimeout
             );
             if ($result) {
