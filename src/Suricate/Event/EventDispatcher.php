@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Suricate\Event;
 
 use Suricate\Suricate;
+use InvalidArgumentException;
 
 class EventDispatcher extends \Suricate\Service
 {
@@ -96,7 +97,7 @@ class EventDispatcher extends \Suricate\Service
         }
 
         if ($eventType === null) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Event type is not a string nor Event subclass'
             );
         }
