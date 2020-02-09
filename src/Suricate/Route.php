@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Suricate;
 
+use ReflectionMethod;
+use ReflectionFunction;
+
 class Route
 {
     private $name;
@@ -200,12 +203,12 @@ class Route
     private function getCallableArguments()
     {
         if (count($this->target) > 1) {
-            $reflection = new \ReflectionMethod(
+            $reflection = new ReflectionMethod(
                 $this->target[0],
                 $this->target[1]
             );
         } else {
-            $reflection = new \ReflectionFunction($this->target);
+            $reflection = new ReflectionFunction($this->target);
         }
 
         $methodParameters = $reflection->getParameters();
