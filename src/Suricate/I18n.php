@@ -66,11 +66,13 @@ class I18n extends Service
         if (is_readable($filename)) {
             $this->locale = $locale;
             $this->translations = include $filename;
-        } else {
-            Suricate::Logger()->debug(
-                sprintf('Missing translation file for %s', $this->locale)
-            );
+
+            return;
         }
+
+        Suricate::Logger()->debug(
+            sprintf('Missing translation file for %s', $this->locale)
+        );
     }
 
     public function get()
@@ -88,12 +90,12 @@ class I18n extends Service
                 if (isset($args[1])) {
                     array_shift($args);
                     return vsprintf($this->translations[$str], $args);
-                } else {
-                    return $this->translations[$str];
                 }
-            } else {
-                return $str;
+
+                return $this->translations[$str];
             }
+
+            return $str;
         }
     }
 

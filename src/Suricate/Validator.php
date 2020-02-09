@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Suricate;
 
+use InvalidArgumentException;
+use BadMethodCallException;
+
 /**
  * Validator
  * Inspired from Kieron Wilson PHP Validator
@@ -115,7 +118,7 @@ class Validator
                 case 'string':
                     return is_string($value);
                 default:
-                    throw new \InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         'Unknown type to check ' . $type
                     );
             }
@@ -204,7 +207,7 @@ class Validator
             return $this;
         }
 
-        throw new \InvalidArgumentException(
+        throw new InvalidArgumentException(
             'Index / Property "' . $index . '" does not exists'
         );
     }
@@ -213,7 +216,7 @@ class Validator
     {
         $args = func_get_args();
         if (count($args) < 1) {
-            throw new \InvalidArgumentException('bad number of arguments');
+            throw new InvalidArgumentException('bad number of arguments');
         }
 
         $method = array_shift($args);
@@ -224,7 +227,7 @@ class Validator
             return $this;
         }
 
-        throw new \InvalidArgumentException('Bad method');
+        throw new InvalidArgumentException('Bad method');
     }
 
     public function __call($method, $parameters)
@@ -247,7 +250,7 @@ class Validator
             }
 
             if (!isset($this->checks[$method])) {
-                throw new \BadMethodCallException('Unknown check ' . $method);
+                throw new BadMethodCallException('Unknown check ' . $method);
             } else {
                 $validator = $this->checks[$method];
             }

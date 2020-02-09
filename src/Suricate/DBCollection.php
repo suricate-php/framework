@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Suricate;
 
+use ReflectionClass;
+use BadMethodCallException;
+
 class DBCollection extends Collection
 {
     /* @var string SQL table name */
@@ -47,7 +50,7 @@ class DBCollection extends Collection
     public function __sleep()
     {
         $discardedProps = ['dbLink'];
-        $reflection = new \ReflectionClass($this);
+        $reflection = new ReflectionClass($this);
         $props = $reflection->getProperties();
         $result = [];
         foreach ($props as $currentProperty) {
@@ -175,7 +178,7 @@ class DBCollection extends Collection
                 class_implements($this->itemsType)
             )
         ) {
-            throw new \BadMethodCallException(
+            throw new BadMethodCallException(
                 'Item type does not implement IDBObject interface'
             );
         }

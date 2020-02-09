@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Suricate\Worker;
 
 use Suricate\Suricate;
+use Exception;
+use Predis\Client;
 
 /**
  * Redis worker class
@@ -36,15 +38,15 @@ class Redis
     public function __construct()
     {
         if ($this->redisHost === '') {
-            throw new \Exception("Redis host is not set");
+            throw new Exception("Redis host is not set");
         }
 
         if ($this->redisPort === '') {
-            throw new \Exception("Redis port is not set");
+            throw new Exception("Redis port is not set");
         }
 
         if ($this->redisFifoName === '') {
-            throw new \Exception("Redis fifo name is not set");
+            throw new Exception("Redis fifo name is not set");
         }
 
         $this->logger = Suricate::Logger();
@@ -84,7 +86,7 @@ class Redis
      */
     public function enqueue($payload)
     {
-        $redisSrv = new \Predis\Client([
+        $redisSrv = new Client([
             'scheme' => 'tcp',
             'host' => $this->redisHost,
             'port' => $this->redisPort,
@@ -179,7 +181,7 @@ class Redis
     {
         $this->log('Connecting to redis');
 
-        $redisSrv = new \Predis\Client([
+        $redisSrv = new Client([
             'scheme' => 'tcp',
             'host' => $this->redisHost,
             'port' => $this->redisPort,
@@ -248,6 +250,8 @@ class Redis
      *
      * @param int $signalNumber
      * @return void
+     *
+     * @SuppressWarnings(PHPMD.ExitExpression)
      */
     private function signalHandler($signalNumber)
     {
@@ -257,6 +261,7 @@ class Redis
                 "Child[" . $index . "] Sending SIGTERM TO " . $child['pid']
             );
             posix_kill($child['pid'], SIGTERM);
+
             pcntl_wait($status);
             $this->log(
                 "Child[" . $index . "] returned with status[" . $status . "]"

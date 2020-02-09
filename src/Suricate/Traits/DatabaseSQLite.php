@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Suricate\Traits;
 
+use Exception;
+
 trait DatabaseSQLite
 {
     private function configurePDOSQLite(
@@ -29,7 +31,7 @@ trait DatabaseSQLite
             if ($params['file'] !== null) {
                 $pdoDsn .= ':' . $params['file'];
             } else {
-                throw new \Exception("Missing SQLite file parameter");
+                throw new Exception("Missing SQLite file parameter");
             }
         }
 

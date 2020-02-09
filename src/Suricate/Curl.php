@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Suricate;
 
+use Exception;
+
 /**
  * Curl extension for Suricate
  *
@@ -90,12 +92,15 @@ class Curl extends Service
         return $this;
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.UndefinedVariable) : preg_match_all matches
+     */
     public function send()
     {
         $curlHandler = curl_init($this->request->getUrl());
 
         if ($curlHandler === false) {
-            throw new \Exception('Can\'t init curl');
+            throw new Exception("Can't init curl");
         }
         $curlOptions = $this->generateCurlOptions();
         curl_setopt_array($curlHandler, $curlOptions);

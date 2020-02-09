@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Suricate\Cache;
 
 use Suricate;
+use Exception;
+use BadMethodCallException;
 
 /**
  * Memcache extension for Suricate
@@ -94,11 +96,11 @@ class Memcache extends Suricate\Cache
                 try {
                     $this->handler = new \Memcache();
                     $this->handler->connect($this->host, $this->port);
-                } catch (\Exception $e) {
-                    throw new \Exception('Can\'t connect to memcache server');
+                } catch (Exception $e) {
+                    throw new Exception('Can\'t connect to memcache server');
                 }
             } else {
-                throw new \BadMethodCallException(
+                throw new BadMethodCallException(
                     'Can\'t find Memcache extension'
                 );
             }
