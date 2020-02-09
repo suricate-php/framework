@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Suricate;
 
+use InvalidArgumentException;
+
 /**
+ * Request class
+ *
  * @SuppressWarnings("StaticAccess")
  */
 class Request
@@ -101,17 +105,28 @@ class Request
     private $httpCode;
     private $headers = [];
     private $requestUri = '';
+    private $remoteIp;
     private $url;
     private $body;
     private $path;
     private $query;
 
+    /**
+     * Request constructor
+     */
     public function __construct()
     {
         $this->headers = [];
         $this->httpCode = 200;
     }
 
+    /**
+     * Parse server request
+     *
+     * @return void
+     *
+     * @SuppressWarnings(PHPMD).Superglobals
+     */
     public function parse()
     {
         if (isset($_SERVER['REQUEST_URI'])) {
@@ -127,12 +142,49 @@ class Request
         if (isset($_POST['_method'])) {
             $this->setMethod($_POST['_method']);
         }
+
+        $this->parseRemoteIp();
     }
 
-    public function setMethod($method)
+    /**
+     * Parse request and extract remote IP
+     *
+     * @return void
+     *
+     * @SuppressWarnings(PHPMD).Superglobals
+     */
+    private function parseRemoteIp()
+    {
+        // FIXME: check for trusted_proxy and void forged header
+        if (
+            array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER) &&
+            !empty($_SERVER['HTTP_X_FORWARDED_FOR'])
+        ) {
+            if (strpos($_SERVER['HTTP_X_FORWARDED_FOR'], ',') > 0) {
+                $addr = explode(",", $_SERVER['HTTP_X_FORWARDED_FOR']);
+                $this->remoteIp = trim($addr[0]);
+                return;
+            }
+            $this->remoteIp = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            return;
+        }
+
+        $this->remoteIp = $_SERVER['REMOTE_ADDR'];
+        return;
+    }
+
+    /**
+     * Set Request method
+     *
+     * @param string $method Request method
+     * @return Request
+     *
+     * @throws InvalidArgumentException
+     */
+    public function setMethod($method): Request
     {
         if (!isset($this->methods[$method])) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Invalid HTTP Method ' . $method
             );
         }
@@ -142,20 +194,48 @@ class Request
         return $this;
     }
 
-    public function getMethod()
+    /**
+     * Get Request method
+     *
+     * @return string
+     */
+    public function getMethod(): string
     {
         return $this->method;
     }
 
-    public function setUrl($url)
+    /**
+     * Set Request URL
+     *
+     * @param string $url
+     *
+     * @return Request
+     */
+    public function setUrl($url): Request
     {
         $this->url = $url;
 
         return $this;
     }
-    public function getUrl()
+
+    /**
+     * Get Request URL
+     *
+     * @return string|null
+     */
+    public function getUrl(): ?string
     {
         return $this->url;
+    }
+
+    /**
+     * Get Remote IP Address
+     *
+     * @return string|null
+     */
+    public function getRemoteIp(): ?string
+    {
+        return $this->remoteIp;
     }
 
     public function setRequestUri($uri)
@@ -180,6 +260,16 @@ class Request
         return $this->query;
     }
 
+    /**
+     * Get POST parameter
+     *
+     * @param string $variable     Parameter name
+     * @param mixed  $defaultValue Fallback value when parameter not set
+     *
+     * @return mixed
+     *
+     * @SuppressWarnings(PHPMD).Superglobals
+     */
     public static function getPostParam($variable, $defaultValue = null)
     {
         if (array_key_exists($variable, $_POST)) {
@@ -188,6 +278,16 @@ class Request
         return $defaultValue;
     }
 
+    /**
+     * Get Request parameter, GET first, then POST
+     *
+     * @param string $variable     Parameter name
+     * @param mixed  $defaultValue Fallback value when parameter not set
+     *
+     * @return mixed
+     *
+     * @SuppressWarnings(PHPMD).Superglobals
+     */
     public static function getParam($variable, $defaultValue = null)
     {
         if (array_key_exists($variable, $_GET)) {
@@ -200,7 +300,16 @@ class Request
         return $defaultValue;
     }
 
-    public static function hasParam($variable)
+    /**
+     * Check if parameter exists in Request
+     *
+     * @param string $variable parameter name
+     *
+     * @return boolean
+     *
+     * @SuppressWarnings(PHPMD).Superglobals
+     */
+    public static function hasParam($variable): bool
     {
         return array_key_exists($variable, $_GET) ||
             array_key_exists($variable, $_POST);
@@ -210,6 +319,7 @@ class Request
      * Set request headers
      *
      * @param array $headers Headers to set key => $value
+     *
      * @return Request
      */
     public function setHeaders(array $headers): Request
@@ -399,12 +509,19 @@ class Request
         return $this->httpCode >= 500 && $this->httpCode < 600;
     }
 
-    private function getStringForHttpCode()
+    /**
+     * Get string correspondig to HTTP code
+     *
+     * @return string|null
+     */
+    private function getStringForHttpCode(): ?string
     {
         if (isset($this->httpCodeString[$this->httpCode])) {
             return $this->httpCode .
                 ' ' .
                 $this->httpCodeString[$this->httpCode];
         }
+
+        return null;
     }
 }
