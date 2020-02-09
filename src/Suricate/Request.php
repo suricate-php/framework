@@ -169,7 +169,9 @@ class Request
             return;
         }
 
-        $this->remoteIp = $_SERVER['REMOTE_ADDR'];
+        if (isset($_SERVER['REMOTE_ADDR'])) {
+            $this->remoteIp = $_SERVER['REMOTE_ADDR'];
+        }
         return;
     }
 
