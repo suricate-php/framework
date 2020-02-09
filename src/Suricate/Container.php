@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Suricate;
 
+use InvalidArgumentException;
+
 class Container implements \ArrayAccess
 {
     private $content;
@@ -29,7 +31,7 @@ class Container implements \ArrayAccess
      * \ArrayAccess offsetGet implementation
      *
      * @param mixed $offset offset to get
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return bool
      */
     public function offsetGet($offset)
@@ -44,7 +46,7 @@ class Container implements \ArrayAccess
             return $this->content[$offset];
         }
 
-        throw new \InvalidArgumentException('Unknown service ' . $offset);
+        throw new InvalidArgumentException('Unknown service ' . $offset);
     }
 
     /**
