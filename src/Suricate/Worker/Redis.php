@@ -250,6 +250,8 @@ class Redis
      *
      * @param int $signalNumber
      * @return void
+     *
+     * @SuppressWarnings(PHPMD.ExitExpression)
      */
     private function signalHandler($signalNumber)
     {
@@ -259,6 +261,7 @@ class Redis
                 "Child[" . $index . "] Sending SIGTERM TO " . $child['pid']
             );
             posix_kill($child['pid'], SIGTERM);
+
             pcntl_wait($status);
             $this->log(
                 "Child[" . $index . "] returned with status[" . $status . "]"
