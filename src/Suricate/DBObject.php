@@ -8,6 +8,10 @@ use Suricate\Traits\DBObjectRelations;
 use Suricate\Traits\DBObjectProtected;
 use Suricate\Traits\DBObjectExport;
 
+use RuntimeException;
+use InvalidArgumentException;
+use ReflectionClass;
+
 /**
  * DBObject, Pseudo ORM Class
  *
@@ -97,7 +101,7 @@ class DBObject implements Interfaces\IDBObject
             return $this->$name;
         }
 
-        throw new \InvalidArgumentException('Undefined property ' . $name);
+        throw new InvalidArgumentException('Undefined property ' . $name);
     }
 
     /**
@@ -215,7 +219,7 @@ class DBObject implements Interfaces\IDBObject
     public function __sleep()
     {
         $discardedProps = ['dbLink', 'relations'];
-        $reflection = new \ReflectionClass($this);
+        $reflection = new ReflectionClass($this);
         $props = $reflection->getProperties();
         $result = [];
         foreach ($props as $currentProperty) {
@@ -505,7 +509,7 @@ class DBObject implements Interfaces\IDBObject
             return null;
         }
 
-        throw new \RuntimeException(
+        throw new RuntimeException(
             "Object " . get_called_class() . " has no properties to save"
         );
     }
