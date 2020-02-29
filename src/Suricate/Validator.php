@@ -144,23 +144,23 @@ class Validator
         };
 
         $this->checks['longerThan'] = function ($value, $length) {
-            return strlen($value) > $length;
+            return strlen((string) $value) > $length;
         };
 
         $this->checks['longerThanOrEqual'] = function ($value, $length) {
-            return strlen($value) >= $length;
+            return strlen((string) $value) >= $length;
         };
 
         $this->checks['shorterThan'] = function ($value, $length) {
-            return strlen($value) < $length;
+            return strlen((string) $value) < $length;
         };
 
         $this->checks['shortThanOrEqual'] = function ($value, $length) {
-            return strlen($value) <= $length;
+            return strlen((string) $value) <= $length;
         };
 
         $this->checks['contains'] = function ($value, $toFind) {
-            return strpos($value, $toFind) !== false;
+            return strpos((string) $value, $toFind) !== false;
         };
 
         $this->checks['alnum'] = function ($value) {
