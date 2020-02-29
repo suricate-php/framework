@@ -137,8 +137,9 @@ class Validator
         };
 
         $this->checks['regexp'] = function ($value, $regexp) {
-            return filter_var($value, FILTER_VALIDATE_REGEXP, $regexp) !==
-                false;
+            return filter_var($value, FILTER_VALIDATE_REGEXP, [
+                "options" => ['regexp' => $regexp]
+            ]) !== false;
         };
 
         $this->checks['longerThan'] = function ($value, $length) {
