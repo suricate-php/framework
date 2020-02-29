@@ -6,6 +6,7 @@ namespace Suricate;
 
 use InvalidArgumentException;
 use BadMethodCallException;
+use Exception;
 
 /**
  * Validator
@@ -137,28 +138,29 @@ class Validator
         };
 
         $this->checks['regexp'] = function ($value, $regexp) {
-            return filter_var($value, FILTER_VALIDATE_REGEXP, $regexp) !==
-                false;
+            return filter_var($value, FILTER_VALIDATE_REGEXP, [
+                "options" => ['regexp' => $regexp]
+            ]) !== false;
         };
 
         $this->checks['longerThan'] = function ($value, $length) {
-            return strlen($value) > $length;
+            return strlen((string) $value) > $length;
         };
 
         $this->checks['longerThanOrEqual'] = function ($value, $length) {
-            return strlen($value) >= $length;
+            return strlen((string) $value) >= $length;
         };
 
         $this->checks['shorterThan'] = function ($value, $length) {
-            return strlen($value) < $length;
+            return strlen((string) $value) < $length;
         };
 
         $this->checks['shortThanOrEqual'] = function ($value, $length) {
-            return strlen($value) <= $length;
+            return strlen((string) $value) <= $length;
         };
 
         $this->checks['contains'] = function ($value, $toFind) {
-            return strpos($value, $toFind) !== false;
+            return strpos((string) $value, $toFind) !== false;
         };
 
         $this->checks['alnum'] = function ($value) {
@@ -194,12 +196,19 @@ class Validator
             return $this;
         }
 
-        if (is_object($this->datas) && isset($this->datas->$index)) {
-            $this->value = $this->datas->$index;
+        if (is_object($this->datas)) {
+            try {
+                $this->value = $this->datas->$index;
+            } catch (Exception $e) {
+                throw new InvalidArgumentException(
+                    'class property "' . $index . '" does not exists'
+                );
+            }
             $this->index = $index;
 
             return $this;
         }
+
         if (array_key_exists($index, $this->datas)) {
             $this->value = $this->datas[$index];
             $this->index = $index;
