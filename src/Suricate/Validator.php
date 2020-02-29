@@ -6,6 +6,7 @@ namespace Suricate;
 
 use InvalidArgumentException;
 use BadMethodCallException;
+use Exception;
 
 /**
  * Validator
@@ -195,12 +196,19 @@ class Validator
             return $this;
         }
 
-        if (is_object($this->datas) && isset($this->datas->$index)) {
-            $this->value = $this->datas->$index;
+        if (is_object($this->datas)) {
+            try {
+                $this->value = $this->datas->$index;
+            } catch (Exception $e) {
+                throw new InvalidArgumentException(
+                    'class property "' . $index . '" does not exists'
+                );
+            }
             $this->index = $index;
 
             return $this;
         }
+
         if (array_key_exists($index, $this->datas)) {
             $this->value = $this->datas[$index];
             $this->index = $index;
