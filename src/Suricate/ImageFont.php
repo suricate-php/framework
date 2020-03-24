@@ -79,9 +79,9 @@ class ImageFont
     /**
      * Get text bounding box
      *
-     * @return void
+     * @return array|false
      */
-    public function getBoundingBox(): array
+    public function getBoundingBox()
     {
         return imageftbbox($this->size, $this->angle, $this->font, $this->text);
     }
