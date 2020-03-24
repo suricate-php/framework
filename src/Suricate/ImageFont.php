@@ -76,6 +76,16 @@ class ImageFont
     {
     }
 
+    /**
+     * Get text bounding box
+     *
+     * @return void
+     */
+    public function getBoundingBox(): array
+    {
+        return imageftbbox($this->size, $this->angle, $this->font, $this->text);
+    }
+
     public function apply(&$image, $x = 0, $y = 0)
     {
         $colorResource = $this->createColor($image);
