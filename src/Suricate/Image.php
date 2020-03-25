@@ -50,17 +50,81 @@ class Image
         return $this->height;
     }
 
-    public function isPortrait()
+    public function getResource()
+    {
+        return $this->source;
+    }
+
+    public function setResource($source)
+    {
+        if (!is_resource($source)) {
+            throw new InvalidArgumentException("Invalid source");
+        }
+
+        $this->source = $source;
+        $this->width = imagesx($this->source);
+        $this->height = imagesy($this->source);
+
+        return $this;
+    }
+
+    public function create(int $width, int $height)
+    {
+        $this->source = imagecreatetruecolor($width, $height);
+        $this->destination = $this->source;
+        $this->width = $width;
+        $this->height = $height;
+
+        return $this;
+    }
+
+    /**
+     * Fill an image with a color
+     *
+     * @param integer $pointX  X point coordinate
+     * @param integer $pointY  Y point coordinate
+     * @param array   $color   RGB color
+     *
+     */
+    public function fill(int $pointX, int $pointY, $color = [0, 0, 0])
+    {
+        $color = imagecolorallocate(
+            $this->destination,
+            $color[0],
+            $color[1],
+            $color[2]
+        );
+
+        imagefill($this->destination, $pointX, $pointY, $color);
+
+        return $this->chain();
+    }
+
+    /**
+     * Return true if image is in portrait mode
+     *
+     * @return boolean
+     */
+    public function isPortrait(): bool
     {
         return $this->width < $this->height;
     }
 
-    public function isLandscape()
+    /**
+     * Return true if image is in landscape mode
+     *
+     * @return boolean
+     */
+    public function isLandscape(): bool
     {
         return $this->height < $this->width;
     }
 
-    public function chain()
+    /**
+     * Apply modification to destination image
+     *
+     */
+    public function chain(): self
     {
         $this->source = $this->destination;
         $this->width = imagesx($this->source);
@@ -287,6 +351,37 @@ class Image
         $imageShape->drawLine($x1, $y1, $x2, $y2);
 
         return $this;
+    }
+
+    /**
+     * Export image
+     *
+     * @param string $outputType output format
+     * @param integer $quality   Output quality, when available
+     *
+     * @return void
+     */
+    public function export($outputType, $quality = 70)
+    {
+        switch ($outputType) {
+            case 'jpg':
+            case 'jpeg':
+                imagejpeg($this->source, null, $quality);
+                break;
+            case 'png':
+                imagepng($this->source);
+                break;
+            case 'gif':
+                imagegif($this->source);
+                break;
+            case 'webp':
+                imagewebp($this->source, null, $quality);
+                break;
+            default:
+                throw new InvalidArgumentException(
+                    sprintf("Invalid output format %s", $outputType)
+                );
+        }
     }
 
     public function save($filename, $outputType = null, $quality = 70)
