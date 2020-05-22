@@ -271,13 +271,23 @@ class Redis
         exit();
     }
 
-    private function errorHandler(
+    /**
+     * Redis worker error handler
+     *
+     * @param int $errNumber
+     * @param string $errMessage
+     * @param string  $filename
+     * @param int $lineNumber
+     * @param array $vars
+     * @return boolean
+     */
+    protected function errorHandler(
         $errNumber,
         $errMessage,
         $filename,
         $lineNumber,
         $vars
-    ) {
+    ): bool {
         $this->log(
             'Error occured: ' .
                 $errMessage .
@@ -290,5 +300,7 @@ class Redis
                 '. vars : ' .
                 json_encode($vars)
         );
+
+        return false;
     }
 }
