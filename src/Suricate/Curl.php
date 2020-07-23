@@ -188,9 +188,16 @@ class Curl extends Service
                 );
             }
         } elseif ($this->request->getMethod() == Request::HTTP_METHOD_PUT) {
-            $curlOptions[CURLOPT_PUT] = true;
+            $curlOptions[CURLOPT_CUSTOMREQUEST] = "PUT";
+            if ($this->getParameter('postFields') !== null) {
+                $curlOptions[CURLOPT_POSTFIELDS] = $this->getParameter(
+                    'postFields'
+                );
+            }
         } elseif ($this->request->getMethod() == Request::HTTP_METHOD_HEAD) {
             $curlOptions[CURLOPT_NOBODY] = true;
+        } elseif ($this->request->getMethod() == Request::HTTP_METHOD_DELETE) {
+            $curlOptions[CURLOPT_CUSTOMREQUEST] = "DELETE";
         }
 
         return $curlOptions;
