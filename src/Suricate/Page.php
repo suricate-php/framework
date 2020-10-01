@@ -167,9 +167,22 @@ class Page
     //
     // Scripts
     //
-    public function addScript($id, $url)
+    /**
+     * Add script tag in header
+     *
+     * @param string $id
+     * @param string $url
+     * @param boolean $async
+     * @param boolean $defer
+     * @return void
+     */
+    public function addScript($id, $url, $async = false, $defer = false)
     {
-        $this->scripts[$id] = $url;
+        $this->scripts[$id] = [
+            'url' => $url,
+            'async' => $async,
+            'defer' => $defer
+        ];
 
         return $this;
     }
@@ -178,12 +191,14 @@ class Page
     {
         $output = '';
 
-        foreach ($this->scripts as $currentScriptUrl) {
+        foreach ($this->scripts as $currentScript) {
             $output .=
-                '<script type="text/javascript" src="' .
-                $currentScriptUrl .
-                '"></script>' .
-                "\n";
+                sprintf('<script type="text/javascript" src="%s"%s%s></script>'."\n",
+                $currentScript['url'],
+                $currentScript['async'] ? ' async' : '',
+                $currentScript['defer'] ? ' defer' : '',
+            );
+                
         }
 
         return $output;
