@@ -174,7 +174,7 @@ class Page
      * @param string $url
      * @param boolean $async
      * @param boolean $defer
-     * @return void
+     * @return Page
      */
     public function addScript($id, $url, $async = false, $defer = false)
     {

@@ -21,35 +21,40 @@ class Route
      * Execute command
      *
      * @return integer
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function execute(): int
     {
         $routes = $this->getRoutes();
-        echo "Number of routes defined: " . count($routes) . "\n\n";
+        $messages = [];
+        $messages[] = "Number of routes defined: " . count($routes);
+        $messages[] = "";
 
         foreach ($routes as $route) {
-            echo str_repeat("-", 80) . "\n";
-            echo " ";
-            echo "Name: " .
-                Console::coloredString($route->getName(), 'green') .
-                "\n";
-            echo " Methods: " .
-                str_pad(implode('|', $route->getMethod()), 20, ' ');
-            echo " | Path: ";
-            echo $route->getPath();
-            echo "\n";
-            echo " Parameters:\n";
+            $messages[] = str_repeat("-", 80);
+            $messages[] = " ";
+
+            $messages[] =
+                "Name: " . Console::coloredString($route->getName(), 'green');
+            $messages[] =
+                " Methods: " .
+                str_pad(implode('|', $route->getMethod()), 20, ' ') .
+                " | Path: " .
+                $route->getPath();
+            $messages[] = " Parameters:";
             $parameters = $route->getParameters();
             if (count($parameters) === 0) {
-                echo "     None\n";
+                $messages[] = "     None";
             } else {
                 foreach ($parameters as $paramName => $paramPattern) {
-                    echo "     - " . $paramName . ": " . $paramPattern . "\n";
+                    $messages[] = "     - " . $paramName . ": " . $paramPattern;
                 }
             }
 
-            echo " Target: " . implode('::', $route->getTarget()) . "\n";
+            $messages[] = " Target: " . implode('::', $route->getTarget());
         }
+
+        echo implode("\n", $messages);
 
         return 0;
     }

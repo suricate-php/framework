@@ -16,6 +16,13 @@ class Service implements Interfaces\IService
         // Service constructor
     }
 
+    /**
+     * Service getter
+     *
+     * @param string $variable
+     * @return void
+     * @throws InvalidArgumentException
+     */
     public function __get($variable)
     {
         if (in_array($variable, $this->parametersList)) {
@@ -34,6 +41,13 @@ class Service implements Interfaces\IService
         );
     }
 
+    /**
+     * Service setter
+     *
+     * @param string $variable
+     * @param mixed $value
+     * @throws InvalidArgumentException
+     */
     public function __set($variable, $value)
     {
         if (in_array($variable, $this->parametersList)) {
@@ -50,21 +64,21 @@ class Service implements Interfaces\IService
         );
     }
 
+    /**
+     * Service configurator
+     *
+     * @param array $parameters
+     * @return void
+     */
     public function configure($parameters = [])
     {
         foreach ($parameters as $key => $value) {
             $this->$key = $value;
         }
-
-        $this->init();
     }
 
     public function getParameter($parameter)
     {
         return $this->$parameter;
-    }
-
-    protected function init()
-    {
     }
 }
