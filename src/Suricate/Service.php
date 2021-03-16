@@ -75,16 +75,10 @@ class Service implements Interfaces\IService
         foreach ($parameters as $key => $value) {
             $this->$key = $value;
         }
-
-        $this->init();
     }
 
     public function getParameter($parameter)
     {
         return $this->$parameter;
-    }
-
-    protected function init()
-    {
     }
 }
