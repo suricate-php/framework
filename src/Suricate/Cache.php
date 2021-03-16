@@ -27,6 +27,12 @@ class Cache extends Service implements Interfaces\ICache
         'redis' => 'Suricate\Suricate::CacheRedis'
     ];
 
+    /**
+     * Init cache handler
+     *
+     * @return mixed
+     * @throws Exceptions
+     */
     protected function init()
     {
         if (static::$container === null) {
