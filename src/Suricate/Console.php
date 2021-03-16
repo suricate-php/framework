@@ -21,7 +21,7 @@ class Console
 
     public function execute()
     {
-        $command = $this->args[0] ?: '';
+        $command = isset($this->args[0]) ? $this->args[0] : '';
 
         switch ($command) {
             case 'route':
