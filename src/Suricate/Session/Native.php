@@ -9,17 +9,21 @@ class Native extends \Suricate\Session
     public function __construct()
     {
         parent::__construct();
-
         $this->loadSession();
     }
 
     private function loadSession()
     {
-        if (session_id() == '') {
+        if (session_id() === '') {
             session_start();
         }
     }
 
+    /**
+     * Get current session id
+     *
+     * @return string
+     */
     public function getId()
     {
         return session_id();
@@ -50,6 +54,11 @@ class Native extends \Suricate\Session
         unset($_SESSION[$key]);
     }
 
+    /**
+     * Close current session
+     *
+     * @return void
+     */
     public function close()
     {
         session_destroy();
