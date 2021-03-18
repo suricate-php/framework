@@ -31,12 +31,12 @@ class File extends Suricate\Cache
         $this->defaultExpiry = 3600;
     }
 
-    public function getDefaultExpiry()
+    public function getDefaultExpiry(): int
     {
         return $this->defaultExpiry;
     }
 
-    public function setDefaultExpiry($expiry)
+    public function setDefaultExpiry($expiry): File
     {
         $this->defaultExpiry = $expiry;
 
