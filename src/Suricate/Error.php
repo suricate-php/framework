@@ -60,8 +60,17 @@ class Error extends Service
         Suricate::Error()->displayExceptionPage($e, $context);
     }
 
-    public static function handleError($code, $message, $file, $line, $context)
-    {
+    public static function handleError(
+        $code,
+        $message,
+        $file,
+        $line,
+        $context = null
+    ) {
+        if (!(error_reporting() & $code)) {
+            return false; // Silenced
+        }
+
         static::handleException(
             new ErrorException($message, $code, 0, $file, $line),
             $context
@@ -70,7 +79,10 @@ class Error extends Service
 
     public static function handleShutdownError()
     {
-        if (($error = error_get_last())) {
+        if (
+            !is_null(($error = error_get_last())) &&
+            static::isFatal($error['type'])
+        ) {
             static::handleException(
                 new ErrorException(
                     $error['message'],
@@ -157,5 +169,15 @@ class Error extends Service
 
         $response->write();
         die();
+    }
+
+    public static function isFatal($errorType)
+    {
+        return in_array($errorType, [
+            E_COMPILE_ERROR,
+            E_CORE_ERROR,
+            E_ERROR,
+            E_PARSE
+        ]);
     }
 }

@@ -36,7 +36,7 @@ namespace Suricate;
 
 class Suricate
 {
-    const VERSION = '0.4.9';
+    const VERSION = '0.4.10';
 
     const CONF_DIR = '/conf/';
 
@@ -127,7 +127,7 @@ class Suricate
     }
     /**
      * Initialize Framework services
-     * @return null
+     * @return void
      */
     private function initServices()
     {
@@ -186,7 +186,7 @@ class Suricate
     }
     /**
      * Load framework configuration from ini file
-     * @return null
+     * @return void
      */
     private function loadConfig()
     {

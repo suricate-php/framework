@@ -179,7 +179,7 @@ class Router extends Service
     }
     /**
      * Loop through each defined routes, to find good one
-     * @return null
+     * @return void
      */
     public function doRouting()
     {

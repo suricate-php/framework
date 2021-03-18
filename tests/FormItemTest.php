@@ -122,12 +122,16 @@ class FormItemTest extends \PHPUnit\Framework\TestCase
 
         $res = FormItem::select(
             'my-input-name',
-            ["é\"" => ['a', 'b'], 2, 3 => ['c', 'd']],
+            [
+                "é\"" => ['a', 'b'],
+                2,
+                3 => ['c' => 'option c', 'd' => 'option d']
+            ],
             'c',
             'Mon input'
         );
         $this->assertEquals(
-            '<label>Mon input</label><select name="my-input-name"><optgroup label="&eacute;&quot;"><option value="0" selected>a</option><option value="1">b</option></optgroup><option value="0" selected>2</option><optgroup label="3"><option value="0" selected>c</option><option value="1">d</option></optgroup></select>',
+            '<label>Mon input</label><select name="my-input-name"><optgroup label="&eacute;&quot;"><option value="0">a</option><option value="1">b</option></optgroup><option value="0">2</option><optgroup label="3"><option value="c" selected>option c</option><option value="d">option d</option></optgroup></select>',
             $res
         );
 
