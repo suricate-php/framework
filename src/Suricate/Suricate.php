@@ -127,7 +127,7 @@ class Suricate
     }
     /**
      * Initialize Framework services
-     * @return null
+     * @return void
      */
     private function initServices()
     {
@@ -186,7 +186,7 @@ class Suricate
     }
     /**
      * Load framework configuration from ini file
-     * @return null
+     * @return void
      */
     private function loadConfig()
     {

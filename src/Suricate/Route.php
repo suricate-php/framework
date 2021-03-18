@@ -244,7 +244,7 @@ class Route
 
     /**
      * Build PCRE pattern path, according to route parameters
-     * @return null
+     * @return void
      */
     protected function computePath()
     {
