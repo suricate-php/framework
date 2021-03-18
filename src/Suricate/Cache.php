@@ -31,7 +31,7 @@ class Cache extends Service implements Interfaces\ICache
      * Init cache handler
      *
      * @return mixed
-     * @throws Exceptions
+     * @throws Exception
      */
     protected function init()
     {
