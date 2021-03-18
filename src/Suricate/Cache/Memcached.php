@@ -59,12 +59,12 @@ class Memcached extends Suricate\Cache
         return $this;
     }
 
-    public function getDefaultExpiry()
+    public function getDefaultExpiry(): int
     {
         return $this->defaultExpiry;
     }
 
-    public function setDefaultExpiry($expiry)
+    public function setDefaultExpiry($expiry): Memcached
     {
         $this->defaultExpiry = $expiry;
 
