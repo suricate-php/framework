@@ -464,7 +464,7 @@ class DBObject implements Interfaces\IDBObject
      * Delete record from SQL Table
      *
      * Delete record link to current object, according SQL Table unique id
-     * @return null
+     * @return void
      */
     public function delete()
     {
@@ -516,7 +516,7 @@ class DBObject implements Interfaces\IDBObject
 
     /**
      * UPDATE current object into database
-     * @return null
+     * @return void
      */
     private function update()
     {
@@ -544,7 +544,7 @@ class DBObject implements Interfaces\IDBObject
     /**
      * INSERT current object into database
      * @access  private
-     * @return null
+     * @return void
      */
     private function insert()
     {
@@ -592,7 +592,7 @@ class DBObject implements Interfaces\IDBObject
         return true;
     }
 
-    public function getValidatorMessages()
+    public function getValidatorMessages(): array
     {
         return $this->validatorMessages;
     }
