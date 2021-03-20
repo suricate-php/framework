@@ -57,7 +57,7 @@ class Image
 
     public function setResource($source)
     {
-        if (!is_resource($source)) {
+        if (!is_resource($source) || !($source instanceof \GdImage)) {
             throw new InvalidArgumentException("Invalid source");
         }
 
