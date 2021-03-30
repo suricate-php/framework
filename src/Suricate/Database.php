@@ -108,7 +108,7 @@ class Database extends Service
             $params = array_shift($confs);
         }
 
-        $pdoAttributes = [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION];
+        $pdoAttributes = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
         switch ($params['type']) {
             case 'mysql':
                 $this->configurePDOMySQL(
