@@ -8,7 +8,7 @@ use Suricate;
 use Predis\Client;
 use \Exception;
 use \BadMethodCallException;
-
+use Predis\Connection\ConnectionException;
 /**
  * Redis extension for Suricate
  *
@@ -126,6 +126,11 @@ class Redis extends Suricate\Cache
                     'host' => $this->host,
                     'port' => $this->port
                 ]);
+                try {
+                    $redisHandler->connect();
+                } catch (ConnectionException $e) {
+                    throw new Exception('Can\'t connect to redis server');
+                }
                 if ($redisHandler->connect() === false) {
                     throw new Exception('Can\'t connect to redis server');
                 }

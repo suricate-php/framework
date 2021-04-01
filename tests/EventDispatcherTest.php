@@ -2,7 +2,7 @@
 
 use Suricate\Event\EventDispatcher;
 
-require_once 'stubs/Event.php';
+require_once 'stubs/TestEvent.php';
 require_once 'stubs/EventListener1.php';
 require_once 'stubs/EventListener2.php';
 require_once 'stubs/EventListener3.php';

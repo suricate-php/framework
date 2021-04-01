@@ -7,7 +7,7 @@ class RouteTest extends \PHPUnit\Framework\TestCase
         $method = 'any';
         $path = '/test-uri';
         $request = new Suricate\Request();
-        $routeTarget = 'myController::myMethod';
+        $routeTarget = ['myController::myMethod'];
         $parametersDefinitions = [];
         $middleware = null;
 

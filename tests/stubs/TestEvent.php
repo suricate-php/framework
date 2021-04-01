@@ -1,6 +1,9 @@
 <?php
+declare(strict_types=1);
 
-class TestEvent extends \Suricate\Event\Event
+use Suricate\Event\Event;
+
+class TestEvent extends Event
 {
     const EVENT_TYPE = 'my.test.event';
 

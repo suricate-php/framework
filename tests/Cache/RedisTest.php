@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 class RedisTest extends \PHPUnit\Framework\TestCase
 {
     public function testConstruct()
