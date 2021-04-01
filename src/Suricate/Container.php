@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Suricate;
 
-use InvalidArgumentException;
+use ArrayAccess;
 
-class Container implements \ArrayAccess
+class Container implements ArrayAccess
 {
     private $content;
-    private $warehouse = [];
 
     public function __construct(array $values = [])
     {
@@ -17,22 +16,21 @@ class Container implements \ArrayAccess
     }
 
     /**
-     * \ArrayAccess offsetExists implementation
+     * ArrayAccess offsetExists implementation
      *
      * @param mixed $offset offset to check
      * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->content[$offset]);
     }
 
     /**
-     * \ArrayAccess offsetGet implementation
+     * ArrayAccess offsetGet implementation
      *
      * @param mixed $offset offset to get
-     * @throws InvalidArgumentException
-     * @return bool
+     * @return mixed
      */
     public function offsetGet($offset)
     {
@@ -40,17 +38,11 @@ class Container implements \ArrayAccess
             return $this->content[$offset];
         }
 
-        // Instantiate from warehouse if available
-        if (isset($this->warehouse[$offset])) {
-            $this->content[$offset] = new $this->warehouse[$offset]();
-            return $this->content[$offset];
-        }
-
-        throw new InvalidArgumentException('Unknown service ' . $offset);
+        return null;
     }
 
     /**
-     * \ArrayAccess offsetSet implementation
+     * ArrayAccess offsetSet implementation
      *
      * @param mixed $offset offset to set
      * @param mixed $value  value to set
@@ -58,6 +50,7 @@ class Container implements \ArrayAccess
      */
     public function offsetSet($offset, $value)
     {
+        $this->content[$offset] = $value;
     }
 
     /**
@@ -71,18 +64,5 @@ class Container implements \ArrayAccess
         if (isset($this->content[$offset])) {
             unset($this->content[$offset]);
         }
-    }
-
-    /**
-     * Set warehouse array
-     *
-     * @param array $serviceList warehouse content
-     * @return Container
-     */
-    public function setWarehouse(array $serviceList)
-    {
-        $this->warehouse = $serviceList;
-
-        return $this;
     }
 }
