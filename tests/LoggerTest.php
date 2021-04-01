@@ -11,7 +11,7 @@ class LoggerTest extends \PHPUnit\Framework\TestCase
     {
         $message = 'log message';
         $mock = $this->getMockBuilder(Logger::class)
-            ->setMethods(['log'])
+            ->onlyMethods(['log'])
             ->getMock();
         $mock
             ->expects($this->once())
@@ -26,7 +26,7 @@ class LoggerTest extends \PHPUnit\Framework\TestCase
     {
         $message = 'log message';
         $mock = $this->getMockBuilder(Logger::class)
-            ->setMethods(['log'])
+            ->onlyMethods(['log'])
             ->getMock();
         $mock
             ->expects($this->once())
@@ -41,7 +41,7 @@ class LoggerTest extends \PHPUnit\Framework\TestCase
     {
         $message = 'log message';
         $mock = $this->getMockBuilder(Logger::class)
-            ->setMethods(['log'])
+            ->onlyMethods(['log'])
             ->getMock();
         $mock
             ->expects($this->once())
@@ -56,7 +56,7 @@ class LoggerTest extends \PHPUnit\Framework\TestCase
     {
         $message = 'log message';
         $mock = $this->getMockBuilder(Logger::class)
-            ->setMethods(['log'])
+            ->onlyMethods(['log'])
             ->getMock();
         $mock
             ->expects($this->once())
@@ -71,7 +71,7 @@ class LoggerTest extends \PHPUnit\Framework\TestCase
     {
         $message = 'log message';
         $mock = $this->getMockBuilder(Logger::class)
-            ->setMethods(['log'])
+            ->onlyMethods(['log'])
             ->getMock();
         $mock
             ->expects($this->once())
