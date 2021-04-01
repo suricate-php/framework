@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 class EventListener1 extends \Suricate\Event\EventListener
 {
     protected $payload;
