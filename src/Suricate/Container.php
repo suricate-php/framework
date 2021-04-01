@@ -8,7 +8,7 @@ use ArrayAccess;
 
 class Container implements ArrayAccess
 {
-    private $content;
+    protected $content;
 
     public function __construct(array $values = [])
     {
