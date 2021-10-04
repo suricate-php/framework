@@ -14,6 +14,7 @@ use Exception;
  *
  * @property string $userAgent
  * @property int $timeout
+ * @property int $connectTimeout
  * @property string $proxyHost
  * @property int $proxyPort
  * @property string $referer
@@ -30,6 +31,7 @@ class Curl extends Service
     protected $parametersList = [
         'userAgent',
         'timeout',
+        'connectTimeout',
         'proxyHost',
         'proxyPort',
         'referer',
@@ -160,7 +162,8 @@ class Curl extends Service
         ];
 
         $parametersMapping = [
-            CURLOPT_CONNECTTIMEOUT => 'timeout',
+            CURLOPT_CONNECTTIMEOUT => 'connectTimeout',
+            CURLOPT_TIMEOUT => 'timeout',
             CURLOPT_PROXY => 'proxyHost',
             CURLOPT_PROXYPORT => 'proxyPort',
             CURLOPT_REFERER => 'referer',
