@@ -367,14 +367,14 @@ class Request
         return $this;
     }
 
-    public function setBody(string $body): Request
+    public function setBody(?string $body): Request
     {
         $this->body = $body;
 
         return $this;
     }
 
-    public function getBody(): string
+    public function getBody(): ?string
     {
         return $this->body;
     }
