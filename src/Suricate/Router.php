@@ -138,8 +138,9 @@ class Router extends Service
         $parametersDefinitions,
         $middleware = null
     ) {
-        $computedRoutePath =
-            $this->baseUri != '/' ? $this->baseUri . $routePath : $routePath;
+        // baseUri is / by default, if route in ini file are beginning with a '/', strip
+        // the double slash here
+        $computedRoutePath = str_replace('//', '/', $this->baseUri . $routePath);
         $this->routes[$routeName] = new Route(
             $routeName,
             $routeMethod,
