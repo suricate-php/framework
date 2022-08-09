@@ -8,7 +8,7 @@ namespace Suricate;
  * Suricate - Another micro PHP framework
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
- * @copyright   2013-2021 Mathieu LESNIAK
+ * @copyright   2013-2022 Mathieu LESNIAK
  * @version     0.4.14
  * @package     Suricate
  *
