@@ -8,8 +8,8 @@ namespace Suricate;
  * Suricate - Another micro PHP framework
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
- * @copyright   2013-2021 Mathieu LESNIAK
- * @version     0.4.13
+ * @copyright   2013-2022 Mathieu LESNIAK
+ * @version     0.4.14
  * @package     Suricate
  *
  * @method static \Suricate\App             App($newInstance = false)             Get instance of App service
@@ -36,7 +36,7 @@ namespace Suricate;
 
 class Suricate
 {
-    const VERSION = '0.4.13';
+    const VERSION = '0.4.14';
 
     const CONF_DIR = '/conf/';
 
