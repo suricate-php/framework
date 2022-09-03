@@ -28,7 +28,7 @@ class Collection implements
     {
         $this->pagination['page'] = $currentPage;
         $this->pagination['nbItems'] = count($this->items);
-        $this->pagination['nbPages'] = ceil(
+        $this->pagination['nbPages'] = (int) ceil(
             $this->pagination['nbItems'] / $nbItemPerPage
         );
 
@@ -39,6 +39,26 @@ class Collection implements
         );
 
         return $this;
+    }
+
+    /**
+     * Get current page number
+     *
+     * @return integer
+     */
+    public function getPaginationCurrentPage(): int
+    {
+        return $this->pagination['page'];
+    }
+
+    /**
+     * Get total number of pages
+     *
+     * @return integer
+     */
+    public function getPaginationNbPages(): int
+    {
+        return $this->pagination['nbPages'];
     }
 
     public function getPossibleValuesFor($args, $key = null)
