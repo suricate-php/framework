@@ -113,24 +113,24 @@ class Collection implements
         return count($this->items);
     }
 
-    public function key()
+    public function key(): mixed
     {
         return $this->iteratorPosition;
     }
 
-    public function next()
+    public function next(): void
     {
         ++$this->iteratorPosition;
     }
-    public function current()
+    public function current(): mixed
     {
         return $this->offsetGet($this->iteratorPosition);
     }
-    public function rewind()
+    public function rewind(): void
     {
         $this->iteratorPosition = 0;
     }
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->items[$this->iteratorPosition]);
     }
@@ -151,7 +151,7 @@ class Collection implements
      * @param  mixed $offset Offset to get
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         if (array_key_exists($offset, $this->items)) {
             return $this->items[$offset];
@@ -165,7 +165,7 @@ class Collection implements
      * @param mixed $offset Offset to set
      * @param mixed $value  Value to set
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         if (is_null($offset)) {
             $this->items[] = $value;
@@ -179,7 +179,7 @@ class Collection implements
      *
      * @param mixed $offset Offset to unset
      */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->items[$offset]);
     }
