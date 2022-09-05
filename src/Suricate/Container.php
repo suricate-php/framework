@@ -22,7 +22,7 @@ class Container implements \ArrayAccess
      * @param mixed $offset offset to check
      * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return isset($this->content[$offset]);
     }
@@ -34,7 +34,7 @@ class Container implements \ArrayAccess
      * @throws InvalidArgumentException
      * @return bool
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         if (isset($this->content[$offset])) {
             return $this->content[$offset];
@@ -56,7 +56,7 @@ class Container implements \ArrayAccess
      * @param mixed $value  value to set
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
     }
 
@@ -66,7 +66,7 @@ class Container implements \ArrayAccess
      * @param mixed $offset offset to unset
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         if (isset($this->content[$offset])) {
             unset($this->content[$offset]);
