@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Suricate;
 
+use InvalidArgumentException;
+
 class Flash
 {
     const TYPE_SUCCESS = 'success';
@@ -136,7 +138,7 @@ class Flash
             return;
         }
 
-        throw new \InvalidArgumentException("Unknown message type '$type'");
+        throw new InvalidArgumentException("Unknown message type '$type'");
     }
 
     /**
