@@ -115,11 +115,7 @@ class I18n extends Service
                     '|',
                     $this->translations[$str]
                 );
-                if ($number > 1) {
-                    return vsprintf($plural, $args);
-                } else {
-                    return vsprintf($single, $args);
-                }
+                return ($number > 1) ? vsprintf($plural, $args) : vsprintf($single, $args);
             } else {
                 return $this->translations[$str];
             }

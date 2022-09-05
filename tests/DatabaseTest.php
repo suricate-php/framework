@@ -146,7 +146,7 @@ class DatabaseTest extends TestCase
         // Record 1
         $this->assertSame(
             [
-                'id' => '1',
+                'id' => 1,
                 'name' => 'John',
                 'date_added' => '2019-01-10 00:00:00'
             ],
@@ -155,7 +155,7 @@ class DatabaseTest extends TestCase
         // Record 2
         $this->assertSame(
             [
-                'id' => '2',
+                'id' => 2,
                 'name' => 'Paul',
                 'date_added' => '2019-01-11 00:00:00'
             ],
@@ -164,7 +164,7 @@ class DatabaseTest extends TestCase
         // Record 3
         $this->assertSame(
             [
-                'id' => '3',
+                'id' => 3,
                 'name' => 'Robert',
                 'date_added' => '2019-01-12 00:00:00'
             ],
@@ -180,7 +180,7 @@ class DatabaseTest extends TestCase
         $database->query("SELECT * FROM `" . $this->tableName . "`");
         $result = $database->fetchObject();
         $expected = new \stdClass();
-        $expected->id = '1';
+        $expected->id = 1;
         $expected->name = 'John';
         $expected->date_added = '2019-01-10 00:00:00';
 
@@ -192,7 +192,7 @@ class DatabaseTest extends TestCase
     {
         $database = $this->getDatabase();
         $database->query("SELECT * FROM `" . $this->tableName . "` WHERE id=2");
-        $this->assertSame('2', $database->fetchColumn());
+        $this->assertSame(2, $database->fetchColumn());
         $database->query("SELECT * FROM `" . $this->tableName . "` WHERE id=2");
         $this->assertSame('Paul', $database->fetchColumn(1));
         $this->assertFalse($database->fetchColumn(1));

@@ -1,5 +1,6 @@
 parameters:
-	bootstrap: %rootDir%/../../../tests/phpstan_bootstrap.php
+	bootstrapFiles: 
+		- %rootDir%/../../../tests/phpstan_bootstrap.php
 	ignoreErrors:
 		- '#Call to method connect\(\) on an unknown class Memcache.#'
 		- '#Call to method addServer\(\) on an unknown class Memcached.#'

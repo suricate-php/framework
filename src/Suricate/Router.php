@@ -57,10 +57,23 @@ class Router extends Service
             $middleware = (array) $routeData['middleware'];
         }
 
+        $routePath = $routeData['path'];
+        $routePrefix = $this->baseUri;
+        if (isset($routeData['baseuri'])) {
+            $routePrefix = $routeData['baseuri'];
+            if (is_callable($routeData['baseuri'])) {
+                $routePrefix = $routeData['baseuri']();
+            }
+        }
+
+        // baseUri is / by default, if route in ini file are beginning with a '/',
+        // strip the double slash here
+        $computedRoutePath = str_replace('//', '/', $routePrefix . $routePath);
+
         $this->addRoute(
             $routeName,
             $routeMethod,
-            $routeData['path'],
+            $computedRoutePath,
             $routeTarget,
             $parameters,
             $middleware
@@ -138,13 +151,10 @@ class Router extends Service
         $parametersDefinitions,
         $middleware = null
     ) {
-        // baseUri is / by default, if route in ini file are beginning with a '/', strip
-        // the double slash here
-        $computedRoutePath = str_replace('//', '/', $this->baseUri . $routePath);
         $this->routes[$routeName] = new Route(
             $routeName,
             $routeMethod,
-            $computedRoutePath,
+            $routePath,
             Suricate::Request(),
             $routeTarget,
             $parametersDefinitions,
