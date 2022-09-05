@@ -105,7 +105,7 @@ class DBCollection extends Collection
      * @param  mixed $offset Offset to get
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         if (!$this->lazyLoad) {
             return parent::offsetGet($offset);
