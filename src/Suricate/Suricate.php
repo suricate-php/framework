@@ -9,34 +9,34 @@ namespace Suricate;
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
  * @copyright   2013-2022 Mathieu LESNIAK
- * @version     0.4.15
+ * @version     0.4.16
  * @package     Suricate
  *
- * @method static \Suricate\App             App($newInstance = false)             Get instance of App service
- * @method static \Suricate\Cache           Cache($newInstance = false)           Get instance of Cache service
- * @method static \Suricate\CacheMemcache   CacheMemcache($newInstance = false)   Get instance of CacheMemcache service
- * @method static \Suricate\CacheMemcached  CacheMemcached($newInstance = false)  Get instance of CacheMemcached service
- * @method static \Suricate\CacheRedis      CacheRedis($newInstance = false)      Get instance of CacheRedis service
- * @method static \Suricate\CacheApc        CacheApc($newInstance = false)        Get instance of CacheApc service
- * @method static \Suricate\CacheFile       CacheFile($newInstance = false)       Get instance of CacheFile service
- * @method static \Suricate\Curl            Curl($newInstance = false)            Get instance of Curl service
- * @method static \Suricate\Database        Database($newInstance = false)        Get instance of Database service
- * @method static \Suricate\Error           Error($newInstance = false)           Get instance of Error service
- * @method static \Suricate\Event\EventDispatcher EventDispatcher($newInstance = false) Get instance of EventDispatcher service
- * @method static \Suricate\I18n            I18n($newInstance = false)            Get instance of I18n service
- * @method static \Suricate\Logger          Logger($newInstance = false)          Get instance of Logger service
- * @method static \Suricate\Request         Request($newInstance = false)         Get instance of Request service
- * @method static \Suricate\Request         Response($newInstance = false)        Get instance of Request/Response service
- * @method static \Suricate\Router          Router($newInstance = false)          Get instance of Router service
- * @method static \Suricate\Session         Session($newInstance = false)         Get instance of Session service
- * @method static \Suricate\SessionNative   SessionNative($newInstance = false)   Get instance of Session service
- * @method static \Suricate\SessionCookie   SessionCookie($newInstance = false)   Get instance of Session service
- * @method static \Suricate\SessionMemcache SessionMemcache($newInstance = false) Get instance of Session service
+ * @method static \Suricate\App                     App($newInstance = false)             Get instance of App service
+ * @method static \Suricate\Cache                   Cache($newInstance = false)           Get instance of Cache service
+ * @method static \Suricate\CacheMemcache           CacheMemcache($newInstance = false)   Get instance of CacheMemcache service
+ * @method static \Suricate\CacheMemcached          CacheMemcached($newInstance = false)  Get instance of CacheMemcached service
+ * @method static \Suricate\CacheRedis              CacheRedis($newInstance = false)      Get instance of CacheRedis service
+ * @method static \Suricate\CacheApc                CacheApc($newInstance = false)        Get instance of CacheApc service
+ * @method static \Suricate\CacheFile               CacheFile($newInstance = false)       Get instance of CacheFile service
+ * @method static \Suricate\Curl                    Curl($newInstance = false)            Get instance of Curl service
+ * @method static \Suricate\Database                Database($newInstance = false)        Get instance of Database service
+ * @method static \Suricate\Error                   Error($newInstance = false)           Get instance of Error service
+ * @method static \Suricate\Event\EventDispatcher   EventDispatcher($newInstance = false) Get instance of EventDispatcher service
+ * @method static \Suricate\I18n                    I18n($newInstance = false)            Get instance of I18n service
+ * @method static \Suricate\Logger                  Logger($newInstance = false)          Get instance of Logger service
+ * @method static \Suricate\Request                 Request($newInstance = false)         Get instance of Request service
+ * @method static \Suricate\Request                 Response($newInstance = false)        Get instance of Request/Response service
+ * @method static \Suricate\Router                  Router($newInstance = false)          Get instance of Router service
+ * @method static \Suricate\Session                 Session($newInstance = false)         Get instance of Session service
+ * @method static \Suricate\SessionNative           SessionNative($newInstance = false)   Get instance of Session service
+ * @method static \Suricate\SessionCookie           SessionCookie($newInstance = false)   Get instance of Session service
+ * @method static \Suricate\SessionMemcache         SessionMemcache($newInstance = false) Get instance of Session service
  */
 
 class Suricate
 {
-    const VERSION = '0.4.15';
+    const VERSION = '0.4.16';
 
     const CONF_DIR = '/conf/';
 
@@ -139,6 +139,18 @@ class Suricate
                 'locale' => $this->config['App']['locale']
             ];
         }
+
+        // Define constants
+        if (isset($this->config['Constants'])) {
+            foreach (
+                $this->config['Constants']
+                as $constantName => $constantValue
+            ) {
+                $constantName = strtoupper($constantName);
+                define($constantName, $constantValue);
+            }
+        }
+
         // first sync, && init, dependency to Suricate::request
         self::$servicesContainer = clone self::$servicesRepository;
 
@@ -152,16 +164,6 @@ class Suricate
                  TODO : remove sync in service creation
                  */
                 self::$servicesContainer = clone self::$servicesRepository;
-            }
-        }
-
-        if (isset($this->config['Constants'])) {
-            foreach (
-                $this->config['Constants']
-                as $constantName => $constantValue
-            ) {
-                $constantName = strtoupper($constantName);
-                define($constantName, $constantValue);
             }
         }
 
