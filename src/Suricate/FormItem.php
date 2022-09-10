@@ -384,7 +384,7 @@ class FormItem
         $htmlAttributes = []
     ) {
         return static::input(
-            'datetime',
+            'datetime-local',
             $name,
             $value,
             $label,
