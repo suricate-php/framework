@@ -401,6 +401,15 @@ class FormItem
         return static::input('time', $name, $value, $label, $htmlAttributes);
     }
 
+    public static function color(
+        $name,
+        $value = null,
+        $label = null,
+        $htmlAttributes = []
+    ) {
+        return static::input('color', $name, $value, $label, $htmlAttributes);
+    }
+
     protected function renderLabel()
     {
         $output = '';
