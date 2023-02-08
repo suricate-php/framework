@@ -15,6 +15,8 @@ class FormItem
         'name',
         'id',
         'class',
+        'accept',
+        'capture',
         'value',
         'checked',
         'rows',
@@ -31,8 +33,10 @@ class FormItem
         'required',
         'pattern',
         'min',
+        'minlength',
         'step',
         'max',
+        'maxlength',
         'src'
     ];
     public $label;
