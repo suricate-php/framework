@@ -18,6 +18,10 @@ class Error extends Service
 
     public static function handleException($e, $context = null)
     {
+        foreach (Suricate::Error()->getErrorHandlers() as $customHandler) {
+            $customHandler($e);
+        }
+
         if ($e instanceof Exception\HttpException) {
             $httpHandler = Suricate::Error()->httpHandler;
             if (is_object($httpHandler) && $httpHandler instanceof \Closure) {
