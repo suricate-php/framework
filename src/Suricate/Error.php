@@ -14,6 +14,7 @@ use ErrorException;
 class Error extends Service
 {
     protected $parametersList = ['report', 'dumpContext', 'httpHandler'];
+    protected $errorHandlers = [];
 
     public static function handleException($e, $context = null)
     {
@@ -67,6 +68,9 @@ class Error extends Service
         $line,
         $context = null
     ) {
+        foreach (Suricate::Error()->getErrorHandlers() as $customHandler) {
+            $customHandler(new ErrorException($message, $code, 0, $file, $line));
+        }
         if (!(error_reporting() & $code)) {
             return false; // Silenced
         }
@@ -179,5 +183,15 @@ class Error extends Service
             E_ERROR,
             E_PARSE
         ]);
+    }
+
+    public function getErrorHandlers(): array
+    {
+        return $this->errorHandlers;
+    }
+
+    public function addErrorHandler(callable $handler)
+    {
+        $this->errorHandlers[] = $handler;
     }
 }
