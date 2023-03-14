@@ -85,4 +85,18 @@ class Container implements \ArrayAccess
 
         return $this;
     }
+
+    /**
+     * Add Service to warehouse array
+     *
+     * @param string $serviceName
+     * @param string $serviceClass
+     * @return self
+     */
+    public function addToWarehouse(string $serviceName, string $serviceClass): self
+    {
+        $this->warehouse[$serviceName] = $serviceClass;
+
+        return $this;
+    }
 }
