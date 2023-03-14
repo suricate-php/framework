@@ -37,7 +37,8 @@ class FormItem
         'step',
         'max',
         'maxlength',
-        'src'
+        'src',
+        'readonly',
     ];
     public $label;
     public $objectHtmlValues = [];
