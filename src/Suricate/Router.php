@@ -31,14 +31,14 @@ class Router extends Service
     {
         foreach ($parameters as $routeName => $routeData) {
             if (isset($routeData['isRest']) && $routeData['isRest']) {
-                $this->buildRestRoutes($routeName, $routeData);
+                $this->buildAndAddRestRoutes($routeName, $routeData);
             } else {
-                $this->buildRoute($routeName, $routeData);
+                $this->buildAndAddRoute($routeName, $routeData);
             }
         }
     }
 
-    private function buildRoute($routeName, $routeData)
+    public function buildAndAddRoute(string $routeName, array $routeData)
     {
         $routeTarget = null;
         if (isset($routeData['target'])) {
@@ -80,7 +80,7 @@ class Router extends Service
         );
     }
 
-    private function buildRestRoutes($routeBaseName, $routeBaseData)
+    public function buildAndAddRestRoutes(string $routeBaseName, array $routeBaseData)
     {
         // If route has a parameters array defined, take the first defined
         // argument as ":id" parameter, and use key as parameter name
@@ -133,7 +133,7 @@ class Router extends Service
             $routeData['target'] .= '::' . $name;
             $routeData['parameters'] = $routeParameters;
 
-            $this->buildRoute($routeName, $routeData);
+            $this->buildAndAddRoute($routeName, $routeData);
         }
     }
 
