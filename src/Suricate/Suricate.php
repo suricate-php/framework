@@ -4,12 +4,21 @@ declare(strict_types=1);
 
 namespace Suricate;
 
+use InvalidArgumentException;
+use Suricate\Cache\Apc as CacheApc;
+use Suricate\Cache\File as CacheFile;
+use Suricate\Cache\Memcache as CacheMemcache;
+use Suricate\Cache\Memcached as CacheMemcached;
+use Suricate\Cache\Redis as CacheRedis;
+use Suricate\Event\EventDispatcher;
+use Suricate\Session\Native as SessionNative;
+
 /**
  * Suricate - Another micro PHP framework
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
  * @copyright   2013-2023 Mathieu LESNIAK
- * @version     0.4.21
+ * @version     0.5.0
  * @package     Suricate
  *
  * @method static \Suricate\App                     App($newInstance = false)             Get instance of App service
@@ -36,7 +45,7 @@ namespace Suricate;
 
 class Suricate
 {
-    const VERSION = '0.4.21';
+    const VERSION = '0.5.0';
 
     const CONF_DIR = '/conf/';
 
@@ -49,24 +58,24 @@ class Suricate
     private static $servicesRepository;
 
     private $servicesList = [
-        'App' => '\Suricate\App',
-        'Cache' => '\Suricate\Cache',
-        'CacheMemcache' => '\Suricate\Cache\Memcache',
-        'CacheMemcached' => '\Suricate\Cache\Memcached',
-        'CacheRedis' => '\Suricate\Cache\Redis',
-        'CacheApc' => '\Suricate\Cache\Apc',
-        'CacheFile' => '\Suricate\Cache\File',
-        'Curl' => '\Suricate\Curl',
-        'Database' => '\Suricate\Database',
-        'Error' => '\Suricate\Error',
-        'EventDispatcher' => '\Suricate\Event\EventDispatcher',
-        'I18n' => '\Suricate\I18n',
-        'Logger' => '\Suricate\Logger',
-        'Request' => '\Suricate\Request',
-        'Response' => '\Suricate\Request',
-        'Router' => '\Suricate\Router',
-        'Session' => '\Suricate\Session',
-        'SessionNative' => '\Suricate\Session\Native',
+        'App' => App::class,
+        'Cache' => Cache::class,
+        'CacheMemcache' => CacheMemcache::class,
+        'CacheMemcached' => CacheMemcached::class,
+        'CacheRedis' => CacheRedis::class,
+        'CacheApc' => CacheApc::class,
+        'CacheFile' => CacheFile::class,
+        'Curl' => Curl::class,
+        'Database' => Database::class,
+        'Error' => Error::class,
+        'EventDispatcher' => EventDispatcher::class,
+        'I18n' => I18n::class,
+        'Logger' => Logger::class,
+        'Request' => Request::class,
+        'Response' => Request::class,
+        'Router' => Router::class,
+        'Session' => Session::class,
+        'SessionNative' => SessionNative::class,
         'SessionCookie' => '\Suricate\Session\Cookie',
         'SessionMemcache' => '\Suricate\Session\Memcache'
     ];
@@ -186,6 +195,17 @@ class Suricate
 
         return $this;
     }
+
+    private function parseYamlConfig($filename) {
+        return yaml_parse_file($filename, 0, $ndocs,
+        [
+            '!include' => function($value, $tag, $flags) use($filename)
+            {
+                $directory = dirname($filename);
+                return $this->parseYamlConfig("$directory/$value");
+            }
+        ]);
+    }
     /**
      * Load framework configuration from ini file
      * @return void
@@ -196,10 +216,14 @@ class Suricate
         if (count($this->configFile)) {
             $userConfig = [];
             foreach ($this->configFile as $configFile) {
-                $userConfig = array_merge_recursive(
-                    $userConfig,
-                    (array) parse_ini_file($configFile, true, INI_SCANNER_TYPED)
-                );
+                if (stripos($configFile, 'yml') !== false) {
+                    $userConfig = array_merge_recursive($userConfig, $this->parseYamlConfig($configFile));
+                } else {
+                    $userConfig = array_merge_recursive(
+                        $userConfig,
+                        (array) parse_ini_file($configFile, true, INI_SCANNER_TYPED)
+                    );
+                }
             }
 
             // Advanced ini parsing, split key with '.' into subarrays
@@ -229,7 +253,6 @@ class Suricate
         }
 
         $this->config = array_merge($this->config, $userConfig);
-
         $this->configureAppMode();
     }
 
@@ -313,5 +336,21 @@ class Suricate
         }
 
         return self::$servicesContainer[$name];
+    }
+
+    public function registerService(string $serviceName, string $serviceClass): self
+    {
+        if (isset(self::$servicesContainer[$serviceName])) {
+            throw new InvalidArgumentException('Service ' . $serviceName . ' already registered');
+        }
+
+        self::$servicesContainer->addToWarehouse($serviceName, $serviceClass);
+        self::$servicesRepository->addToWarehouse($serviceName, $serviceClass);
+        if (isset($this->config[$serviceName])) {
+            self::$servicesContainer[$serviceName]->configure(
+                $this->config[$serviceName]
+            );
+        }
+        return $this;
     }
 }
