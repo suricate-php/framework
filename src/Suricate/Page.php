@@ -12,6 +12,7 @@ class Page
     protected $stylesheets = [];
     protected $metas = [];
     protected $scripts = [];
+    protected $rawHead = [];
     protected $rss = [];
     protected $htmlClass = [];
 
@@ -193,12 +194,12 @@ class Page
 
         foreach ($this->scripts as $currentScript) {
             $output .=
-                sprintf('<script type="text/javascript" src="%s"%s%s></script>'."\n",
-                $currentScript['url'],
-                $currentScript['async'] ? ' async' : '',
-                $currentScript['defer'] ? ' defer' : '',
-            );
-                
+                sprintf(
+                    '<script type="text/javascript" src="%s"%s%s></script>' . "\n",
+                    $currentScript['url'],
+                    $currentScript['async'] ? ' async' : '',
+                    $currentScript['defer'] ? ' defer' : '',
+                );
         }
 
         return $output;
@@ -262,6 +263,37 @@ class Page
         return $output;
     }
 
+    /**
+     * Add a raw html entry to be render in <head>
+     *
+     * @param string $name
+     * @param string $content
+     *
+     * @return static
+     */
+    public function addRawHead(string $name, string $content): static
+    {
+        $this->rawHead[$name] = $content;
+
+        return $this;
+    }
+
+    /**
+     * Render raw head entries
+     *
+     * @return string
+     */
+    public function renderRawHead(): string
+    {
+        $output = '';
+
+        foreach ($this->rawHead as $currentEntry) {
+            $output .= $currentEntry;
+        }
+
+        return $output;
+    }
+
     public function render($content = '')
     {
         $htmlClass = count($this->htmlClass)
@@ -290,6 +322,7 @@ class Page
         $output .= $this->renderStylesheets();
         $output .= $this->renderScripts();
         $output .= $this->renderRss();
+        $output .= $this->renderRawHead();
         $output .= '</head>' . "\n";
         $output .= '<body>' . "\n";
         $output .= $content;
