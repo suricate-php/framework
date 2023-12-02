@@ -3,10 +3,12 @@
 class EventListener2 extends \Suricate\Event\EventListener
 {
     protected $payload;
+    protected string $eventType;
 
-    public function __construct($payload)
+    public function __construct($payload, string $eventType)
     {
         $this->payload = $payload;
+        $this->eventType = $eventType;
     }
 
     public function handle()

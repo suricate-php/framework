@@ -112,8 +112,8 @@ class EventDispatcher extends \Suricate\Service
                     $listener
                 )
             );
-
-            $result = with(new $listener($eventPayload))->handle();
+            
+            $result = with(new $listener($eventPayload, $eventType))->handle();
             if ($result === false) {
                 Suricate::Logger()->debug(
                     sprintf(
@@ -139,7 +139,7 @@ class EventDispatcher extends \Suricate\Service
         }
         $this->sortListeners($eventType);
 
-        return $this->sortedListeners[$eventType];
+        return $this->sortedListeners[$eventType] ?? [];
     }
 
     /**
