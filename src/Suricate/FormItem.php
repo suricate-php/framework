@@ -39,6 +39,7 @@ class FormItem
         'maxlength',
         'src',
         'readonly',
+        'data', // Array for data-attributes
     ];
     public $label;
     public $objectHtmlValues = [];
@@ -438,6 +439,21 @@ class FormItem
     {
         $output = '';
         foreach ($this->objectHtmlProperties as $currentAttribute) {
+            if ($currentAttribute === 'data' && is_array($this->$currentAttribute)) {
+                foreach ($this->$currentAttribute as $dataKey => $dataValue) {
+                    $output .=
+                    ' data-' .
+                    $dataKey .
+                    '="' .
+                    htmlentities(
+                        (string) $dataValue,
+                        ENT_COMPAT,
+                        static::$encoding
+                    ) .
+                    '"';
+                }
+                continue;
+            }
             if (!($currentAttribute == 'value' && $skipValue)) {
                 if ($this->$currentAttribute !== null) {
                     $output .=
