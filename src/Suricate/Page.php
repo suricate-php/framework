@@ -122,7 +122,7 @@ class Page
             $output .= ' href="' . $stylesheet['url'] . '"';
             $output .= ' type="text/css"';
             $output .= ' media="' . $stylesheet['media'] . '"';
-            $output .= '/>' . "\n";
+            $output .= '>' . "\n";
         }
 
         return $output;
@@ -157,10 +157,10 @@ class Page
             $output .= ' href="' . $rss['url'] . '"';
             $output .= ' type="application/rss+xml"';
             $output .=
-                ' media="' .
+                ' title="' .
                 htmlentities($rss['title'], ENT_COMPAT, $this->encoding) .
                 '"';
-            $output .= '/>' . "\n";
+            $output .= '>' . "\n";
         }
         return $output;
     }
@@ -239,7 +239,7 @@ class Page
                     $name .
                     '" content="' .
                     $metaData['content'] .
-                    '"/>' .
+                    '">' .
                     "\n";
             } elseif ($metaData['type'] == 'property') {
                 $output .=
@@ -247,7 +247,7 @@ class Page
                     $name .
                     '" content="' .
                     $metaData['content'] .
-                    '"/>' .
+                    '">' .
                     "\n";
             } elseif ($metaData['type'] == 'rel') {
                 $output .=
@@ -255,7 +255,7 @@ class Page
                     $metaData['relType'] .
                     '" href="' .
                     $metaData['href'] .
-                    '"/>' .
+                    '">' .
                     "\n";
             }
         }
@@ -316,7 +316,7 @@ class Page
         $output .=
             '<meta http-equiv="Content-Type" content="text/html; charset=' .
             $this->encoding .
-            '" />' .
+            '">' .
             "\n";
         $output .= $this->renderMetas();
         $output .= $this->renderStylesheets();

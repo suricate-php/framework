@@ -52,7 +52,7 @@ class PageTest extends \PHPUnit\Framework\TestCase
 <html lang="en">
 <head>
 <title></title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <body>
 </body>
@@ -66,7 +66,7 @@ class PageTest extends \PHPUnit\Framework\TestCase
 <html lang="en">
 <head>
 <title>My Page&eacute;</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <body>
 </body>
@@ -82,7 +82,7 @@ class PageTest extends \PHPUnit\Framework\TestCase
 <html lang="en" class="class1 class2">
 <head>
 <title>My Page&eacute;</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <body>
 </body>
@@ -102,13 +102,13 @@ class PageTest extends \PHPUnit\Framework\TestCase
 <html lang="en" class="class1 class2">
 <head>
 <title>My Page&eacute;</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="metaname" content="metacontent"/>
-<meta property="metapropertyname" content="metapropertycontent"/>
-<link rel="metalinktype" href="metalinkhref"/>
-<link rel="stylesheet" id="css-id" href="http://cssurl.com" type="text/css" media="all"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="metaname" content="metacontent">
+<meta property="metapropertyname" content="metapropertycontent">
+<link rel="metalinktype" href="metalinkhref">
+<link rel="stylesheet" id="css-id" href="http://cssurl.com" type="text/css" media="all">
 <script type="text/javascript" src="http://scripturl.com"></script>
-<link rel="alternate" id="rss-id" href="http://rssurl.com" type="application/rss+xml" media="RSS is not dead !"/>
+<link rel="alternate" id="rss-id" href="http://rssurl.com" type="application/rss+xml" title="RSS is not dead !">
 </head>
 <body>
 </body>
@@ -122,13 +122,13 @@ class PageTest extends \PHPUnit\Framework\TestCase
 <html lang="en" class="class1 class2">
 <head>
 <title>My Page&eacute;</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="metaname" content="metacontent"/>
-<meta property="metapropertyname" content="metapropertycontent"/>
-<link rel="metalinktype" href="metalinkhref"/>
-<link rel="stylesheet" id="css-id" href="http://cssurl.com" type="text/css" media="all"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="metaname" content="metacontent">
+<meta property="metapropertyname" content="metapropertycontent">
+<link rel="metalinktype" href="metalinkhref">
+<link rel="stylesheet" id="css-id" href="http://cssurl.com" type="text/css" media="all">
 <script type="text/javascript" src="http://scripturl.com" async></script>
-<link rel="alternate" id="rss-id" href="http://rssurl.com" type="application/rss+xml" media="RSS is not dead !"/>
+<link rel="alternate" id="rss-id" href="http://rssurl.com" type="application/rss+xml" title="RSS is not dead !">
 </head>
 <body>
 </body>
@@ -142,13 +142,13 @@ class PageTest extends \PHPUnit\Framework\TestCase
 <html lang="en" class="class1 class2">
 <head>
 <title>My Page&eacute;</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="metaname" content="metacontent"/>
-<meta property="metapropertyname" content="metapropertycontent"/>
-<link rel="metalinktype" href="metalinkhref"/>
-<link rel="stylesheet" id="css-id" href="http://cssurl.com" type="text/css" media="all"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="metaname" content="metacontent">
+<meta property="metapropertyname" content="metapropertycontent">
+<link rel="metalinktype" href="metalinkhref">
+<link rel="stylesheet" id="css-id" href="http://cssurl.com" type="text/css" media="all">
 <script type="text/javascript" src="http://scripturl.com" defer></script>
-<link rel="alternate" id="rss-id" href="http://rssurl.com" type="application/rss+xml" media="RSS is not dead !"/>
+<link rel="alternate" id="rss-id" href="http://rssurl.com" type="application/rss+xml" title="RSS is not dead !">
 </head>
 <body>
 </body>
@@ -162,13 +162,13 @@ class PageTest extends \PHPUnit\Framework\TestCase
 <html lang="en" class="class1 class2">
 <head>
 <title>My Page&eacute;</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="metaname" content="metacontent"/>
-<meta property="metapropertyname" content="metapropertycontent"/>
-<link rel="metalinktype" href="metalinkhref"/>
-<link rel="stylesheet" id="css-id" href="http://cssurl.com" type="text/css" media="all"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="metaname" content="metacontent">
+<meta property="metapropertyname" content="metapropertycontent">
+<link rel="metalinktype" href="metalinkhref">
+<link rel="stylesheet" id="css-id" href="http://cssurl.com" type="text/css" media="all">
 <script type="text/javascript" src="http://scripturl.com" async defer></script>
-<link rel="alternate" id="rss-id" href="http://rssurl.com" type="application/rss+xml" media="RSS is not dead !"/>
+<link rel="alternate" id="rss-id" href="http://rssurl.com" type="application/rss+xml" title="RSS is not dead !">
 </head>
 <body>
 </body>
