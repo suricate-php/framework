@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Suricate;
 
+use Collator;
+
 class Collection implements
     \Iterator,
     \Countable,
@@ -317,6 +319,23 @@ class Collection implements
         usort($this->items, $sortFunction);
 
         return $this;
+    }
+
+    public function collatedSortBy(string $field, string $locale, bool $reverse = false) {
+        $collator = new Collator($locale);
+        $collator->setAttribute(Collator::NUMERIC_COLLATION, Collator::ON);
+        $sortFunction = function ($a, $b) use ($field, $collator, $reverse) {
+            $first = dataGet($a, $field, '');
+            $second = dataGet($b, $field, '');
+            $res = $collator->compare($first, $second);
+            if ($res == 0) {
+                return 0;
+            }
+
+            return $reverse ? (-1 * $res) : $res;
+        };
+
+        usort($this->items, $sortFunction);
     }
 
     public function filter(\Closure $closure)

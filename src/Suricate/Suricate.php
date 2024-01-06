@@ -45,7 +45,7 @@ use Suricate\Session\Native as SessionNative;
 
 class Suricate
 {
-    const VERSION = '0.5.4';
+    const VERSION = '0.5.5';
 
     const CONF_DIR = '/conf/';
 
