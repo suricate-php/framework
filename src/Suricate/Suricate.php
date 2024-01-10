@@ -18,7 +18,7 @@ use Suricate\Session\Native as SessionNative;
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
  * @copyright   2013-2023 Mathieu LESNIAK
- * @version     0.5.0
+ * @version     0.5.6
  * @package     Suricate
  *
  * @method static \Suricate\App                     App($newInstance = false)             Get instance of App service
@@ -45,7 +45,7 @@ use Suricate\Session\Native as SessionNative;
 
 class Suricate
 {
-    const VERSION = '0.5.5';
+    const VERSION = '0.5.6';
 
     const CONF_DIR = '/conf/';
 
@@ -180,7 +180,7 @@ class Suricate
         self::$servicesContainer = clone self::$servicesRepository;
     }
 
-    public function hasService(string $serviceName): bool
+    public static function hasService(string $serviceName): bool
     {
         return isset(self::$servicesContainer[$serviceName]);
     }

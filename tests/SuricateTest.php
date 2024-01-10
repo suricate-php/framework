@@ -67,9 +67,9 @@ class SuricateTest extends \PHPUnit\Framework\TestCase
     public function testDefaultConfig()
     {
         $suricate = new Suricate\Suricate();
-        $this->assertTrue($suricate->hasService('Logger'));
-        $this->assertTrue($suricate->hasService('Error'));
-        $this->assertFalse($suricate->hasService('Session'));
+        $this->assertTrue(Suricate\Suricate::hasService('Logger'));
+        $this->assertTrue(Suricate\Suricate::hasService('Error'));
+        $this->assertFalse(Suricate\Suricate::hasService('Session'));
 
         $this->assertEquals(
             [
