@@ -244,7 +244,7 @@ class FormItemTest extends \PHPUnit\Framework\TestCase
     {
         $res = FormItem::datetime('my-input-name', "accentué", 'Mon input');
         $this->assertEquals(
-            '<label for="my-input-name">Mon input</label><input type="datetime" name="my-input-name" id="my-input-name" value="accentu&eacute;"/>',
+            '<label for="my-input-name">Mon input</label><input type="datetime-local" name="my-input-name" id="my-input-name" value="accentu&eacute;"/>',
             $res
         );
     }
