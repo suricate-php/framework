@@ -23,7 +23,7 @@ use ReflectionClass;
  * @package Suricate
  * @author  Mathieu LESNIAK <mathieu@lesniak.fr>
  */
-
+#[\AllowDynamicProperties]
 class DBObject implements Interfaces\IDBObject
 {
     use DBObjectRelations;
