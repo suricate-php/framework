@@ -258,6 +258,15 @@ if (!function_exists('url')) {
     }
 }
 
+if (!function_exists('baseUri')) {
+    function baseUri(): string
+    {
+        $uri = Suricate::App()->getParameter('base_uri');
+        return $uri !== '/' ? $uri : '';
+    }
+}
+
+
 if (!function_exists('getPostParam')) {
     function getPostParam($param, $defaultValue = null)
     {

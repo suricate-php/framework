@@ -17,8 +17,8 @@ use Suricate\Session\Native as SessionNative;
  * Suricate - Another micro PHP framework
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
- * @copyright   2013-2023 Mathieu LESNIAK
- * @version     0.5.6
+ * @copyright   2013-2024 Mathieu LESNIAK
+ * @version     0.5.7
  * @package     Suricate
  *
  * @method static \Suricate\App                     App($newInstance = false)             Get instance of App service
