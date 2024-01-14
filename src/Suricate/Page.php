@@ -218,6 +218,8 @@ class Page
     public function addMetaProperty($name, $content)
     {
         $this->metas[$name] = ['content' => $content, 'type' => 'property'];
+
+        return $this;
     }
 
     public function addMetaLink($name, $type, $href)
@@ -227,6 +229,15 @@ class Page
             'type' => 'rel',
             'relType' => $type
         ];
+
+        return $this;
+    }
+
+    public function addMetaCanonical(string $url)
+    {
+        $this->addMetaLink('canonical', 'canonical', $url);
+
+        return $this;
     }
 
     protected function renderMetas()
@@ -234,29 +245,11 @@ class Page
         $output = '';
         foreach ($this->metas as $name => $metaData) {
             if ($metaData['type'] == 'name') {
-                $output .=
-                    '<meta name="' .
-                    $name .
-                    '" content="' .
-                    $metaData['content'] .
-                    '">' .
-                    "\n";
+                $output .= '<meta name="' . $name . '" content="' . $metaData['content'] . '">';
             } elseif ($metaData['type'] == 'property') {
-                $output .=
-                    '<meta property="' .
-                    $name .
-                    '" content="' .
-                    $metaData['content'] .
-                    '">' .
-                    "\n";
+                $output .= '<meta property="' . $name . '" content="' . $metaData['content'] . '">';
             } elseif ($metaData['type'] == 'rel') {
-                $output .=
-                    '<link rel="' .
-                    $metaData['relType'] .
-                    '" href="' .
-                    $metaData['href'] .
-                    '">' .
-                    "\n";
+                $output .= '<link rel="' . $metaData['relType'] . '" href="' . $metaData['href'] . '">';
             }
         }
 
@@ -299,34 +292,20 @@ class Page
         $htmlClass = count($this->htmlClass)
             ? ' class="' . implode(' ', array_keys($this->htmlClass)) . '"'
             : '';
-        $output = '<!DOCTYPE html>' . "\n";
-        $output .=
-            '<html lang="' .
-            substr($this->language, 0, 2) .
-            '"' .
-            $htmlClass .
-            '>' .
-            "\n";
-        $output .= '<head>' . "\n";
-        $output .=
-            '<title>' .
-            htmlentities((string) $this->title, ENT_COMPAT, $this->encoding) .
-            '</title>' .
-            "\n";
-        $output .=
-            '<meta http-equiv="Content-Type" content="text/html; charset=' .
-            $this->encoding .
-            '">' .
-            "\n";
+        $output = '<!DOCTYPE html>';
+        $output .= '<html lang="' . substr($this->language, 0, 2) . '"' . $htmlClass . '>';
+        $output .= '<head>';
+        $output .= '<title>' . htmlentities((string) $this->title, ENT_COMPAT, $this->encoding) . '</title>';
+        $output .= '<meta http-equiv="Content-Type" content="text/html; charset=' . $this->encoding . '">';
         $output .= $this->renderMetas();
         $output .= $this->renderStylesheets();
         $output .= $this->renderScripts();
         $output .= $this->renderRss();
         $output .= $this->renderRawHead();
-        $output .= '</head>' . "\n";
-        $output .= '<body>' . "\n";
+        $output .= '</head>';
+        $output .= '<body>';
         $output .= $content;
-        $output .= '</body>' . "\n";
+        $output .= '</body>';
         $output .= '</html>';
 
         return $output;

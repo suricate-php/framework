@@ -18,7 +18,7 @@ use Suricate\Session\Native as SessionNative;
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
  * @copyright   2013-2024 Mathieu LESNIAK
- * @version     0.5.7
+ * @version     0.5.8
  * @package     Suricate
  *
  * @method static \Suricate\App                     App($newInstance = false)             Get instance of App service
