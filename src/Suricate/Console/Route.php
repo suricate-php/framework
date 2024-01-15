@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Suricate\Console;
 
 use Suricate\Console;
-
 use Suricate\Suricate;
 
 class Route
