@@ -22,14 +22,20 @@ class Console
     public function execute()
     {
         $command = isset($this->args[0]) ? $this->args[0] : '';
-
+        $arguments = $this->args;
+        array_shift($arguments);
         switch ($command) {
             case 'route':
                 $command = new Console\Route($this->app);
                 $retval = $command->execute();
                 break;
+            case 'migration':
+                
+                $command = new Console\Migration($this->app);
+                $retval = $command->execute($arguments);
+                break;
             default:
-                echo "Unknown command";
+                echo "Unknown command\n";
                 $retval = 1;
                 break;
         }
