@@ -123,12 +123,12 @@ EOD;
             }
         }
         $fp = fopen($filename, 'w');
-        if (!$fp) {
+        if ($fp === false) {
             return false;
         }
         $ret = fputs($fp, $template);
         fclose($fp);
-        if ($ret) {
+        if ($ret !== false) {
             return $migrationName;
         }
         return false;
