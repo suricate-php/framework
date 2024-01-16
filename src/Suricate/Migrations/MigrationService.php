@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Suricate\Migrations;
 
+use Exception;
 use Suricate\Interfaces\IMigration;
 use Suricate\Service;
+use Suricate\Suricate;
 
 /**
  * DB Migration extension for Suricate
@@ -86,10 +88,27 @@ class MigrationService extends Service
             return true;
         }
         foreach (array_keys($migrationsToDo) as $migrationName) {
+            echo "[Migration] Migration $migrationName:\n";
             $migration = new $migrationName();
-            // FIXME: do migration
-            // FIXME: connection configuration in migration
-            _p($migration);
+            $sql = trim($migration->getSQL());
+            if ($sql === '') {
+                // Ignore
+                continue;
+            }
+            $db = Suricate::Database(true);
+            $db->setConfig($migration->getConfigName());
+            try {
+                $db->query($migration->getSQL());
+            } catch (Exception $e) {
+                echo "[Migration] ❌ Failed to execute migration: ".$e->getMessage() . "\n";
+                continue;
+            }
+
+            echo "[Migration] ✅ migration OK\n";
+            $migrationCheck = new MigrationModel();
+            $migrationCheck->setDBConfig($migration->getConfigName());
+            $migrationCheck->name = $migration->getName();
+            $migrationCheck->save();
         }
     }
 
