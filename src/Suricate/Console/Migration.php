@@ -31,7 +31,6 @@ class Migration
             default:
                 return $this->commandHelp();
         }
-        return 1;
     }
 
     private function commandMigrate()
@@ -47,6 +46,7 @@ class Migration
             echo 'Migration table created successfully' . "\n";
             return 0;
         }
+        echo 'Failed to create migration table' ."\n";
 
         return 1;
     }
