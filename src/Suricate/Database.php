@@ -149,7 +149,7 @@ class Database extends Service
                 $this->handler->setAttribute($attributeKey, $attributeValue);
             }
         } catch (Exception $e) {
-            throw new Exception("Cannot connect to database");
+            throw new Exception("Cannot connect to database: " . $e->getMessage());
         }
     }
 
