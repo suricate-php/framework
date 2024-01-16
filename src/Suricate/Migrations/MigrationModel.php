@@ -10,7 +10,6 @@ class MigrationModel extends DBObject
 {
     protected $tableName = 'suricate_migrations';
     protected $tableIndex = 'name';
-    // FIXME: set config ?
 
     public function __construct()
     {
@@ -24,6 +23,12 @@ class MigrationModel extends DBObject
         $this->readOnlyVariables = ['date_added'];
     }
 
+    public function setDBConfig(string $config): self
+    {
+        $this->DBConfig = $config;
+        return $this;
+    }
+
     public function createMigrationTable(): int
     {
         $this->connectDB();
@@ -32,14 +37,14 @@ class MigrationModel extends DBObject
             $dbParameters = $this->dbLink->getConfigParameters();
             switch ($dbParameters['type']) {
                 case 'mysql':
-                    if (!$this->doesMigrationTableExists('mysql')) {
+                    if (!$this->doesMigrationTableExists()) {
                         $this->createMysqlMigrationTable();
                         return 1;
                     }
                     return -1;
 
                 case 'sqlite':
-                    if (!$this->doesMigrationTableExists('sqlite')) {
+                    if (!$this->doesMigrationTableExists()) {
                         $this->createSqliteMigrationTable();
                         return 1;
                     }
@@ -64,7 +69,7 @@ EOD;
 
     private function createSqliteMigrationTable()
     {
-        // FIXME:
+        // FIXME: test
         $sql = <<<EOD
         CREATE TABLE IF NOT EXISTS "{$this->tableName}" (
             "name"	TEXT NOT NULL UNIQUE,
@@ -72,7 +77,7 @@ EOD;
         );
 EOD;
         $this->dbLink->query($sql);
-        echo $sql;
+
         return $sql;
     }
 
@@ -86,7 +91,7 @@ EOD;
             $sqlParams = [
                 "table" => $this->getTableName()
             ];
-            // FIXME:
+
             $res = $this->dbLink->query($sql, $sqlParams)->fetchColumn();
 
             return ((int) $res) === 1;
