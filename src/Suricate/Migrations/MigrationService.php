@@ -93,7 +93,7 @@ class MigrationService extends Service
         }
     }
 
-    public function createMigration(): string|false
+    public function createMigration(): string|bool
     {
         $migrationName = 'v' . date('Ymdhis');
 
@@ -110,6 +110,12 @@ class {$migrationName} implements IMigration
     }
 
     public function getSQL(): string
+    {
+        return '';
+    }
+
+    // Leave empty string if you want to use default config name
+    public function getConfigName(): string
     {
         return '';
     }
