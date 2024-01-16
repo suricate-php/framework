@@ -45,9 +45,9 @@ class MigrationModel extends DBObject
                     }
                     return -1;
             }
-
-            return 0;
         }
+
+        return 0;
     }
 
     private function createMysqlMigrationTable()

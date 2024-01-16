@@ -53,6 +53,7 @@ class Migration
                 echo '❌ Unsupported database type' . "\n";
                 return 1;
         }
+        return 1;
     }
 
     private function commandList(): int
