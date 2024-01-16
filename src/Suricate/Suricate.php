@@ -11,6 +11,7 @@ use Suricate\Cache\Memcache as CacheMemcache;
 use Suricate\Cache\Memcached as CacheMemcached;
 use Suricate\Cache\Redis as CacheRedis;
 use Suricate\Event\EventDispatcher;
+use Suricate\Migrations\MigrationService;
 use Suricate\Session\Native as SessionNative;
 
 /**
@@ -18,7 +19,7 @@ use Suricate\Session\Native as SessionNative;
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
  * @copyright   2013-2024 Mathieu LESNIAK
- * @version     0.5.8
+ * @version     0.6.0
  * @package     Suricate
  *
  * @method static \Suricate\App                     App($newInstance = false)             Get instance of App service
@@ -41,11 +42,12 @@ use Suricate\Session\Native as SessionNative;
  * @method static \Suricate\SessionNative           SessionNative($newInstance = false)   Get instance of Session service
  * @method static \Suricate\SessionCookie           SessionCookie($newInstance = false)   Get instance of Session service
  * @method static \Suricate\SessionMemcache         SessionMemcache($newInstance = false) Get instance of Session service
+ * @method static \Suricate\Migrations\MigrationService Migration($newInstance = false)       Get instance of Migration service
  */
 
 class Suricate
 {
-    const VERSION = '0.5.6';
+    const VERSION = '0.6.0';
 
     const CONF_DIR = '/conf/';
 
@@ -77,7 +79,8 @@ class Suricate
         'Session' => Session::class,
         'SessionNative' => SessionNative::class,
         'SessionCookie' => '\Suricate\Session\Cookie',
-        'SessionMemcache' => '\Suricate\Session\Memcache'
+        'SessionMemcache' => '\Suricate\Session\Memcache',
+        'Migration' => MigrationService::class,
     ];
 
     /**
