@@ -30,12 +30,20 @@ class Console
                 $retval = $command->execute();
                 break;
             case 'migration':
-                
                 $command = new Console\Migration($this->app);
                 $retval = $command->execute($arguments);
                 break;
+            case 'help':
+                $str = "Help:" . "\n";
+                $str .= Console::coloredString('route:', 'green') . "\n";
+                $str .= "\tRoutes commands\n";
+                $str .= Console::coloredString('migration:', 'green') . "\n";
+                $str .= "\tMigrations commands\n";
+                echo $str;
+                $retval = 0;
+                break;
             default:
-                echo "Unknown command\n";
+                echo "Unknown command, try " . Console::coloredString('help', 'green') . "\n";
                 $retval = 1;
                 break;
         }
