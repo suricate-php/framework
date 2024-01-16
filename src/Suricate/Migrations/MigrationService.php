@@ -42,10 +42,11 @@ class MigrationService extends Service
         }
     }
 
-    public function initMigrationTable(): bool
+    public function initMigrationTable(): int
     {
         $this->scanForMigrations();
         $migrationModel = new MigrationModel();
+
 
         return $migrationModel->createMigrationTable();
     }

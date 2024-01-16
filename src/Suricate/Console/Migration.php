@@ -42,13 +42,17 @@ class Migration
     private function commandInit(): int
     {
         $result = Suricate::Migration()->initMigrationTable();
-        if ($result) {
-            echo 'Migration table created successfully' . "\n";
-            return 0;
+        switch ($result) {
+            case -1:
+                echo '❌ Migration table already exists!' . "\n";
+                return 1;
+            case 0:
+                echo '✅ Migration table created successfully' . "\n";
+                return 0;
+            case 1:
+                echo '❌ Unsupported database type' . "\n";
+                return 1;
         }
-        echo 'Failed to create migration table' ."\n";
-
-        return 1;
     }
 
     private function commandList(): int

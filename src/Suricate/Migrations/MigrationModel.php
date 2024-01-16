@@ -24,7 +24,7 @@ class MigrationModel extends DBObject
         $this->readOnlyVariables = ['date_added'];
     }
 
-    public function createMigrationTable()
+    public function createMigrationTable(): int
     {
         $this->connectDB();
         if ($this->dbLink !== false) {
@@ -34,19 +34,19 @@ class MigrationModel extends DBObject
                 case 'mysql':
                     if (!$this->doesMigrationTableExists('mysql')) {
                         $this->createMysqlMigrationTable();
-                        return true;
+                        return 1;
                     }
+                    return -1;
 
-                    break;
                 case 'sqlite':
                     if (!$this->doesMigrationTableExists('sqlite')) {
                         $this->createSqliteMigrationTable();
-                        return true;
+                        return 1;
                     }
-                    break;
+                    return -1;
             }
 
-            return false;
+            return 0;
         }
     }
 
@@ -71,7 +71,8 @@ EOD;
             "date_added" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
         );
 EOD;
-
+        $this->dbLink->query($sql);
+        echo $sql;
         return $sql;
     }
 
@@ -86,7 +87,11 @@ EOD;
                 "table" => $this->getTableName()
             ];
             // FIXME:
+            $res = $this->dbLink->query($sql, $sqlParams)->fetchColumn();
+
+            return ((int) $res) === 1;
         }
+
 
         if ($dbType === 'mysql') {
             $sql = "SELECT count(*) FROM information_schema.tables " .
