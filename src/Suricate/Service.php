@@ -81,4 +81,8 @@ class Service implements Interfaces\IService
     {
         return $this->$parameter;
     }
+
+    public function registerMigrations()
+    {
+    }
 }
