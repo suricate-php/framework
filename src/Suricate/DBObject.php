@@ -579,6 +579,9 @@ class DBObject implements Interfaces\IDBObject
      */
     protected function connectDB()
     {
+        // FIXME: potential reuse of connection. If using >= 2 differents DB Config
+        // the missing `true` in Database() call keeps querying the previously connected DB
+        // Check if performance issue of passing `true` everytime
         if (!$this->dbLink) {
             $this->dbLink = Suricate::Database();
             if ($this->getDBConfig() !== '') {
