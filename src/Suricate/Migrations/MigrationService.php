@@ -120,7 +120,6 @@ class MigrationService extends Service
     {
         echo "[Migration] Starting migrations\n";
 
-        // FIXME: iterate through config
         $globalMigrations = $this->listMigrations();
         $migrationsToDo = [];
         foreach ($globalMigrations as $migrations) {
