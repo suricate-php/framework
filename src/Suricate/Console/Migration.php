@@ -22,8 +22,6 @@ class Migration
         switch ($command) {
             case 'migrate':
                 return $this->commandMigrate();
-            case 'init':
-                return $this->commandInit();
             case 'list':
                 return $this->commandList();
             case 'create':
@@ -39,23 +37,6 @@ class Migration
         return 0;
     }
 
-    private function commandInit(): int
-    {
-        $result = Suricate::Migration()->initMigrationTable();
-        switch ($result) {
-            case -1:
-                echo '❌ Migration table already exists!' . "\n";
-                return 1;
-            case 0:
-                echo '✅ Migration table created successfully' . "\n";
-                return 0;
-            case 1:
-                echo '❌ Unsupported database type' . "\n";
-                return 1;
-        }
-        return 1;
-    }
-
     private function commandList(): int
     {
         $migrations = Suricate::Migration()->listMigrations();
@@ -63,12 +44,16 @@ class Migration
             echo "No migration\n";
             return 0;
         }
-
-        echo str_repeat("-", 76) . "\n";
-        foreach ($migrations as $migrationKey=>$migrationDate) {
-            echo "| " . str_pad(trim($migrationKey), 50, ' ', STR_PAD_RIGHT) . " | " . ($migrationDate !== false ? $migrationDate : str_pad('-', 19, ' ', STR_PAD_BOTH)). " |\n";
+        
+        foreach ($migrations as $configName => $currentConfigMigrations) {
+            echo str_repeat("-", 13+strlen($configName)) . "\n";
+            echo "| Config : $configName |\n";
+            echo str_repeat("-", 76) . "\n";
+            foreach ($currentConfigMigrations as $migrationKey=>$migrationDate) {
+                echo "| " . str_pad(trim($migrationKey), 50, ' ', STR_PAD_RIGHT) . " | " . ($migrationDate !== false ? $migrationDate : str_pad('-', 19, ' ', STR_PAD_BOTH)). " |\n";
+            }
+            echo str_repeat("-", 76) . "\n\n";
         }
-        echo str_repeat("-", 76) . "\n";
 
         return 0;
     }
