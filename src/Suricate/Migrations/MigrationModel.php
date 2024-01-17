@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Suricate\Migrations;
 
 use Suricate\DBObject;
+use Suricate\Suricate;
 
 class MigrationModel extends DBObject
 {
@@ -27,6 +28,16 @@ class MigrationModel extends DBObject
     {
         $this->DBConfig = $config;
         return $this;
+    }
+    
+    protected function connectDB()
+    {
+        if (!$this->dbLink) {
+            $this->dbLink = Suricate::Database(true);
+            if ($this->getDBConfig() !== '') {
+                $this->dbLink->setConfig($this->getDBConfig());
+            }
+        }
     }
 
     public function createMigrationTable(): int
@@ -69,7 +80,6 @@ EOD;
 
     private function createSqliteMigrationTable()
     {
-        // FIXME: test
         $sql = <<<EOD
         CREATE TABLE IF NOT EXISTS "{$this->tableName}" (
             "name"	TEXT NOT NULL UNIQUE,
