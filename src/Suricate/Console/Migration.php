@@ -49,8 +49,12 @@ class Migration
             echo str_repeat("-", 13+strlen($configName)) . "\n";
             echo "| Config : $configName |\n";
             echo str_repeat("-", 76) . "\n";
-            foreach ($currentConfigMigrations as $migrationKey=>$migrationDate) {
-                echo "| " . str_pad(trim($migrationKey), 50, ' ', STR_PAD_RIGHT) . " | " . ($migrationDate !== false ? $migrationDate : str_pad('-', 19, ' ', STR_PAD_BOTH)). " |\n";
+            if (count($currentConfigMigrations) === 0) {
+                echo "|  🎉 no migration\n";
+            } else {
+                foreach ($currentConfigMigrations as $migrationKey=>$migrationDate) {
+                    echo "| " . str_pad(trim($migrationKey), 50, ' ', STR_PAD_RIGHT) . " | " . ($migrationDate !== false ? $migrationDate : str_pad('-', 19, ' ', STR_PAD_BOTH)). " |\n";
+                }
             }
             echo str_repeat("-", 76) . "\n\n";
         }
