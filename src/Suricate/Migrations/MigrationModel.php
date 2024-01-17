@@ -50,14 +50,14 @@ class MigrationModel extends DBObject
                 case 'mysql':
                     if (!$this->doesMigrationTableExists()) {
                         $this->createMysqlMigrationTable();
-                        return 1;
+                        return 0;
                     }
                     return -1;
 
                 case 'sqlite':
                     if (!$this->doesMigrationTableExists()) {
                         $this->createSqliteMigrationTable();
-                        return 1;
+                        return 0;
                     }
                     return -1;
             }
