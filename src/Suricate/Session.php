@@ -28,12 +28,6 @@ class Session extends Service implements ISession
                 case 'native':
                     self::$container = Suricate::SessionNative(true);
                     break;
-                case 'cookie':
-                    self::$container = Suricate::SessionCookie(true);
-                    break;
-                case 'memcache':
-                    self::$container = Suricate::SessionMemcache(true);
-                    break;
                 case 'none':
                     break;
                 default:
