@@ -23,13 +23,18 @@ class MigrationService extends Service
 
     public function registerMigration(IMigration $migration)
     {
-        // FIXME: test with migration outside of migration folder (eg: media module )
-        $this->registeredMigrations[$migration->getName()] = $migration->getSQL();
+        $this->registeredMigrations[$migration->getConfigName()][$migration->getName()] = $migration->getSQL();
     }
 
-    public function scanForMigrations()
+    public function scanForMigrations($path = null)
     {
-        $files = glob(app_path('migrations/*.php'));
+        $qualifiedPath = $path;
+        if ($path === null) {
+            $qualifiedPath = app_path('migrations/');
+        }
+
+        $files = glob($qualifiedPath . '*.php');
+
         foreach ($files as $file) {
             $migrationClassName = str_replace('.php', '', basename($file));
             include($file);
@@ -40,37 +45,74 @@ class MigrationService extends Service
                     $this->registerMigration($migration);
                 }
             }
-            
         }
     }
 
-    public function initMigrationTable(): int
+    public function initMigrationTable(string $configName): int
     {
-        $this->scanForMigrations();
         $migrationModel = new MigrationModel();
-
-
+        $migrationModel->setDBConfig($configName);
         return $migrationModel->createMigrationTable();
     }
 
     public function listMigrations()
     {
-        $this->scanForMigrations();
-
-        $migrations = MigrationModelList::loadAll();
-        $alreadyMigrated = [];
+        $db = Suricate::Database(true);
+        $dbConfigs = $db->getConfigs();
+        unset($db);
         $result = [];
-        foreach ($migrations as $migration) {
-            $alreadyMigrated[$migration->name] = true;
-            $result[$migration->name] = $migration->date_added;
-        }
-        foreach (array_keys($this->registeredMigrations) as $regMigrationName) {
-            if (isset($alreadyMigrated[$regMigrationName])) {
-                continue;
+
+        $this->scanForMigrations();
+        $suricateServices = Suricate::listServices();
+
+        foreach ($suricateServices as $service) {
+            // Check all registered Suricate services if their
+            // migration handler has migrations to register
+            $serviceInstance = Suricate::$service();
+            if ($serviceInstance instanceof Service) {
+                $serviceInstance->registerMigrations();
             }
-            $result[$regMigrationName] = false;
         }
-        ksort($result);
+
+        // Iterate through all databases configuration
+        foreach (array_keys($dbConfigs) as $dbConfigName) {
+            $result[$dbConfigName] = [];
+
+            // Create migration table if needed
+            $res = $this->initMigrationTable($dbConfigName);
+            switch ($res) {
+                case 0:
+                    echo '[Migration] ✅ Migration table created successfully for config "' . $dbConfigName . '"' . "\n";
+                    break;
+                case 1:
+                    echo '[Migration] ❌ Unsupported database type (config: "' . $dbConfigName . '")' . "\n";
+                    break;
+            }
+
+            // Load all DB listed migration for config
+            $migrations = MigrationModelList::loadAllWithConfig($dbConfigName);
+            $alreadyMigrated = [];
+
+            foreach ($migrations as $migration) {
+                $alreadyMigrated[$migration->name] = true;
+                $result[$dbConfigName][$migration->name] = $migration->date_added;
+            }
+
+            // 'ALL' config name for migrations that should me applied to all configs (eg: media-manager)
+            $confChecks = ['ALL', $dbConfigName];
+            foreach ($confChecks as $currentConfigName) {
+                if (isset($this->registeredMigrations[$currentConfigName])) {
+                    foreach (array_keys($this->registeredMigrations[$currentConfigName]) as $regMigrationName) {
+                        if (isset($alreadyMigrated[$regMigrationName])) {
+                            continue;
+                        }
+                        $result[$dbConfigName][$regMigrationName] = false;
+                    }
+                }
+            }
+            ksort($result[$dbConfigName]);
+        }
+
         return $result;
     }
 
@@ -78,16 +120,22 @@ class MigrationService extends Service
     {
         echo "[Migration] Starting migrations\n";
 
-        $migrations = $this->listMigrations();
-        $migrationsToDo = array_filter($migrations, function ($item) {
-            return $item === false;
-        });
+        // FIXME: iterate through config
+        $globalMigrations = $this->listMigrations();
+        $migrationsToDo = [];
+        foreach ($globalMigrations as $migrations) {
+            foreach ($migrations as $migrationName => $migrationDate) {
+                if ($migrationDate === false) {
+                    $migrationsToDo[] = $migrationName;
+                }
+            }
+        }
 
         if (count($migrationsToDo) === 0) {
             echo "[Migration] Nothing to migrate\n";
             return true;
         }
-        foreach (array_keys($migrationsToDo) as $migrationName) {
+        foreach ($migrationsToDo as $migrationName) {
             echo "[Migration] Migration $migrationName:\n";
             $migration = new $migrationName();
             $sql = trim($migration->getSQL());
@@ -100,7 +148,7 @@ class MigrationService extends Service
             try {
                 $db->query($migration->getSQL());
             } catch (Exception $e) {
-                echo "[Migration] ❌ Failed to execute migration: ".$e->getMessage() . "\n";
+                echo "[Migration] ❌ Failed to execute migration: " . $e->getMessage() . "\n";
                 continue;
             }
 
@@ -133,10 +181,9 @@ class {$migrationName} implements IMigration
         return '';
     }
 
-    // Leave empty string if you want to use default config name
     public function getConfigName(): string
     {
-        return '';
+        return 'default';
     }
 }
 EOD;
