@@ -7,7 +7,7 @@ class HelperTest extends \PHPUnit\Framework\TestCase
 {
     public function testDataGetKeyIsNull()
     {
-        $dataArr = array('test' => 42);
+        $dataArr = ['test' => 42];
 
         $this->assertEquals($dataArr, dataGet($dataArr, null));
         $this->assertEquals(42, dataGet($dataArr, 'test'));

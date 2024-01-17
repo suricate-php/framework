@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Suricate\Middleware;
 
-class CheckMaintenance extends \Suricate\Middleware
+use Suricate\Middleware;
+
+class CheckMaintenance extends Middleware
 {
     public function call(&$request, &$response)
     {

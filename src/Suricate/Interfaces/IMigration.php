@@ -8,4 +8,5 @@ interface IMigration
 {
     public function getName(): string;
     public function getSQL(): string;
+    public function getConfigName(): string;
 }

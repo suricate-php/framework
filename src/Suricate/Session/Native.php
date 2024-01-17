@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace Suricate\Session;
 
-class Native extends \Suricate\Session
+use Suricate\Session;
+
+class Native extends Session
 {
     public function __construct()
     {
         parent::__construct();
+        if (php_sapi_name() === 'cli') {
+            return;
+        }
         $this->loadSession();
     }
 

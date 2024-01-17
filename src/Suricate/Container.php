@@ -99,4 +99,9 @@ class Container implements \ArrayAccess
 
         return $this;
     }
+
+    public function getKeys(): array
+    {
+        return array_keys($this->warehouse);
+    }
 }

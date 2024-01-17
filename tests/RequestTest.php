@@ -63,31 +63,31 @@ class RequestTest extends \PHPUnit\Framework\TestCase
     public function testHeaders()
     {
         $request = new Suricate\Request();
-        $request->setHeaders(array('my-header' => 'myValue'));
+        $request->setHeaders(['my-header' => 'myValue']);
 
         $this->assertEquals(
-            array('my-header' => 'myValue'),
+            ['my-header' => 'myValue'],
             $request->getHeaders()
         );
 
         $request->addHeader('my-header', 'myNewValue');
         $this->assertEquals(
-            array('my-header' => 'myNewValue'),
+            ['my-header' => 'myNewValue'],
             $request->getHeaders()
         );
 
-        $request->setHeaders(array());
-        $this->assertEquals(array(), $request->getHeaders());
+        $request->setHeaders([]);
+        $this->assertEquals([], $request->getHeaders());
 
         $request->setContentType('text/xml');
         $this->assertEquals(
-            array('Content-type' => 'text/xml'),
+            ['Content-type' => 'text/xml'],
             $request->getHeaders()
         );
 
         $request->setContentType('text/xml', 'utf8');
         $this->assertEquals(
-            array('Content-type' => 'text/xml; charset=utf8'),
+            ['Content-type' => 'text/xml; charset=utf8'],
             $request->getHeaders()
         );
     }

@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Suricate;
 
 use Exception;
+use Suricate\Interfaces\ISession;
 
 /**
  * @property string $type Session type
  */
-class Session extends Service implements Interfaces\ISession
+class Session extends Service implements ISession
 {
     protected $parametersList = ['type'];
     private static $container;
@@ -26,12 +27,6 @@ class Session extends Service implements Interfaces\ISession
             switch ($this->type) {
                 case 'native':
                     self::$container = Suricate::SessionNative(true);
-                    break;
-                case 'cookie':
-                    self::$container = Suricate::SessionCookie(true);
-                    break;
-                case 'memcache':
-                    self::$container = Suricate::SessionMemcache(true);
                     break;
                 case 'none':
                     break;

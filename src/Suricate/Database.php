@@ -36,6 +36,13 @@ class Database extends Service
         $this->handler = false;
     }
 
+    // Force disconnect in case of cloning
+    // (eg: `Suricate::Database(true)`)
+    public function __clone()
+    {
+        $this->handler = false;
+    }
+
     public function configure($parameters = [])
     {
         $dbConfs = [];
@@ -95,18 +102,30 @@ class Database extends Service
         return $this->config;
     }
 
-    private function connect()
+    /**
+     * Return database handler current config parameters
+     *
+     * @return array
+     */
+    public function getConfigParameters(): array
     {
-        if ($this->handler !== false) {
-            return;
-        }
-
         if ($this->config !== null && isset($this->configs[$this->config])) {
             $params = $this->configs[$this->config];
         } else {
             $confs = array_values($this->configs);
             $params = array_shift($confs);
         }
+
+        return $params;
+    }
+
+    private function connect()
+    {
+        if ($this->handler !== false) {
+            return;
+        }
+
+        $params = $this->getConfigParameters();
 
         $pdoAttributes = [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION];
         switch ($params['type']) {
@@ -137,7 +156,7 @@ class Database extends Service
                 $this->handler->setAttribute($attributeKey, $attributeValue);
             }
         } catch (Exception $e) {
-            throw new Exception("Cannot connect to database");
+            throw new Exception("Cannot connect to database: " . $e->getMessage());
         }
     }
 
