@@ -78,8 +78,6 @@ class Suricate
         'Router' => Router::class,
         'Session' => Session::class,
         'SessionNative' => SessionNative::class,
-        'SessionCookie' => '\Suricate\Session\Cookie',
-        'SessionMemcache' => '\Suricate\Session\Memcache',
         'Migration' => MigrationService::class,
     ];
 
@@ -110,9 +108,9 @@ class Suricate
         }
 
         // Define error handler
-        set_exception_handler(['\Suricate\Error', 'handleException']);
-        set_error_handler(['\Suricate\Error', 'handleError']);
-        register_shutdown_function(['\Suricate\Error', 'handleShutdownError']);
+        set_exception_handler([Error::class, 'handleException']);
+        set_error_handler([Error::class, 'handleError']);
+        register_shutdown_function([Error::class, 'handleShutdownError']);
 
         self::$servicesRepository = new Container();
 
@@ -186,6 +184,11 @@ class Suricate
     public static function hasService(string $serviceName): bool
     {
         return isset(self::$servicesContainer[$serviceName]);
+    }
+
+    public static function listServices(): array
+    {
+        return self::$servicesContainer->getKeys();
     }
 
     private function setConfigFile($configFile)
