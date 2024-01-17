@@ -36,6 +36,13 @@ class Database extends Service
         $this->handler = false;
     }
 
+    // Force disconnect in case of cloning
+    // (eg: `Suricate::Database(true)`)
+    public function __clone()
+    {
+        $this->handler = false;
+    }
+
     public function configure($parameters = [])
     {
         $dbConfs = [];
