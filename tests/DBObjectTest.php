@@ -14,7 +14,7 @@ class DBObjectTest extends \PHPUnit\Framework\TestCase
         // Get mock, without the constructor being called
         $mock = $this->getMockBuilder($classname)
             ->disableOriginalConstructor()
-            ->setMethods(array('setRelations'))
+            ->setMethods(['setRelations'])
             ->getMockForAbstractClass();
 
         // set expectations for constructor calls
