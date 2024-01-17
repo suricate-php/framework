@@ -6,8 +6,9 @@ namespace Suricate\Event;
 
 use Suricate\Suricate;
 use InvalidArgumentException;
+use Suricate\Service;
 
-class EventDispatcher extends \Suricate\Service
+class EventDispatcher extends Service
 {
     /**
      * Array of declared listeners

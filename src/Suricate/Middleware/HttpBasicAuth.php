@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Suricate\Middleware;
 
-class HttpBasicAuth extends \Suricate\Middleware
+use Suricate\Middleware;
+
+class HttpBasicAuth extends Middleware
 {
     const AUTHTYPE_ARRAY = 'array';
     const AUTHTYPE_DB = 'database';
