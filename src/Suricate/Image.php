@@ -20,7 +20,7 @@ class Image
     public function load($filename)
     {
         if (is_file($filename) && ($imgString = file_get_contents($filename))) {
-            $imgString = imagecreatefromstring($imgString);
+            $imgString = @imagecreatefromstring($imgString);
             if ($imgString !== false) {
                 $this->source = $imgString;
                 $this->destination = $this->source;
