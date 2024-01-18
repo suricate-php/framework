@@ -23,7 +23,8 @@ class MigrationService extends Service
 
     public function registerMigration(IMigration $migration)
     {
-        $this->registeredMigrations[$migration->getConfigName()][$migration->getName()] = $migration->getSQL();
+        $configName = $migration->getConfigName() === '' ? 'default' : $migration->getConfigName();
+        $this->registeredMigrations[$configName][$migration->getName()] = $migration->getSQL();
     }
 
     public function scanForMigrations($path = null)
