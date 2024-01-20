@@ -88,7 +88,7 @@ class File extends Suricate\Cache
                 $hasExpired = time() - (int) $expiry > 0 ? 1 : -1;
             }
 
-            if ($hasExpired < 0) {
+            if ($hasExpired <= 0) {
                 return file_get_contents($this->path . $variable);
             }
 
