@@ -122,7 +122,7 @@ class Page
             $output .= ' href="' . $stylesheet['url'] . '"';
             $output .= ' type="text/css"';
             $output .= ' media="' . $stylesheet['media'] . '"';
-            $output .= '>' . "\n";
+            $output .= '>';
         }
 
         return $output;
@@ -160,7 +160,7 @@ class Page
                 ' title="' .
                 htmlentities($rss['title'], ENT_COMPAT, $this->encoding) .
                 '"';
-            $output .= '>' . "\n";
+            $output .= '>';
         }
         return $output;
     }
@@ -195,7 +195,7 @@ class Page
         foreach ($this->scripts as $currentScript) {
             $output .=
                 sprintf(
-                    '<script type="text/javascript" src="%s"%s%s></script>' . "\n",
+                    '<script type="text/javascript" src="%s"%s%s></script>',
                     $currentScript['url'],
                     $currentScript['async'] ? ' async' : '',
                     $currentScript['defer'] ? ' defer' : '',
