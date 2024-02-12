@@ -103,12 +103,16 @@ class FormItemTest extends \PHPUnit\Framework\TestCase
 
     public function testInputSelect()
     {
+
         $res = FormItem::select('my-input-name', [1, 2, 3], 2, 'Mon input');
         $this->assertEquals(
             '<label>Mon input</label><select name="my-input-name"><option value="0">1</option><option value="1">2</option><option value="2" selected>3</option></select>',
             $res
         );
+    }
 
+    public function testInputSelectWithEscapedOptGroup()
+    {
         $res = FormItem::select(
             'my-input-name',
             ["é\"" => ['a', 'b'], 2, 3 => ['c', 'd']],
@@ -119,7 +123,10 @@ class FormItemTest extends \PHPUnit\Framework\TestCase
             '<label>Mon input</label><select name="my-input-name"><optgroup label="&eacute;&quot;"><option value="0">a</option><option value="1">b</option></optgroup><option value="0">2</option><optgroup label="3"><option value="0">c</option><option value="1">d</option></optgroup></select>',
             $res
         );
+    }
 
+    public function testInputSelectWithEscapedOptGroupAndKeyValuesOptions()
+    {
         $res = FormItem::select(
             'my-input-name',
             [
@@ -134,15 +141,23 @@ class FormItemTest extends \PHPUnit\Framework\TestCase
             '<label>Mon input</label><select name="my-input-name"><optgroup label="&eacute;&quot;"><option value="0">a</option><option value="1">b</option></optgroup><option value="0">2</option><optgroup label="3"><option value="c" selected>option c</option><option value="d">option d</option></optgroup></select>',
             $res
         );
+    }
 
+    public function testInputSelectWithMultipleValues()
+    {
         $res = FormItem::select(
             'my-input-name',
-            [1, 2, 3],
-            [2, 1],
+            [1 => 'Value 1', 2 => 'Value 2', 3 => 'Value 3'], // Available values
+            [2, 1], // selected values
             'Mon input'
         );
         $this->assertEquals(
-            '<label>Mon input</label><select name="my-input-name"><option value="0">1</option><option value="1" selected>2</option><option value="2" selected>3</option></select>',
+            '<label>Mon input</label>' .
+            '<select name="my-input-name">' .
+                '<option value="1" selected>Value 1</option>' .
+                '<option value="2" selected>Value 2</option>' .
+                '<option value="3">Value 3</option>' .
+            '</select>',
             $res
         );
     }
