@@ -15,6 +15,7 @@ class Page
     protected $rawHead = [];
     protected $rss = [];
     protected $htmlClass = [];
+    protected $htmlAttributes = [];
 
     public function __construct()
     {
@@ -131,6 +132,13 @@ class Page
     public function addHtmlClass($className)
     {
         $this->htmlClass[$className] = true;
+
+        return $this;
+    }
+
+    public function addHtmlAttribute($attributeName, $attributeValue)
+    {
+        $this->htmlAttributes[$attributeName] = $attributeValue;
 
         return $this;
     }
@@ -292,8 +300,11 @@ class Page
         $htmlClass = count($this->htmlClass)
             ? ' class="' . implode(' ', array_keys($this->htmlClass)) . '"'
             : '';
+        $htmlAttributes = count($this->htmlAttributes)
+            ? ' ' . http_build_query($this->htmlAttributes, '', ' ')
+            : '';
         $output = '<!DOCTYPE html>';
-        $output .= '<html lang="' . substr($this->language, 0, 2) . '"' . $htmlClass . '>';
+        $output .= '<html lang="' . substr($this->language, 0, 2) . '"' . $htmlClass . $htmlAttributes . '>';
         $output .= '<head>';
         $output .= '<title>' . htmlentities((string) $this->title, ENT_COMPAT, $this->encoding) . '</title>';
         $output .= '<meta http-equiv="Content-Type" content="text/html; charset=' . $this->encoding . '">';
