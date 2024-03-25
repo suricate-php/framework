@@ -16,6 +16,7 @@ class Image
 
     private $width;
     private $height;
+    private int $orientation = 0;
 
     public function load($filename)
     {
@@ -26,7 +27,15 @@ class Image
                 $this->destination = $this->source;
                 $this->width = imagesx($this->source);
                 $this->height = imagesy($this->source);
+                $this->orientation = 0;
+                if (is_callable('exif_read_data')) {
+                    $exif = exif_read_data($filename, 'IFD0');
+                    $exifOrientation = $exif['Orientation'] ?? 0;
 
+                    if (in_array($exifOrientation, [3, 6, 8])) {
+                        $this->orientation = $exifOrientation;
+                    }
+                }
                 return $this;
             }
 
@@ -162,6 +171,16 @@ class Image
                 $this->width,
                 $this->height
             );
+
+            if ($this->orientation == 3) {
+                $this->destination = imagerotate($this->destination, 180, 0);
+            }
+            if ($this->orientation == 8) {
+                $this->destination = imagerotate($this->destination, 90, 0);
+            }
+            if ($this->orientation == 6) {
+                $this->destination = imagerotate($this->destination, -90, 0);
+            }
 
             return $this->chain();
         }
@@ -390,8 +409,8 @@ class Image
 
         $extension =
             $outputType === null
-                ? pathinfo($filename, PATHINFO_EXTENSION)
-                : $outputType;
+            ? pathinfo($filename, PATHINFO_EXTENSION)
+            : $outputType;
 
         if ($extension !== false) {
             switch (strtolower($extension)) {
