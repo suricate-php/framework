@@ -16,7 +16,6 @@ class Image
 
     private $width;
     private $height;
-    private int $orientation = 0;
 
     public function load($filename)
     {
@@ -24,18 +23,27 @@ class Image
             $imgString = @imagecreatefromstring($imgString);
             if ($imgString !== false) {
                 $this->source = $imgString;
-                $this->destination = $this->source;
-                $this->width = imagesx($this->source);
-                $this->height = imagesy($this->source);
-                $this->orientation = 0;
+
                 if (is_callable('exif_read_data')) {
                     $exif = exif_read_data($filename, 'IFD0');
                     $exifOrientation = $exif['Orientation'] ?? 0;
-
+                    $orientation = 0;
                     if (in_array($exifOrientation, [3, 6, 8])) {
-                        $this->orientation = $exifOrientation;
+                        $orientation = $exifOrientation;
+                    }
+                    if ($orientation == 3) {
+                        $this->source = imagerotate($this->source, 180, 0);
+                    }
+                    if ($orientation == 8) {
+                        $this->source = imagerotate($this->source, 90, 0);
+                    }
+                    if ($orientation == 6) {
+                        $this->source = imagerotate($this->source, -90, 0);
                     }
                 }
+                $this->destination = $this->source;
+                $this->width = imagesx($this->source);
+                $this->height = imagesy($this->source);
                 return $this;
             }
 
@@ -171,16 +179,6 @@ class Image
                 $this->width,
                 $this->height
             );
-
-            if ($this->orientation == 3) {
-                $this->destination = imagerotate($this->destination, 180, 0);
-            }
-            if ($this->orientation == 8) {
-                $this->destination = imagerotate($this->destination, 90, 0);
-            }
-            if ($this->orientation == 6) {
-                $this->destination = imagerotate($this->destination, -90, 0);
-            }
 
             return $this->chain();
         }
