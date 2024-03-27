@@ -25,7 +25,7 @@ class Image
                 $this->source = $imgString;
 
                 if (is_callable('exif_read_data')) {
-                    $exif = exif_read_data($filename, 'IFD0');
+                    $exif = @exif_read_data($filename, 'IFD0');
                     $exifOrientation = $exif['Orientation'] ?? 0;
                     $orientation = 0;
                     if (in_array($exifOrientation, [3, 6, 8])) {
