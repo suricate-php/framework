@@ -362,3 +362,24 @@ if (!function_exists('dispatchEvent')) {
         Suricate::EventDispatcher()->fire($event, $payload);
     }
 }
+
+
+/**
+ * Return SVG file content for direct embed
+ * SVG file must be located in `ressources/svg/` folder
+ *
+ * @param string $file filename without .svg extension
+ * @return string
+ */
+if (!function_exists('insertSvg')) {
+
+    function insertSvg($name, $class = 'w-4 h-4'): string
+    {
+        $filename = base_path('ressources/svg/' . $name . '.svg');
+
+        if (is_file($filename) && is_readable($filename)) {
+            return '<span class="' . $class . '">' . file_get_contents($filename)  . '</span>';
+        }
+        return '';
+    }
+}
