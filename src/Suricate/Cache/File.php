@@ -27,7 +27,7 @@ class File extends Suricate\Cache
         parent::__construct();
 
         $this->handler = false;
-        $this->path = app_path() . '/storage/app/';
+        $this->path = '/storage/app/';
         $this->defaultExpiry = 3600;
     }
 
@@ -54,20 +54,20 @@ class File extends Suricate\Cache
         if ($expiry === null) {
             $expiry = $this->defaultExpiry;
         }
-        $fp = fopen($this->path . $variable, 'w');
+        $fp = fopen(app_path() . $this->path . $variable, 'w');
         if ($fp === false) {
             throw new Exception(
-                "Cannot open cache file " . $this->path . $variable
+                "Cannot open cache file " . app_path() . $this->path . $variable
             );
         }
         fputs($fp, $value);
         fclose($fp);
         if ($expiry !== null) {
-            $fp = fopen($this->path . $variable . '.expiry', 'w');
+            $fp = fopen(app_path() . $this->path . $variable . '.expiry', 'w');
             if ($fp === false) {
                 throw new Exception(
                     "Cannot open cache file " .
-                        $this->path .
+                        app_path() . $this->path .
                         $variable .
                         '.expiry'
                 );
@@ -79,21 +79,21 @@ class File extends Suricate\Cache
 
     public function get(string $variable)
     {
-        if (is_readable($this->path . $variable)) {
+        if (is_readable(app_path() . $this->path . $variable)) {
             $hasExpired = 0;
-            if (is_readable($this->path . $variable . '.expiry')) {
+            if (is_readable(app_path() . $this->path . $variable . '.expiry')) {
                 $expiry = file_get_contents(
-                    $this->path . $variable . '.expiry'
+                    app_path() . $this->path . $variable . '.expiry'
                 );
                 $hasExpired = time() - (int) $expiry > 0 ? 1 : -1;
             }
 
             if ($hasExpired <= 0) {
-                return file_get_contents($this->path . $variable);
+                return file_get_contents(app_path() . $this->path . $variable);
             }
 
             if ($hasExpired > 0) {
-                unlink($this->path . $variable . '.expiry');
+                unlink(app_path() . $this->path . $variable . '.expiry');
             }
         }
         return null;
@@ -101,11 +101,11 @@ class File extends Suricate\Cache
 
     public function delete(string $variable)
     {
-        if (is_file($this->path . $variable)) {
-            return unlink($this->path . $variable);
+        if (is_file(app_path() . $this->path . $variable)) {
+            return unlink(app_path() . $this->path . $variable);
         }
-        if (is_file($this->path . $variable . '.expiry')) {
-            return unlink($this->path . $variable . '.expiry');
+        if (is_file(app_path() . $this->path . $variable . '.expiry')) {
+            return unlink(app_path() . $this->path . $variable . '.expiry');
         }
 
         return false;
