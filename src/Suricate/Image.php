@@ -24,21 +24,23 @@ class Image
             if ($imgString !== false) {
                 $this->source = $imgString;
 
-                if (is_callable('exif_read_data')) {
-                    $exif = @exif_read_data($filename, 'IFD0');
-                    $exifOrientation = $exif['Orientation'] ?? 0;
-                    $orientation = 0;
-                    if (in_array($exifOrientation, [3, 6, 8])) {
-                        $orientation = $exifOrientation;
-                    }
-                    if ($orientation == 3) {
-                        $this->source = imagerotate($this->source, 180, 0);
-                    }
-                    if ($orientation == 8) {
-                        $this->source = imagerotate($this->source, 90, 0);
-                    }
-                    if ($orientation == 6) {
-                        $this->source = imagerotate($this->source, -90, 0);
+                if (is_callable('exif_read_data') && is_callable('exif_imagetype')) {
+                    if (exif_imagetype($filename) === IMAGETYPE_JPEG) {
+                        $exif = exif_read_data($filename, 'IFD0');
+                        $exifOrientation = $exif['Orientation'] ?? 0;
+                        $orientation = 0;
+                        if (in_array($exifOrientation, [3, 6, 8])) {
+                            $orientation = $exifOrientation;
+                        }
+                        if ($orientation == 3) {
+                            $this->source = imagerotate($this->source, 180, 0);
+                        }
+                        if ($orientation == 8) {
+                            $this->source = imagerotate($this->source, 90, 0);
+                        }
+                        if ($orientation == 6) {
+                            $this->source = imagerotate($this->source, -90, 0);
+                        }
                     }
                 }
                 $this->destination = $this->source;
