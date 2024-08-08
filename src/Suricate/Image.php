@@ -26,7 +26,7 @@ class Image
 
                 if (is_callable('exif_read_data') && is_callable('exif_imagetype')) {
                     if (exif_imagetype($filename) === IMAGETYPE_JPEG) {
-                        $exif = exif_read_data($filename, 'IFD0');
+                        $exif = @exif_read_data($filename, 'IFD0');
                         $exifOrientation = $exif['Orientation'] ?? 0;
                         $orientation = 0;
                         if (in_array($exifOrientation, [3, 6, 8])) {
