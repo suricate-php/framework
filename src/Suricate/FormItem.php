@@ -234,6 +234,9 @@ class FormItem
         $itemData['name'] = $name;
         $itemData['value'] = $value;
         $itemData['label'] = $label;
+        if ($label !== null && !isset($htmlAttributes['id'])) {
+            $itemData['id'] = $name;
+        }
         $itemData = array_merge($itemData, $htmlAttributes);
 
         $item = new FormItem($itemData);
