@@ -114,7 +114,11 @@ trait DBObjectRelations
         $target = $this->relations[$name]['target'];
         $source = $this->relations[$name]['source'];
         $this->relationValues[$name] = new $target();
-        $this->relationValues[$name]->load($this->$source);
+        if (isset($this->relations[$name]['target_field'])) {
+            $this->relationValues[$name]->loadForField($this->relations[$name]['target_field'], $this->$source);
+        } else {
+            $this->relationValues[$name]->load($this->$source);
+        }
     }
 
     /**

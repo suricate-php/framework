@@ -309,6 +309,28 @@ class DBObject implements Interfaces\IDBObject
     }
 
     /**
+     * Load an object according to fieldName=fieldValue
+     *
+     * @param string $fieldName
+     * @param mixed $fieldValue
+     * @return static|bool
+     */
+    public function loadForField(string $fieldName, $fieldValue) {
+        $this->connectDB();
+        $this->resetLoadedVariables();
+
+        $query = "SELECT *";
+        $query .= " FROM `" . $this->getTableName() . "`";
+        $query .= " WHERE";
+        $query .= "     `" . $fieldName . "` =  :fieldValue";
+
+        $params = [];
+        $params['fieldValue'] = $fieldValue;
+
+        return $this->loadFromSql($query, $params);
+    }
+
+    /**
      * Check if object is linked to entry in database
      *
      * @return boolean
