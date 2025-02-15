@@ -281,12 +281,12 @@ class Redis
      * @param array $vars
      * @return boolean
      */
-    protected function errorHandler(
+    public function errorHandler(
         $errNumber,
         $errMessage,
         $filename,
         $lineNumber,
-        $vars
+        $vars = []
     ): bool {
         $this->log(
             'Error occured: ' .
