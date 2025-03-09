@@ -22,6 +22,9 @@ class PivotTable extends DBObject
                 'source' => $referenceData['key'],
                 'target' => $referenceData['type']
             ];
+            if (isset($referenceData['target_field'])) {
+                $this->relations[$referenceName]['target_field'] = $referenceData['target_field'];
+            }
         }
     }
 
