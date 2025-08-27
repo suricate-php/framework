@@ -135,11 +135,15 @@ trait DBObjectRelations
             ? $this->relations[$name]['target_field']
             : null;
         $validate = dataGet($this->relations[$name], 'validate', null);
+        $orderByField = dataGet($this->relations[$name], 'order_by', null);
+        $orderByWay = dataGet($this->relations[$name], 'order_way', 'ASC');
 
         $this->relationValues[$name] = $target::loadForParentId(
             $parentId,
             $parentIdField,
-            $validate
+            $validate,
+            $orderByField,
+            $orderByWay
         );
     }
 

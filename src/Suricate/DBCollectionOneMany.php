@@ -65,11 +65,15 @@ class DBCollectionOneMany extends DBCollection
      * @param mixed        $parentId       Parent id description
      * @param string       $parentIdField  Name of parent id referencing field
      * @param \Closure|null $validate       Callback use to validate add to items collection
+     * @param string|null   $orderByField  Field name to order by
+     * @param string|null   $orderByWay    Order way (ASC|DESC)
      */
     public static function loadForParentId(
         $parentId,
         $parentIdField = null,
-        $validate = null
+        $validate = null,
+        $orderByField = null,
+        $orderByWay = null,
     ) {
         $calledClass = get_called_class();
         $collection = new $calledClass();
@@ -97,6 +101,13 @@ class DBCollectionOneMany extends DBCollection
                 $sqlParams['parent_type'] = $collection->parentFilterType;
             }
 
+            if ($orderByField !== null) {
+                $way = 'ASC';
+                if ($orderByWay !== null && in_array(strtoupper($orderByWay), ['ASC', 'DESC'])) {
+                    $way = strtoupper($orderByWay);
+                }
+                $sql .= " ORDER BY `" . $orderByField . "` " . $way;
+            }
             $sqlParams['parent_id'] = $parentId;
             $results = $dbHandler->query($sql, $sqlParams)->fetchAll();
 
