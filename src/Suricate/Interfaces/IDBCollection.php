@@ -13,6 +13,7 @@ interface IDBCollection
      */
     public static function buildFromSql($sql, $sqlParams = []);
 
+    // FIXME: not used
     public static function loadForParentId($parentId);
 
     /**
