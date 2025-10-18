@@ -315,7 +315,8 @@ class DBObject implements Interfaces\IDBObject
      * @param mixed $fieldValue
      * @return static|bool
      */
-    public function loadForField(string $fieldName, $fieldValue) {
+    public function loadForField(string $fieldName, $fieldValue)
+    {
         $this->connectDB();
         $this->resetLoadedVariables();
 
@@ -328,6 +329,34 @@ class DBObject implements Interfaces\IDBObject
         $params['fieldValue'] = $fieldValue;
 
         return $this->loadFromSql($query, $params);
+    }
+
+    /**
+     * Load an object according to fieldName=fieldValue array
+     *
+     * @param array $params ['fieldName' => fieldValue, 'fieldName2' => fieldValue2]
+     * @param string $operand OR / AND
+     * @return static|bool
+     */
+    public function loadForFields(array $params, string $operand = 'AND')
+    {
+        $this->connectDB();
+        $this->resetLoadedVariables();
+
+        $query = "SELECT *";
+        $query .= " FROM `" . $this->getTableName() . "`";
+        $query .= " WHERE";
+        $subQuery = [];
+        $subParams = [];
+        $offset = 0;
+        foreach ($params as $fieldName => $fieldValue) {
+            $subQuery[] = "`" . $fieldName . "` =  :param_" . $offset;
+            $subParams['param_' . $offset] = $fieldValue;
+            $offset++;
+        }
+        $query .= implode(' ' . $operand . ' ', $subQuery);
+
+        return $this->loadFromSql($query, $subParams);
     }
 
     /**
