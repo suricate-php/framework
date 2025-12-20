@@ -251,7 +251,7 @@ class Redis
      * @param int $signalNumber
      * @return void
      *
-     * @SuppressWarnings(PHPMD.ExitExpression)
+     * @SuppressWarnings("PHPMD.ExitExpression")
      */
     private function signalHandler($signalNumber)
     {

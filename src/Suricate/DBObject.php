@@ -215,7 +215,7 @@ class DBObject implements Interfaces\IDBObject
     /**
      * __sleep magic method, permits an inherited DBObject class to be serialized
      * @return Array of properties to serialize
-     */
+     */    // FIXME: should be replaced by __serialize in PHP 8.5
     public function __sleep()
     {
         $discardedProps = ['dbLink', 'relations'];
@@ -229,6 +229,7 @@ class DBObject implements Interfaces\IDBObject
         return array_diff($result, $discardedProps);
     }
 
+    // FIXME: should be replaced by __unserialize in PHP 8.5
     public function __wakeup()
     {
         $this->dbLink = false;
@@ -626,7 +627,7 @@ class DBObject implements Interfaces\IDBObject
      * Connect to DB layer
      *
      * @return void
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     protected function connectDB()
     {

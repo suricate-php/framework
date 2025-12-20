@@ -95,7 +95,7 @@ class Curl extends Service
     }
 
     /**
-     * @SuppressWarnings(PHPMD.UndefinedVariable) : preg_match_all matches
+     * @SuppressWarnings("PHPMD.UndefinedVariable") : preg_match_all matches
      */
     public function send()
     {

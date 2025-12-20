@@ -47,6 +47,7 @@ class DBCollection extends Collection
      * __sleep magic method, permits an inherited DBObject class to be serialized
      * @return Array of properties to serialize
      */
+    // FIXME: should be replaced by __serialize in PHP 8.5
     public function __sleep()
     {
         $discardedProps = ['dbLink'];
@@ -64,6 +65,7 @@ class DBCollection extends Collection
      * Wake up magic method
      * restore dblink to initial value
      */
+    // FIXME: should be replaced by __unserialize in PHP 8.5
     public function __wakeup()
     {
         $this->dbLink = false;
@@ -267,7 +269,7 @@ class DBCollection extends Collection
      * Connect to database layer
      *
      * @return void
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     protected function connectDB()
     {

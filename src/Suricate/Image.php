@@ -340,7 +340,7 @@ class Image
         return $this->chain();
     }
 
-    public function writeText($text, $x = 0, $y = 0, \Closure $callback = null)
+    public function writeText($text, $x = 0, $y = 0, ?\Closure $callback = null)
     {
         if ($x < 0) {
             $x = $this->width + $x;
@@ -359,7 +359,7 @@ class Image
         return $this;
     }
 
-    public function line($x1, $y1, $x2, $y2, \Closure $callback = null)
+    public function line($x1, $y1, $x2, $y2, ?\Closure $callback = null)
     {
         $imageShape = new ImageShape();
         $imageShape->setImage($this->source);

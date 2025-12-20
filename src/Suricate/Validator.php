@@ -51,8 +51,8 @@ class Validator
      * Initialize checks
      *
      * @return void
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     * @SuppressWarnings("PHPMD.CyclomaticComplexity")
+     * @SuppressWarnings("PHPMD.ExcessiveMethodLength")
      */
     private function createChecks()
     {

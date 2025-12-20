@@ -19,7 +19,7 @@ class Session extends Service implements ISession
      * Initialize session handler
      *
      * @return void
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     protected function init()
     {

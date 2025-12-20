@@ -20,7 +20,7 @@ class Route
      * Execute command
      *
      * @return integer
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function execute(): int
     {

@@ -294,7 +294,7 @@ if (!function_exists('getParam')) {
  * i18n
  *
  * @return void
- * @SuppressWarnings(PHPMD.StaticAccess)
+ * @SuppressWarnings("PHPMD.StaticAccess")
  */
 if (!function_exists('i18n')) {
     function i18n()

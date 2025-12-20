@@ -5,7 +5,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
      * test constructor
      *
      * @return void
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function testConstruct()
     {

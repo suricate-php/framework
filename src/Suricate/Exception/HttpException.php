@@ -12,7 +12,7 @@ class HttpException extends \RuntimeException
     public function __construct(
         $statusCode,
         $message = null,
-        \Exception $previous = null,
+        ?\Exception $previous = null,
         array $headers = [],
         $code = 0
     ) {

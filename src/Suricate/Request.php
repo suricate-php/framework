@@ -125,7 +125,7 @@ class Request
      *
      * @return void
      *
-     * @SuppressWarnings(PHPMD).Superglobals
+     * @SuppressWarnings("PHPMD.Superglobals")
      */
     public function parse()
     {
@@ -151,7 +151,7 @@ class Request
      *
      * @return void
      *
-     * @SuppressWarnings(PHPMD).Superglobals
+     * @SuppressWarnings("PHPMD.Superglobals")
      */
     private function parseRemoteIp()
     {
@@ -270,7 +270,7 @@ class Request
      *
      * @return mixed
      *
-     * @SuppressWarnings(PHPMD).Superglobals
+     * @SuppressWarnings("PHPMD.Superglobals")
      */
     public static function getPostParam($variable, $defaultValue = null)
     {
@@ -288,7 +288,7 @@ class Request
      *
      * @return mixed
      *
-     * @SuppressWarnings(PHPMD).Superglobals
+     * @SuppressWarnings("PHPMD.Superglobals")
      */
     public static function getParam($variable, $defaultValue = null)
     {
@@ -309,7 +309,7 @@ class Request
      *
      * @return boolean
      *
-     * @SuppressWarnings(PHPMD).Superglobals
+     * @SuppressWarnings("PHPMD.Superglobals")
      */
     public static function hasParam($variable): bool
     {

@@ -87,7 +87,7 @@ class Suricate
      * @param array $paths Application paths
      * @param string|array|null $configFile path of configuration file(s)
      *
-     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function __construct($paths = [], $configFile = null)
     {
