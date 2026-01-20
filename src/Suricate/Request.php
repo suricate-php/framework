@@ -19,6 +19,7 @@ class Request
     const HTTP_METHOD_DELETE = 'DELETE';
     const HTTP_METHOD_HEAD = 'HEAD';
     const HTTP_METHOD_OPTIONS = 'OPTIONS';
+    const HTTP_METHOD_PATCH = 'PATCH';
 
     private $method = self::HTTP_METHOD_GET;
     private $methods = [
@@ -27,7 +28,8 @@ class Request
         self::HTTP_METHOD_PUT => 'PUT',
         self::HTTP_METHOD_DELETE => 'DELETE',
         self::HTTP_METHOD_HEAD => 'HEAD',
-        self::HTTP_METHOD_OPTIONS => 'OPTIONS'
+        self::HTTP_METHOD_OPTIONS => 'OPTIONS',
+        self::HTTP_METHOD_PATCH => 'PATCH'
     ];
 
     private $httpCodeString = [

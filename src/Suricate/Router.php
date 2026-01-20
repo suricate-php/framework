@@ -119,6 +119,10 @@ class Router extends Service
                 'method' => ['PUT', 'OPTIONS'],
                 'append' => '/:' . $primaryParameterName
             ],
+            'patch' => [
+                'method' => ['PATCH', 'OPTIONS'],
+                'append' => '/:' . $primaryParameterName
+            ],
             'destroy' => [
                 'method' => ['DELETE', 'OPTIONS'],
                 'append' => '/:' . $primaryParameterName
