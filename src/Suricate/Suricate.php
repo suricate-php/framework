@@ -18,8 +18,8 @@ use Suricate\Session\Native as SessionNative;
  * Suricate - Another micro PHP framework
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
- * @copyright   2013-2024 Mathieu LESNIAK
- * @version     0.6.0
+ * @copyright   2013-2026 Mathieu LESNIAK
+ * @version     0.6.20
  * @package     Suricate
  *
  * @method static \Suricate\App                     App($newInstance = false)             Get instance of App service
@@ -47,7 +47,7 @@ use Suricate\Session\Native as SessionNative;
 
 class Suricate
 {
-    const VERSION = '0.6.0';
+    const VERSION = '0.6.20';
 
     const CONF_DIR = '/conf/';
 
