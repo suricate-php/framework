@@ -79,6 +79,40 @@ class DBCollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(2, $retVal->count());
     }
 
+    public function testLoadForFields()
+    {
+        $this->setupData();
+
+        // 1. Filter by ID
+        $collection = $this->getDBCollection();
+        $retVal = $collection->loadForFields(['id' => 100]);
+        
+        $this->assertInstanceOf(\Suricate\DBCollection::class, $retVal);
+        $this->assertSame(1, $collection->count());
+        $this->assertEquals(100, $collection[0]->id);
+
+        // 2. No filter (all items)
+        $collection = $this->getDBCollection();
+        $collection->loadForFields([]);
+        
+        $this->assertSame(2, $collection->count());
+
+        // 3. Order by
+        $collection = $this->getDBCollection();
+        $collection->loadForFields([], 'AND', ['id' => 'desc']);
+        
+        $this->assertSame(2, $collection->count());
+        $this->assertEquals(101, $collection[0]->id);
+        $this->assertEquals(100, $collection[1]->id);
+
+        // 4. Limit
+        $collection = $this->getDBCollection();
+        $collection->loadForFields([], 'AND', ['id' => 'asc'], 1);
+        
+        $this->assertSame(1, $collection->count());
+        $this->assertEquals(100, $collection[0]->id);
+    }
+
     protected function getDatabase()
     {
         $database = new \Suricate\Database();

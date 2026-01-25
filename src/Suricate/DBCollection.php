@@ -200,6 +200,37 @@ class DBCollection extends Collection
         return $this;
     }
 
+        public function loadForFields(array $fields, string $operand = 'AND', array $orderBy = [], $limit = null): self
+    {
+        $this->connectDB();
+
+        $sql = "SELECT * FROM `" . $this->getTableName() . "`";
+
+        $sqlParams = [];
+        if (count($fields) > 0) {
+            $whereClauses = [];
+            foreach ($fields as $field => $value) {
+                $paramName = 'param_' . count($sqlParams);
+                $whereClauses[] = "`$field` = :$paramName";
+                $sqlParams[$paramName] = $value;
+            }
+            $sql .= " WHERE " . implode(' ' . $operand . ' ', $whereClauses);
+        }
+
+        if (count($orderBy) > 0) {
+            $orderClauses = [];
+            foreach ($orderBy as $field => $direction) {
+                $orderClauses[] = "`$field` " . strtoupper($direction);
+            }
+            $sql .= " ORDER BY " . implode(', ', $orderClauses);
+        }
+        if ($limit !== null) {
+            $sql .= " LIMIT " . (int) $limit;
+        }
+
+        return $this->loadFromSql($sql, $sqlParams);
+    }
+
     protected function addItemLink($linkId)
     {
         $this->items[$this->itemOffset] = $linkId;
