@@ -162,7 +162,7 @@ class MigrationService extends Service
 
     public function createMigration(): string|bool
     {
-        $migrationName = 'v' . date('Ymdhis');
+        $migrationName = 'v' . date('YmdHis');
 
         $template = <<<EOD
 <?php
