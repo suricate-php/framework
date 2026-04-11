@@ -19,7 +19,7 @@ use Suricate\Session\Native as SessionNative;
  *
  * @author      Mathieu LESNIAK <mathieu@lesniak.fr>
  * @copyright   2013-2026 Mathieu LESNIAK
- * @version     0.6.23
+ * @version     0.6.24
  * @package     Suricate
  *
  * @method static \Suricate\App                     App($newInstance = false)             Get instance of App service
@@ -47,7 +47,7 @@ use Suricate\Session\Native as SessionNative;
 
 class Suricate
 {
-    const VERSION = '0.6.23';
+    const VERSION = '0.6.24';
 
     const CONF_DIR = '/conf/';
 

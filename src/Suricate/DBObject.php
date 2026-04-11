@@ -213,6 +213,16 @@ class DBObject implements Interfaces\IDBObject
     }
 
     /**
+     * Get list of variables linked to database
+     *
+     * @return array
+     */
+    public function getDBVariables(): array
+    {
+        return $this->dbVariables;
+    }
+
+    /**
      * __sleep magic method, permits an inherited DBObject class to be serialized
      * @return Array of properties to serialize
      */    // FIXME: should be replaced by __serialize in PHP 8.5
