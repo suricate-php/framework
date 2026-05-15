@@ -66,6 +66,7 @@ class HttpBasicAuth extends Middleware
         ?string $password
     ): bool {
         if (
+            $user !== null && $password !== null &&
             isset($this->options['users'][$user]) &&
             $this->options['users'][$user] == $password
         ) {
