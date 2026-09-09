@@ -185,12 +185,13 @@ class Page
      * @param boolean $defer
      * @return Page
      */
-    public function addScript($id, $url, $async = false, $defer = false)
+    public function addScript($id, $url, $async = false, $defer = false, $type = 'text/javascript')
     {
         $this->scripts[$id] = [
             'url' => $url,
             'async' => $async,
-            'defer' => $defer
+            'defer' => $defer,
+            'type' => $type,
         ];
 
         return $this;
@@ -201,9 +202,11 @@ class Page
         $output = '';
 
         foreach ($this->scripts as $currentScript) {
+            $type = $currentScript['type'] ?? 'text/javascript';
             $output .=
                 sprintf(
-                    '<script type="text/javascript" src="%s"%s%s></script>',
+                    '<script type="%s" src="%s"%s%s></script>',
+                    $type,
                     $currentScript['url'],
                     $currentScript['async'] ? ' async' : '',
                     $currentScript['defer'] ? ' defer' : '',
