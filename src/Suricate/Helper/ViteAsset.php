@@ -26,13 +26,23 @@ class ViteAsset
         }
 
         if (!isset(self::$manifest[$entry])) {
-            return ['js' => null, 'css' => []];
+            return ['js' => [], 'preload' => [], 'css' => []];
         }
 
         $item = self::$manifest[$entry];
 
         // Fichier JS principal
         $js = isset($item['file']) ? $distPath . $item['file'] : null;
+
+        $preload = [];
+        // Preload des chunks JS importés statiquement
+        if (isset($item['imports']) && is_array($item['imports'])) {
+            foreach ($item['imports'] as $importKey) {
+                if (isset(self::$manifest[$importKey])) {
+                    $preload[] = $distPath .self::$manifest[$importKey]['file'];
+                }
+            }
+        }
 
         // Fichiers CSS extraits/générés par Vite
         $css = [];
@@ -44,6 +54,7 @@ class ViteAsset
 
         return [
             'js'  => $js,
+            'preload' => $preload,
             'css' => $css,
         ];
     }
